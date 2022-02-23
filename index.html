@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>OpenHistoricalMap :: Leaflet MBGL TimeSlider Control Demo</title>
+
+    <!-- Leaflet and Mapbox GL JS API, the the adapter for using MB within L -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" rel="stylesheet" />
+
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css" rel="stylesheet" />
+
+    <script src="https://unpkg.com/mapbox-gl-leaflet@0.0.15/leaflet-mapbox-gl.js"></script>
+
+    <!-- the timeslider control and suporting DecimalDate library -->
+    <script src="decimaldate.js"></script>
+    <script src="leaflet-ohm-timeslider.js"></script>
+    <link href="leaflet-ohm-timeslider.css" rel="stylesheet" />
+
+    <!-- a map style-->
+    <script src="mapstyle.js"></script>
+</head>
+<body>
+
+
+    <div id="map"></div>
+
+
+    <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      background-color: #ccc;
+      width: 100vw;
+      height: 100vh;
+    }
+    </style>
+
+
+    <script>
+    const START_ZOOM = 14.0;
+    const START_CENTER = [ 47.6062, -122.3321 ];
+
+    const OHMLAYER = new L.MapboxGL({  /* see also timeslider.js and viewreset handler */
+      attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
+      style: OHM_MAP_STYLE,
+      accessToken: "no-token",
+    });
+
+    let MAP, TIMESLIDER;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      MAP = L.map('map', {
+        zoomSnap: 0.1,
+      })
+      .setView(START_CENTER, START_ZOOM);
+
+      L.control.scale().addTo(MAP);
+
+      OHMLAYER.addTo(MAP);
+
+      TIMESLIDER = new L.Control.OHMTimeSlider({
+        vectorlayer: OHMLAYER,
+        range: ['1950-01-01', '2020-12-31'],
+        date: '1986-06-15',
+      }).addTo(MAP);
+    });
+    </script>
+
+</body>
+</html>
