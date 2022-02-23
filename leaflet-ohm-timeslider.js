@@ -5,6 +5,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         sourcename: 'osm', // within that vectorlayer, layers with this source will be managed/filtered
         range: null, // the [date, date] range corresponding to the slider's sliding range; default provided in initialize()
         date: null, // the date currently selected by the slider, interpolating over the range; default provided in initialize()
+        stepspeed: 1, // the default stepspeed selection
     },
 
     initialize: function (options={}) {
@@ -30,15 +31,18 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // final sanity check, that the vectorlayer in fact is a MBGL map
         if (! this.options.vectorlayer._glMap) throw 'OHMTimeSlider: vectorlayer is not a MBGL layer, or is not yet initialized';
 
+        // some internal constants
+        this.constants = {};
+        this.constants.onedaystep = 1 / 365.0;
+
         // looks good
         // create the container and UI
         const container = L.DomUtil.create('div', 'leaflet-ohm-timeslider');
         L.DomEvent.disableClickPropagation(container);
         L.DomEvent.disableScrollPropagation(container);
 
-        const onedaystep = 1 / 365.0;
-
         container.innerHTML = `
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
         <div>
             <div>
                 Range:
@@ -46,20 +50,45 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <input type="text" pattern="\-?\d\d\d\d\-\d\d\-\d\d" class="leaflet-ohm-timeslider-dateinput" data-timeslider="rangemax" placeholder="yyyy-mm-dd" value="${this.options.range[1]}" />
             </div>
             <div>
-                Current: <input type="text" pattern="\-?\d\d\d\d\-\d\d\-\d\d" class="leaflet-ohm-timeslider-dateinput" data-timeslider="currentdate" placeholder="yyyy-mm-dd" value="${this.options.date}" />
+                Current:
+                <span data-timeslider="prev" role="button" tabindex="0" class="fa fa-minus" title="Go back one step"></span>
+                &nbsp;
+                <input type="text" pattern="\-?\d\d\d\d\-\d\d\-\d\d" class="leaflet-ohm-timeslider-dateinput" data-timeslider="currentdate" placeholder="yyyy-mm-dd" value="${this.options.date}" />
+                &nbsp;
+                <span data-timeslider="next" role="button" tabindex="0" class="fa fa-plus" title="Go forward one step"></span>
             </div>
         </div>
         <div>
-            <input type="range" min="" max="" step="${onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" />
+            <input type="range" min="" max="" step="${this.constants.onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" />
+        </div>
+        <div>
+            Step speed:
+            <select data-timeslider="stepspeed">
+                <option value="1">1 day</option>
+                <option value="30">30 days</option>
+                <option value="365">1 year</option>
+                <option value="1825">5 years</option>
+                <option value="3650">10 years</option>
+                <option value="9125">25 years</option>
+                <option value="36500">100 years</option>
+            </select>
+            &nbsp;
+            <span data-timeslider="play" role="button" tabindex="0" class="fa fa-play" title="Play"></span>
+            <span data-timeslider="pause" role="button" tabindex="0" class="fa fa-pause" title="Pause"></span>
         </div>
         `;
 
-        // attach events: change, press enter, slide, ...
+        // attach events: change, press enter, slide, play and pause, ...
         this.controls = {};
         this.controls.inputrangeemin = container.querySelector('[data-timeslider="rangemin"]');
         this.controls.inputrangeemax = container.querySelector('[data-timeslider="rangemax"]');
         this.controls.inputdate = container.querySelector('[data-timeslider="currentdate"]');
         this.controls.slider = container.querySelector('[data-timeslider="slider"]');
+        this.controls.playbutton = container.querySelector('[data-timeslider="play"]');
+        this.controls.pausebutton = container.querySelector('[data-timeslider="pause"]');
+        this.controls.playnext = container.querySelector('[data-timeslider="next"]');
+        this.controls.playprev = container.querySelector('[data-timeslider="prev"]');
+        this.controls.stepspeed = container.querySelector('[data-timeslider="stepspeed"]');
 
         L.DomEvent.on(this.controls.inputrangeemin, 'change', () => {
             this.setRange(this.getRange()); // sounds silly, but runs the sanity checks
@@ -73,6 +102,30 @@ L.Control.OHMTimeSlider = L.Control.extend({
         L.DomEvent.on(this.controls.slider, 'input', () => {
             this.setDateFromSlider();
         });
+        L.DomEvent.on(this.controls.playbutton, 'click', () => {
+            this.autoplayStart();
+        });
+        L.DomEvent.on(this.controls.playbutton, 'keydown', (event) => {
+            if (event.key == 'Enter' || event.key == 'Space') event.target.click();
+        });
+        L.DomEvent.on(this.controls.pausebutton, 'click', () => {
+            this.autoplayPause();
+        });
+        L.DomEvent.on(this.controls.pausebutton, 'keydown', (event) => {
+            if (event.key == 'Enter' || event.key == 'Space') event.target.click();
+        });
+        L.DomEvent.on(this.controls.playnext, 'click', () => {
+            this.autoplayNext();
+        });
+        L.DomEvent.on(this.controls.playnext, 'keydown', (event) => {
+            if (event.key == 'Enter' || event.key == 'Space') event.target.click();
+        });
+        L.DomEvent.on(this.controls.playprev, 'click', () => {
+            this.autoplayPrevious();
+        });
+        L.DomEvent.on(this.controls.playprev, 'keydown', (event) => {
+            if (event.key == 'Enter' || event.key == 'Space') event.target.click();
+        });
 
         // get started!
         setTimeout(() => {
@@ -80,12 +133,19 @@ L.Control.OHMTimeSlider = L.Control.extend({
             this.refreshUiAndFiltering();
         }, 0.1 * 1000);
 
+        this.autoplaytimer = null; // will become a setInterval(); see autoplayStart() and autoplayPause()
+        this.autoplayPause();
+        this.setStepSpeed(this.options.stepspeed);
+
         // done
         this._map = map;
         return container;
     },
 
     onRemove: function () {
+        // stop autoplay if it's running
+        this.autoplayPause();
+
         // remove our injected date filters
         this._removeDateFiltersFromVectorLayers();
     },
@@ -203,7 +263,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
 
         layers.forEach(function (layer) {
             const oldfilters = vecmap.getFilter(layer.id);
-            layer.oldfiltersbackup = oldfilters;  // keep a backup of the original filters for _removeDateFiltersFromVectorLayers()
+            layer.oldfiltersbackup = oldfilters ? oldfilters.slice() : oldfilters;  // keep a backup of the original filters for _removeDateFiltersFromVectorLayers()
 
             let newfilters;
             if (oldfilters === undefined) {  // no filter at all, so create one
@@ -247,8 +307,9 @@ L.Control.OHMTimeSlider = L.Control.extend({
     _removeDateFiltersFromVectorLayers: function () {
         // in _setupDateFiltersForLayers() we rewrote the layers' filters to support date filtering, but we also kept a backup
         // restore that backup now, so the layers are back where they started
+        const vecmap = this.getRealGlMap();
         this._getFilteredVectorLayers().forEach((layer) => {
-            this.getRealGlMap().setFilter(layer.id, layer.oldfiltersbackup);
+            vecmap.setFilter(layer.id, layer.oldfiltersbackup);
         });
     },
     _applyDateFilterToLayers: function () {
@@ -269,6 +330,62 @@ L.Control.OHMTimeSlider = L.Control.extend({
             newfilters[1][2] = datesubfilter.slice();
             vecmap.setFilter(layer.id, newfilters);
         });
+    },
+
+    //
+    // playback functionality, to automagically move the slider
+    //
+    getAutoplayRunning: function () {
+        return this.autoplaytimer ? true : false;
+    },
+    getStepSpeed: function () {
+        return parseInt(this.controls.stepspeed.value);
+    },
+    setStepSpeed: function (newspeed) {
+        // make sure this is a valid option
+        const isoption = this.controls.stepspeed.querySelector(`option[value="${newspeed}"]`);
+        if (! isoption) return console.error(`OHMTimeSlider: setStepSpeed() invalid speed option: ${newspeed}`);
+
+        // go ahead and set it
+        this.controls.stepspeed.value = newspeed;
+    },
+    autoplayStart: function () {
+        this.controls.playbutton.style.display = 'none';
+        this.controls.pausebutton.style.display = '';
+        if (this.autoplaytimer) return; // already running
+
+        this.autoplaytimer = setInterval(() => {
+            this.autoplayNext();
+        }, 1 * 1000);
+    },
+    autoplayPause: function () {
+        this.controls.playbutton.style.display = '';
+        this.controls.pausebutton.style.display = 'none';
+        if (! this.autoplaytimer) return; // not running
+        clearInterval(this.autoplaytimer);
+        this.autoplaytimer = undefined;
+    },
+    autoplayNext: function () {
+        const daystojump = this.getStepSpeed();
+        const slidethismuch = this.constants.onedaystep * daystojump;
+
+        const oldvalue = this.controls.slider.value;
+        this.controls.slider.value = parseFloat(this.controls.slider.value) + slidethismuch;
+
+        if (this.controls.slider.value != oldvalue) {
+            this.controls.slider.dispatchEvent(new Event('input'));
+        }
+    },
+    autoplayPrevious: function () {
+        const daystojump = parseInt(this.controls.stepspeed.value);
+        const slidethismuch = this.constants.onedaystep * daystojump;
+
+        const oldvalue = this.controls.slider.value;
+        this.controls.slider.value = parseFloat(this.controls.slider.value) - slidethismuch;
+
+        if (this.controls.slider.value != oldvalue) {
+            this.controls.slider.dispatchEvent(new Event('input'));
+        }
     },
 
     //

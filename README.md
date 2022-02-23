@@ -19,12 +19,28 @@ For a demonstration, see **index.html**
 
 `range` -- A pair (2-item array) of dates in ISO format (YYYY-MM-DD), which will set the range represented by the slider. Default is 100 years back to the current year.
 
+`stepspeed` -- The number of days per step when using the +- buttons or autoplay.
+
 
 # Methods
 
 `setDate(yyyymmdd)` -- Set the current date selection. If the date would be outside of the slider's current range, the range wll be adjusted to include this date.
 
 `setRange([yyyymmdd, yyyymmdd])` -- Set the range represented by the slider. If this causes the current date selection to be out of range, the date will be set to the earlier or latest date of the range.
+
+`autoplayStart()` -- Start autoplay, so the slider slides one notch per second.
+
+`autoplayPause()` -- Stop autoplay.
+
+`autoplayNext()` -- Move forward along the slider. The number of days skipped depends on the autoplay speed selector.
+
+`autoplayPrevious()` -- Move backward along the slider. The number of days skipped depends on the autoplay speed selector.
+
+`getAutoplayRunning()` -- Returns true if autoplay is running, or else false.
+
+`getStepSpeed()` -- Get the value of the speed selector, which is the number of days that will be skipped on each step forward/backward.
+
+`setStepSpeed(daysperstep)` -- Set the value of the speed selector. The days per step must be one of the options offered by the selector already.
 
 
 # Development

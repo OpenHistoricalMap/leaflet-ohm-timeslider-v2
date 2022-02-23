@@ -44,13 +44,7 @@
     const START_ZOOM = 14.0;
     const START_CENTER = [ 47.6062, -122.3321 ];
 
-    const OHMLAYER = new L.MapboxGL({  /* see also timeslider.js and viewreset handler */
-      attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
-      style: OHM_MAP_STYLE,
-      accessToken: "no-token",
-    });
-
-    let MAP, TIMESLIDER;
+    let MAP, TIMESLIDER, OHMLAYER;
 
     document.addEventListener('DOMContentLoaded', function () {
       MAP = L.map('map', {
@@ -60,12 +54,19 @@
 
       L.control.scale().addTo(MAP);
 
+      OHMLAYER = new L.MapboxGL({
+        attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
+        style: OHM_MAP_STYLE,
+        accessToken: "no-token",
+      });
       OHMLAYER.addTo(MAP);
 
       TIMESLIDER = new L.Control.OHMTimeSlider({
         vectorlayer: OHMLAYER,
+        sourcename: 'osm',
         range: ['1950-01-01', '2020-12-31'],
         date: '1986-06-15',
+        stepspeed: 365,
       }).addTo(MAP);
     });
     </script>

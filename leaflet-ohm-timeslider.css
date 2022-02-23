@@ -10,6 +10,12 @@
     padding: 5px;
 
     min-width: 400px;
+
+    /* prevent text selection, because it's usually button double-clicks */
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 /**
@@ -51,8 +57,14 @@
     cursor: pointer;
 }
 
-
 /**
  * PLAYBACK CONTROLS
  */
 
+.leaflet-ohm-timeslider span[role="button"][tabindex="0"] {
+    cursor: pointer;
+
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: middle;
+}

@@ -6,7 +6,7 @@ const OHM_MAP_STYLE = {
     "osm": {
       "type": "vector",
       "tiles": [
-        "https://vtiles-staging.openhistoricalmap.org/maps/osm/{z}/{x}/{y}.pbf",
+        "https://vtiles.openhistoricalmap.org/maps/osm/{z}/{x}/{y}.pbf",
       ],
     }
   },
@@ -2661,5 +2661,6 @@ const OHM_MAP_STYLE = {
         "text-halo-blur": 1
       }
     }
-  ]
+  ],
+  "id": "io6r61fxt"
 };
