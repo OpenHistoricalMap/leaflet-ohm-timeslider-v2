@@ -48,3 +48,14 @@ For a demonstration, see **index.html**
 Fire up a Python CLI web server via `python -m SimpleHTTPServer 9646` or `python3 -m http.server 9646`
 
 You can now point a browser at http://localhost:9646/ and see the demo.
+
+To create the minified JS/CSS files, use whatever tools you prefer such as UglifyJS and UglifyCSS.
+
+```
+nvm use 16.9.0
+npm install uglify-js uglifycss -g
+
+uglifycss --output leaflet-ohm-timeslider.min.css leaflet-ohm-timeslider.css
+uglifyjs --keep-fargs --keep-fnames --output leaflet-ohm-timeslider.min.js leaflet-ohm-timeslider.js
+uglifyjs --keep-fargs --keep-fnames --output decimaldate.min.js decimaldate.js
+```
