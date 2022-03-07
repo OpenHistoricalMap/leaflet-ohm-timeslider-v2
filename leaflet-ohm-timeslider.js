@@ -6,6 +6,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         range: null, // the [date, date] range corresponding to the slider's sliding range; default provided in initialize()
         date: null, // the date currently selected by the slider, interpolating over the range; default provided in initialize()
         stepspeed: 1, // the default stepspeed selection
+        language: 'en', // default language translations from OHMTimeSlider.Translations
     },
 
     initialize: function (options={}) {
@@ -25,6 +26,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         if (! this.isValidDate(this.options.date) ) throw 'OHMTimeSlider: date must be YYYY-MM-DD format';
         if (! this.isValidDate(this.options.range[0]) ) throw 'OHMTimeSlider: range lower date must be YYYY-MM-DD format';
         if (! this.isValidDate(this.options.range[1]) ) throw 'OHMTimeSlider: range upper date must be YYYY-MM-DD format';
+
+        // load the language translations, or die
+        this._translations = L.Control.OHMTimeSlider.Translations[this.options.language];
+        if (! this._translations) throw `OHMTimeSlider: unknown language '${this.options.language}'`;
     },
 
     onAdd: function (map) {
@@ -45,36 +50,36 @@ L.Control.OHMTimeSlider = L.Control.extend({
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
         <div>
             <div>
-                Range:
+                ${this._translations.rangepicker_title}:
                 <input type="text" pattern="\-?\d\d\d\d\-\d\d\-\d\d" class="leaflet-ohm-timeslider-dateinput" data-timeslider="rangemin" placeholder="yyyy-mm-dd" value="${this.options.range[0]}" />
                 <input type="text" pattern="\-?\d\d\d\d\-\d\d\-\d\d" class="leaflet-ohm-timeslider-dateinput" data-timeslider="rangemax" placeholder="yyyy-mm-dd" value="${this.options.range[1]}" />
             </div>
             <div>
-                Current:
-                <span data-timeslider="prev" role="button" tabindex="0" class="fa fa-minus" title="Go back one step"></span>
+                ${this._translations.currentdate_title}:
+                <span data-timeslider="prev" role="button" tabindex="0" class="fa fa-minus" title="${this._translations.backwardbutton_title}"></span>
                 &nbsp;
                 <input type="text" pattern="\-?\d\d\d\d\-\d\d\-\d\d" class="leaflet-ohm-timeslider-dateinput" data-timeslider="currentdate" placeholder="yyyy-mm-dd" value="${this.options.date}" />
                 &nbsp;
-                <span data-timeslider="next" role="button" tabindex="0" class="fa fa-plus" title="Go forward one step"></span>
+                <span data-timeslider="next" role="button" tabindex="0" class="fa fa-plus" title="${this._translations.forwardbutton_title}"></span>
             </div>
         </div>
         <div>
             <input type="range" min="" max="" step="${this.constants.onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" />
         </div>
         <div>
-            Step speed:
+            ${this._translations.stepspeed_title}:
             <select data-timeslider="stepspeed">
-                <option value="1">1 day</option>
-                <option value="30">30 days</option>
-                <option value="365">1 year</option>
-                <option value="1825">5 years</option>
-                <option value="3650">10 years</option>
-                <option value="9125">25 years</option>
-                <option value="36500">100 years</option>
+                <option value="1">${this._translations.stepspeed_1day}</option>
+                <option value="30">${this._translations.stepspeed_30day}</option>
+                <option value="365">${this._translations.stepspeed_1year}</option>
+                <option value="1825">${this._translations.stepspeed_5year}</option>
+                <option value="3650">${this._translations.stepspeed_10year}</option>
+                <option value="9125">${this._translations.stepspeed_25year}</option>
+                <option value="36500">${this._translations.stepspeed_100year}</option>
             </select>
             &nbsp;
-            <span data-timeslider="play" role="button" tabindex="0" class="fa fa-play" title="Play"></span>
-            <span data-timeslider="pause" role="button" tabindex="0" class="fa fa-pause" title="Pause"></span>
+            <span data-timeslider="play" role="button" tabindex="0" class="fa fa-play" title="${this._translations.playbutton_title}"></span>
+            <span data-timeslider="pause" role="button" tabindex="0" class="fa fa-pause" title="${this._translations.pausebutton_title}"></span>
         </div>
         `;
 
@@ -409,3 +414,40 @@ L.Control.OHMTimeSlider = L.Control.extend({
         return this.options.vectorlayer._glMap;
     },
 });
+
+
+L.Control.OHMTimeSlider.Translations = {};
+
+L.Control.OHMTimeSlider.Translations['en'] = L.Control.OHMTimeSlider.Translations['en-US'] = {
+    rangepicker_title: "Range",
+    currentdate_title: "Date",
+    stepspeed_title: "Step speed",
+    playbutton_title: "Play",
+    pausebutton_title: "Pause",
+    stepspeed_1day: "1 day",
+    stepspeed_30day: "30 days",
+    stepspeed_1year: "1 year",
+    stepspeed_5year: "5 years",
+    stepspeed_10year: "10 years",
+    stepspeed_25year: "25 years",
+    stepspeed_100year: "100 years",
+    forwardbutton_title: "Go forward one step",
+    backwardbutton_title: "Go backward one step",
+};
+
+L.Control.OHMTimeSlider.Translations['es'] = {
+    rangepicker_title: "Rango",
+    currentdate_title: "Fecha",
+    stepspeed_title: "Velocidad de paso",
+    playbutton_title: "Correr",
+    pausebutton_title: "Parar",
+    stepspeed_1day: "1 día",
+    stepspeed_30day: "30 días",
+    stepspeed_1year: "1 año",
+    stepspeed_5year: "5 años",
+    stepspeed_10year: "10 años",
+    stepspeed_25year: "25 años",
+    stepspeed_100year: "100 años",
+    forwardbutton_title: "Avanzar un paso",
+    backwardbutton_title: "Retroceder un paso",
+};

@@ -21,6 +21,8 @@ For a demonstration, see **index.html**
 
 `stepspeed` -- The number of days per step when using the +- buttons or autoplay.
 
+`language` -- Display labels and tooltips in the given language. See `Object.keys(L.Control.OHMTimeSlider.Translations)` for a list of options.
+
 
 # Methods
 
