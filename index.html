@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>OpenHistoricalMap :: Leaflet MBGL TimeSlider Control Demo</title>
@@ -68,11 +68,10 @@
       OHMLAYER.addTo(MAP);
 
       TIMESLIDER = new L.Control.OHMTimeSlider({
-        vectorlayer: OHMLAYER,
-        sourcename: 'osm',
-        range: ['1950-01-01', '2020-12-31'],
+        vectorLayer: OHMLAYER,
+        vectorSourceName: 'osm',
+        range: ['1850-01-01', '2020-12-31'],
         date: '1986-06-15',
-        stepspeed: 365,
         language: 'en-US',
       }).addTo(MAP);
     });

@@ -4,45 +4,55 @@
 
 This is the time slider used by OpenHistoricalMap as of late 2022. Unlike the original controls at https://github.com/OpenHistoricalMap/mbgl-timeslider/ and https://github.com/OpenHistoricalMap/mbgltimeslider-leaflet-control this one is written as a proper Leaflet control from the ground up.
 
-For a demonstration, see **index.html**
+For a demonstration, see **index.html** and https://openhistoricalmap.github.io/leaflet-ohm-timeslider-v2/
 
 
 # Constructor Options
 
-`position` -- The Leaflet position for the control. Defaults to `bottomright`
+`position` -- The Leaflet position for the control. Defaults to `bottomright`. It is recommended to keep this, as the control has an arrow sticking off the top/left.
 
-`vectorlayer` -- The L.MapboxGL instance which this control will manage and filter.
+`vectorLayer` -- The L.MapboxGL instance which this control will manage and filter.
 
-`sourcename` -- Within that vector MapboxGL layer, layers with a `source` matching this will be filtered. Defaults to `'osm'`.
+`vectorSourceName` -- Within that vector MapboxGL layer, layers with a `source` matching this will be filtered. Defaults to `'osm'`.
 
 `date` -- The date initially selected by the slider, in ISO format (YYYY-MM-DD). Default will be the earliest date in the `range`.
 
 `range` -- A pair (2-item array) of dates in ISO format (YYYY-MM-DD), which will set the range represented by the slider. Default is 100 years back to the current year.
 
-`stepspeed` -- The number of days per step when using the +- buttons or autoplay.
+`stepInterval` -- Set the Speed setting to this value on startup. See `setStepInterval()` for allowed values.
+
+`stepAmount` -- Set the Time Jump setting to this value on startup. See `setStepAmount()` for allowed values.
 
 `language` -- Display labels and tooltips in the given language. See `Object.keys(L.Control.OHMTimeSlider.Translations)` for a list of options.
 
 
 # Methods
 
-`setDate(yyyymmdd)` -- Set the current date selection. If the date would be outside of the slider's current range, the range wll be adjusted to include this date.
+`getDate(asdecimal=false)` -- Return the currently-selected date on the slider. The date will be in ISO YYYY-MM-DD format, unless `decimaldate` is given to get it as a decimaldate number instead.
 
-`setRange([yyyymmdd, yyyymmdd])` -- Set the range represented by the slider. If this causes the current date selection to be out of range, the date will be set to the earlier or latest date of the range.
+`setDate(yyyymmdd, redraw=true)` -- Set the currently-selected date on the slider. The date should be given in ISO YYYY-MM-DD format.
 
-`autoplayStart()` -- Start autoplay, so the slider slides one notch per second.
+`getRange(asdecimal=false)` -- Return the date range represented by the slider, as a two-item array `[date, date]`. The dates will be in ISO YYYY-MM-DD format, unless `decimaldate` is given to get them as decimaldate numbers instead.
 
-`autoplayPause()` -- Stop autoplay.
+`setRange([yyyymmdd, yyyymmdd], redraw=true)` -- Set the date range represented by the slider. The dates should be given as a two-item array `[date, date]` and should be in ISO YYYY-MM-DD format.
 
-`autoplayNext()` -- Move forward along the slider. The number of days skipped depends on the autoplay speed selector.
+`sliderForwardOneStep()` -- Move the slider forward in time, by an amount indicated by the Time Jump selector.
 
-`autoplayPrevious()` -- Move backward along the slider. The number of days skipped depends on the autoplay speed selector.
+`sliderBackOneStep()` -- Move the slider backward in time, by an amount indicated by the Time Jump selector.
 
-`getAutoplayRunning()` -- Returns true if autoplay is running, or else false.
+`getStepInterval()` -- Return the number of seconds in between auto-play advancing to the next step (the Speed selector).
 
-`getStepSpeed()` -- Get the value of the speed selector, which is the number of days that will be skipped on each step forward/backward.
+`setStepInterval(newvalue)` -- Set the number of seconds in between auto-play advancing to the next step (the Speed selector). This must be one of the options offered in the Speed selector: `1` `2` `5`
 
-`setStepSpeed(daysperstep)` -- Set the value of the speed selector. The days per step must be one of the options offered by the selector already.
+`getStepAmount()` -- Return the amount of time along the slider that the forward and backward buttons will advance on each step, and that auto-play will advance on each step (the Time Jump selector). This will be one of the values accepted by `setStepAmount()`
+
+`setStepAmount(newvalue)` -- Return the amount of time along the slider that the forward and backward buttons will advance on each step, and that auto-play will advance on each step (the Time Jump selector). This must be one of the options offered in the Time Jump selector: `1day` `1month` `1year` `10year` `100year`
+
+`autoplayStart()` -- Start automatically advancing the slider ("auto-play"). GDA This is effectively the same as clicking the Skip Forward button every few seconds.
+
+`autoplayPause()` -- Stop automatically advancing the slider ("auto-play").
+
+`autoplayIsRunning()` -- Return true/false indicating whether the timeline's auto-play mode is running.
 
 
 # Development
@@ -53,10 +63,14 @@ You can now point a browser at http://localhost:9646/ and see the demo.
 
 To create the minified JS/CSS files, use whatever tools you prefer such as UglifyJS and UglifyCSS.
 
+Installation:
 ```
 nvm use 16.9.0
 npm install uglify-js uglifycss -g
+```
 
+Usage:
+```
 uglifycss --output leaflet-ohm-timeslider.min.css leaflet-ohm-timeslider.css
 uglifyjs --keep-fargs --keep-fnames --output leaflet-ohm-timeslider.min.js leaflet-ohm-timeslider.js
 uglifyjs --keep-fargs --keep-fnames --output decimaldate.min.js decimaldate.js
