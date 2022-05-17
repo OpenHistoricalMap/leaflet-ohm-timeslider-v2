@@ -116,7 +116,7 @@
             cb.type = 'radio';
             cb.name = 'language';
             cb.value = language;
-            if (language == selectedlanguage) cb.checked = true;
+            if (language == selectedlanguage || (!selectedlanguage && language == 'auto')) cb.checked = true;
 
             div.appendChild(txt);
             div.appendChild(cb);
