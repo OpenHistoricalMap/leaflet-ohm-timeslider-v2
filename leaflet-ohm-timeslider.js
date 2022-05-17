@@ -790,7 +790,7 @@ console.debug('GDA setAutoPlayFormAsOutOfSync');
 
 L.Control.OHMTimeSlider.Translations = {};
 
-L.Control.OHMTimeSlider.Translations['en-US'] = {
+L.Control.OHMTimeSlider.Translations['en'] = {
     expandcollapse_title: "Maximize or minimize this panel",
     slider_description: "Select the date to display on the map",
     daterange_min_month_title: "Slider range, select starting month",
@@ -824,9 +824,8 @@ L.Control.OHMTimeSlider.Translations['en-US'] = {
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
 };
-L.Control.OHMTimeSlider.Translations['en'] = L.Control.OHMTimeSlider.Translations['en-US'];
 
-L.Control.OHMTimeSlider.Translations['es-MX'] = {
+L.Control.OHMTimeSlider.Translations['es'] = {
     expandcollapse_title: "Mostrar o escondir esta pantalla",
     slider_description: "Seleccionar la fecha para mostrar en el mapa",
     daterange_min_month_title: "Intervalo del control deslizante, seleccionar el mes del comienzo",
@@ -860,5 +859,3 @@ L.Control.OHMTimeSlider.Translations['es-MX'] = {
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
 };
-L.Control.OHMTimeSlider.Translations['es-ES'] = L.Control.OHMTimeSlider.Translations['es-MX'];
-L.Control.OHMTimeSlider.Translations['es'] = L.Control.OHMTimeSlider.Translations['es-MX'];

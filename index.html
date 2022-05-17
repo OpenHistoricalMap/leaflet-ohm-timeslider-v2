@@ -35,6 +35,9 @@
     <div id="map"></div>
 
 
+    <div id="languagepicker"></div>
+
+
     <style>
     body, html {
       margin: 0;
@@ -44,6 +47,22 @@
       background-color: #ccc;
       width: 100vw;
       height: 100vh;
+    }
+
+    #languagepicker {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-bottom-left-radius: 5px;
+        background: white;
+        color: black;
+
+        z-index: 1000;
+
+        padding: 0 0 0.5em 0.5em;
+    }
+    #languagepicker label {
+        display: block;
     }
     </style>
 
@@ -55,28 +74,59 @@
     let MAP, TIMESLIDER, OHMLAYER;
 
     document.addEventListener('DOMContentLoaded', function () {
-      MAP = L.map('map', {
-        zoomSnap: 0.1,
-      })
-      .setView(START_CENTER, START_ZOOM);
+        MAP = L.map('map', {
+            zoomSnap: 0.1,
+        })
+        .setView(START_CENTER, START_ZOOM);
 
-      L.control.scale().addTo(MAP);
+        L.control.scale().addTo(MAP);
 
-      OHMLAYER = new L.MapboxGL({
-        attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
-        style: OHM_MAP_STYLE,
-        accessToken: "no-token",
-      });
-      OHMLAYER.addTo(MAP);
+        OHMLAYER = new L.MapboxGL({
+            attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
+            style: OHM_MAP_STYLE,
+            accessToken: "no-token",
+        });
+        OHMLAYER.addTo(MAP);
 
-      TIMESLIDER = new L.Control.OHMTimeSlider({
-        vectorLayer: OHMLAYER,
-        vectorSourceName: 'osm',
-        range: ['1850-01-01', '2020-12-31'],
-        date: '1860-06-15',
-        stepInterval: 1,
-        stepAmount: '10year',
-      }).addTo(MAP);
+        const tsoptions = {
+            vectorLayer: OHMLAYER,
+            vectorSourceName: 'osm',
+            range: ['1850-01-01', '2020-12-31'],
+            date: '1860-06-15',
+            stepInterval: 1,
+            stepAmount: '10year',
+        };
+        const selectedlanguage = (new URLSearchParams(document.location.search)).get('lang');
+        if (selectedlanguage) {
+            tsoptions.language = selectedlanguage;
+        }
+        TIMESLIDER = new L.Control.OHMTimeSlider(tsoptions).addTo(MAP);
+
+        // add the list of languages to the language picker display
+        const languageoptions = TIMESLIDER.listLanguages().slice();
+        languageoptions.splice(0, 0, 'auto');
+
+        languageoptions.forEach(function (language) {
+            const div = document.createElement('label');
+
+            const txt = document.createElement('span');
+            txt.innerText = language;
+
+            const cb = document.createElement('input');
+            cb.type = 'radio';
+            cb.name = 'language';
+            cb.value = language;
+            if (language == selectedlanguage) cb.checked = true;
+
+            div.appendChild(txt);
+            div.appendChild(cb);
+            document.getElementById('languagepicker').appendChild(div);
+
+            cb.addEventListener('change', function () {
+                const newlanguage = this.value;
+                document.location.search = '?lang=' + newlanguage;
+            });
+        });
     });
     </script>
 
