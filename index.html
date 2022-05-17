@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>OpenHistoricalMap :: Leaflet MBGL TimeSlider Control Demo</title>
 
     <!-- Leaflet and Mapbox GL JS API, the the adapter for using MB within L -->
@@ -71,8 +73,9 @@
         vectorLayer: OHMLAYER,
         vectorSourceName: 'osm',
         range: ['1850-01-01', '2020-12-31'],
-        date: '1986-06-15',
-        language: 'en-US',
+        date: '1860-06-15',
+        stepInterval: 1,
+        stepAmount: '10year',
       }).addTo(MAP);
     });
     </script>

@@ -23,7 +23,7 @@ For a demonstration, see **index.html** and https://openhistoricalmap.github.io/
 
 `stepAmount` -- Set the Time Jump setting to this value on startup. See `setStepAmount()` for allowed values.
 
-`language` -- Display labels and tooltips in the given language. See `Object.keys(L.Control.OHMTimeSlider.Translations)` for a list of options.
+`language` -- Display labels and tooltips in the given language. See `listLanguages()` for a list of options.
 
 
 # Methods
@@ -48,11 +48,13 @@ For a demonstration, see **index.html** and https://openhistoricalmap.github.io/
 
 `setStepAmount(newvalue)` -- Return the amount of time along the slider that the forward and backward buttons will advance on each step, and that auto-play will advance on each step (the Time Jump selector). This must be one of the options offered in the Time Jump selector: `1day` `1month` `1year` `10year` `100year`
 
-`autoplayStart()` -- Start automatically advancing the slider ("auto-play"). GDA This is effectively the same as clicking the Skip Forward button every few seconds.
+`autoplayStart()` -- Start automatically advancing the slider ("auto-play"). This is effectively the same as clicking the Skip Forward button every few seconds.
 
 `autoplayPause()` -- Stop automatically advancing the slider ("auto-play").
 
 `autoplayIsRunning()` -- Return true/false indicating whether the timeline's auto-play mode is running.
+
+`listLanguages()` -- Return a list of the supported language translations for use with the `language` option.
 
 
 # Development

@@ -7,7 +7,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         date: null, // the date currently selected by the slider, interpolating over the range; default provided in initialize()
         stepInterval: 5, // when autoplaying, how many seconds between ticks
         stepAmount: '100year', // when autoplaying, how far to skip in time per tick
-        language: 'en', // default language translations from OHMTimeSlider.Translations
+        language: undefined, // language translations from OHMTimeSlider.Translations; specify in constructor, or else will auto-detect
         sliderColorBefore: '#003AFA', // color of the time-slider, left side before the currntly-selected date
         sliderColorAfter: '#668CFF', // color of the time-slider, right side after the currntly-selected date
     },
@@ -31,8 +31,11 @@ L.Control.OHMTimeSlider = L.Control.extend({
         if (! this.isValidDate(this.options.range[1]) ) throw 'OHMTimeSlider: range upper date must be YYYY-MM-DD format';
 
         // load the language translations, or die
-        this._translations = L.Control.OHMTimeSlider.Translations[this.options.language];
-        if (! this._translations) throw `OHMTimeSlider: unknown language '${this.options.language}'`;
+        const lang0 = this.options.language || 'undefined';
+        const lang1 = navigator.language;
+        const lang2 = navigator.language.substr(0, 2).toLowerCase();
+        this._translations = L.Control.OHMTimeSlider.Translations[lang0] || L.Control.OHMTimeSlider.Translations[lang1] || L.Control.OHMTimeSlider.Translations[lang2];
+        if (! this._translations) throw `OHMTimeSlider: unknown language, options were '${[lang0, lang1, lang2].join(',')}'`;
     },
 
     onAdd: function (map) {
@@ -102,7 +105,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <input type="number" data-timeslider="rangemaxyear" min="${this.constants.minYear}" max="${this.constants.maxYear}" step="1" class="leaflet-ohm-timeslider-rangeinputs-year" aria-label="${this._translations.daterange_max_year_title}" />
             </div>
             <div class="leaflet-ohm-timeslider-rangeinputs-submit">
-                <button data-timeslider="rangesubmit" aria-label="${this._translations.daterange_submit_title}">Set</button>
+                <button data-timeslider="rangesubmit" aria-label="${this._translations.daterange_submit_title}">${this._translations.daterange_submit_text}</button>
             </div>
         </div>
         <div class="leaflet-ohm-timeslider-datereadout">
@@ -151,7 +154,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                     </select>
                 </div>
                 <div>
-                    <span role="button" tabindex="0" data-timeslider="autoplaysubmit" title="${this._translations.autoplaysubmit_title}"></span>
+                    <button data-timeslider="autoplaysubmit" aria-label="${this._translations.autoplay_submit_title}">${this._translations.autoplay_submit_text}</button>
                 </div>
             </div>
         </div>
@@ -188,16 +191,26 @@ L.Control.OHMTimeSlider = L.Control.extend({
             if (event.key == 'Enter' || event.key == 'Space') event.target.click();
         });
         L.DomEvent.on(this.controls.rangeminmonth, 'input', () => {
-            this.adjustDayInputsForSelectedMonthAndYear();
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
+            this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.rangeminyear, 'input', () => {
-            this.adjustDayInputsForSelectedMonthAndYear();
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
+            this.setDateRangeFormAsOutOfSync(true);
+        });
+        L.DomEvent.on(this.controls.rangeminday, 'input', () => {
+            this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.rangemaxmonth, 'input', () => {
-            this.adjustDayInputsForSelectedMonthAndYear();
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
+            this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.rangemaxyear, 'input', () => {
-            this.adjustDayInputsForSelectedMonthAndYear();
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
+            this.setDateRangeFormAsOutOfSync(true);
+        });
+        L.DomEvent.on(this.controls.rangemaxday, 'input', () => {
+            this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.slider, 'input', () => {
             this.setDateFromSlider();
@@ -236,6 +249,12 @@ L.Control.OHMTimeSlider = L.Control.extend({
         });
         L.DomEvent.on(this.controls.autoplaysubmit, 'click', () => {
             this.setAutoplayFromPickers();
+        });
+        L.DomEvent.on(this.controls.stepamount, 'input', () => {
+            this.setAutoPlayFormAsOutOfSync(true);
+        });
+        L.DomEvent.on(this.controls.stepinterval, 'input', () => {
+            this.setAutoPlayFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.autoplaysubmit, 'keydown', (event) => {
             if (event.key == 'Enter' || event.key == 'Space') event.target.click();
@@ -372,8 +391,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         const mindate = `${y1}-${m1}-${d1}`;
         const maxdate = `${y2}-${m2}-${d2}`;
         this.setRange([ mindate, maxdate ]);
+
+        this.setDateRangeFormAsOutOfSync(false);
     },
-    adjustDayInputsForSelectedMonthAndYear: function () {
+    adjustDateRangeInputsForSelectedMonthAndYear: function () {
         // cap the day picker to the number of days in that month, accounting for leap years
         const days_min = decimaldate.daysinmonth(this.controls.rangeminyear.value, this.controls.rangeminmonth.value);
         const days_max = decimaldate.daysinmonth(this.controls.rangemaxyear.value, this.controls.rangemaxmonth.value);
@@ -383,6 +404,15 @@ L.Control.OHMTimeSlider = L.Control.extend({
 
         if (parseInt(this.controls.rangeminday.value) > days_min) this.controls.rangeminday.value = days_min;
         if (parseInt(this.controls.rangemaxday.value) > days_max) this.controls.rangemaxday.value = days_max;
+    },
+    setDateRangeFormAsOutOfSync: function (outofsync) {
+        // color the Set button to show that they need to click it
+console.debug('GDA setDateRangeFormAsOutOfSync');
+        if (outofsync) {
+            this.controls.rangesubmit.classList.add('leaflet-ohm-timeslider-outofsync');
+        } else {
+            this.controls.rangesubmit.classList.remove('leaflet-ohm-timeslider-outofsync');
+        }
     },
     refreshUiAndFiltering: function () {
         // redraw the UI, setting the slider to the new date range & selected date
@@ -592,13 +622,22 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // peek at the interval & amount select elements, call setStepAmount() and setStepInterval() to match
         this.setStepAmount(this.controls.stepamount.value);
         this.setStepInterval(this.controls.stepinterval.value);
+        this.setAutoPlayFormAsOutOfSync();
+    },
+    setAutoPlayFormAsOutOfSync: function (outofsync) {
+        // color the Set button to show that they need to click it
+console.debug('GDA setAutoPlayFormAsOutOfSync');
+        if (outofsync) {
+            this.controls.autoplaysubmit.classList.add('leaflet-ohm-timeslider-outofsync');
+        } else {
+            this.controls.autoplaysubmit.classList.remove('leaflet-ohm-timeslider-outofsync');
+        }
     },
     autoplayStart: function () {
         this.controls.playbutton.style.display = 'none';
         this.controls.pausebutton.style.display = '';
         if (this.autoplay.timer) return; // already running
 
-        this.sliderForwardOneStep();  // do one now at 0-time, then set the timer every X seconds
         this.autoplay.timer = setInterval(() => {
             this.sliderForwardOneStep();
         }, this.getStepInterval() * 1000);
@@ -740,12 +779,18 @@ L.Control.OHMTimeSlider = L.Control.extend({
     getRealGlMap: function () {
         return this.options.vectorLayer._glMap;
     },
+// GDA
+    listLanguages: function () {
+        const langs = Object.keys(L.Control.OHMTimeSlider.Translations);
+        langs.sort();
+        return langs;
+    },
 });
 
 
 L.Control.OHMTimeSlider.Translations = {};
 
-L.Control.OHMTimeSlider.Translations['en'] = L.Control.OHMTimeSlider.Translations['en-US'] = {
+L.Control.OHMTimeSlider.Translations['en-US'] = {
     expandcollapse_title: "Maximize or minimize this panel",
     slider_description: "Select the date to display on the map",
     daterange_min_month_title: "Slider range, select starting month",
@@ -754,6 +799,7 @@ L.Control.OHMTimeSlider.Translations['en'] = L.Control.OHMTimeSlider.Translation
     daterange_max_month_title: "Slider range, select ending month",
     daterange_max_day_title: "Slider range, select ending day",
     daterange_max_year_title: "Slider range, select ending year",
+    daterange_submit_text: "Set",
     daterange_submit_title: "Apply settings",
     range_title: "Range",
     stepamount_title: "Time Jump",
@@ -773,12 +819,14 @@ L.Control.OHMTimeSlider.Translations['en'] = L.Control.OHMTimeSlider.Translation
     forwardbutton_title: "Skip forward",
     backwardbutton_title: "Skip backward",
     resetbutton_title: "Go to the start of the range",
-    autoplaysubmit_title: "Apply settings",
+    autoplay_submit_text: "Set",
+    autoplay_submit_title: "Apply settings",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
 };
+L.Control.OHMTimeSlider.Translations['en'] = L.Control.OHMTimeSlider.Translations['en-US'];
 
-L.Control.OHMTimeSlider.Translations['es'] = {
+L.Control.OHMTimeSlider.Translations['es-MX'] = {
     expandcollapse_title: "Mostrar o escondir esta pantalla",
     slider_description: "Seleccionar la fecha para mostrar en el mapa",
     daterange_min_month_title: "Intervalo del control deslizante, seleccionar el mes del comienzo",
@@ -787,6 +835,7 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     daterange_max_month_title: "Intervalo del control deslizante, seleccionar el mes del fin",
     daterange_max_day_title: "Intervalo del control deslizante, seleccionar el día del fin",
     daterange_max_year_title: "Intervalo del control deslizante, seleccionar el año del fin",
+    daterange_submit_text: "Aplicar",
     daterange_submit_title: "Aplicar la configuración",
     range_title: "Intervalo",
     stepamount_title: "Salta del tiempo",
@@ -806,7 +855,10 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     forwardbutton_title: "Avanzar un paso",
     backwardbutton_title: "Retroceder un paso",
     resetbutton_title: "Ir al inicio del alcance",
-    autoplaysubmit_title: "Aplicar la configuración",
+    autoplay_submit_text: "Aplicar",
+    autoplay_submit_title: "Aplicar la configuración",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
 };
+L.Control.OHMTimeSlider.Translations['es-ES'] = L.Control.OHMTimeSlider.Translations['es-MX'];
+L.Control.OHMTimeSlider.Translations['es'] = L.Control.OHMTimeSlider.Translations['es-MX'];

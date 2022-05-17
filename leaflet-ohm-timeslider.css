@@ -14,6 +14,29 @@
     -ms-user-select: none;
 }
 
+.leaflet-ohm-timeslider select,
+.leaflet-ohm-timeslider button,
+.leaflet-ohm-timeslider input[type="number"],
+.leaflet-ohm-timeslider input[type="text"] {
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 2px;
+    color: black;
+    height: 25px;
+    padding: 0 5px;
+}
+.leaflet-ohm-timeslider input[type="number"] {
+    height: 23px;
+}
+.leaflet-ohm-timeslider button {
+    cursor: pointer;
+    padding: 1px 5px;
+}
+.leaflet-ohm-timeslider button.leaflet-ohm-timeslider-outofsync {
+    color: white;
+    background-color: #3A69FF;
+}
+
 
 /**
  * EXPAND/COLLAPSE BEHAVIOR
@@ -82,7 +105,7 @@
     .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-expandcollapse span {
         display: inline-block;
         width: 30px;
-        height: 34px;
+        height: 37px;
 
         margin-top: 4px;
 
@@ -127,8 +150,6 @@
     width: 4em;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs button {
-    background-color: #3A69FF;
-    color: white;
 }
 
 @media screen and (min-width: 768px) {
@@ -304,10 +325,6 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-}
-
-.leaflet-ohm-timeslider span[role="button"][data-timeslider="autoplaysubmit"] {
-    background-image: url(./images/autoplaysubmit.svg);
 }
 
 .leaflet-ohm-timeslider span[role="button"][data-timeslider="play"] {
