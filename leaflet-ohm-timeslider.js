@@ -113,7 +113,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         </div>
         <div class="leaflet-ohm-timeslider-slider-wrap">
             <div>
-                mm/dd/yyyy
+                ${this.formatDateShortPlaceHolder()}
                 <br/>
                 <span data-timeslider="rangestartreadout"></span>
             </div>
@@ -121,7 +121,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <input type="range" min="" max="" step="${this.constants.onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" aria-label="${this._translations.slider_description}" />
             </div>
             <div>
-                mm/dd/yyyy
+                ${this.formatDateShortPlaceHolder()}
                 <br/>
                 <span data-timeslider="rangeendreadout"></span>
             </div>
@@ -407,7 +407,6 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
     setDateRangeFormAsOutOfSync: function (outofsync) {
         // color the Set button to show that they need to click it
-console.debug('GDA setDateRangeFormAsOutOfSync');
         if (outofsync) {
             this.controls.rangesubmit.classList.add('leaflet-ohm-timeslider-outofsync');
         } else {
@@ -626,7 +625,6 @@ console.debug('GDA setDateRangeFormAsOutOfSync');
     },
     setAutoPlayFormAsOutOfSync: function (outofsync) {
         // color the Set button to show that they need to click it
-console.debug('GDA setAutoPlayFormAsOutOfSync');
         if (outofsync) {
             this.controls.autoplaysubmit.classList.add('leaflet-ohm-timeslider-outofsync');
         } else {
@@ -708,16 +706,42 @@ console.debug('GDA setAutoPlayFormAsOutOfSync');
         else if (deccurrent > decrange[1]) return 1;
         else return 0;
     },
+    formatDateShortPlaceHolder: function (yyyymmdd) {
+        switch (this._translations.dateformat) {
+            case 'mdy':
+                return 'mm/dd/yyyy';
+                break;
+            default:  // default = dmy
+                return 'dd/mm/yyyy';
+                break;
+        }
+    },
     formatDateShort: function (yyyymmdd) {
         const ymd = this.splitYmdParts(yyyymmdd);
         const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
-        return `${ymd[1]}/${ymd[2]}/${Math.abs(ymd[0])}${bce}`;
+
+        switch (this._translations.dateformat) {
+            case 'mdy':
+                return `${ymd[1]}/${ymd[2]}/${Math.abs(ymd[0])}${bce}`;
+                break;
+            default:  // default = dmy
+                return `${ymd[2]}/${ymd[1]}/${Math.abs(ymd[0])}${bce}`;
+                break;
+        }
     },
     formatDateLong: function (yyyymmdd) {
         const ymd = this.splitYmdParts(yyyymmdd);
         const m = this._translations.months[ ymd[1] - 1 ];
         const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
-        return `${m} ${ymd[2]}, ${Math.abs(ymd[0])}${bce}`;
+
+        switch (this._translations.dateformat) {
+            case 'mdy':
+                return `${m} ${ymd[2]}, ${Math.abs(ymd[0])}${bce}`;
+                break;
+            default:  // default = dmy
+                return `${ymd[2]} ${m} ${Math.abs(ymd[0])}${bce}`;
+                break;
+        }
     },
     splitYmdParts: function (yyyymmdd) {
         // tease apart Y/M/D given possible - at the start
@@ -779,7 +803,6 @@ console.debug('GDA setAutoPlayFormAsOutOfSync');
     getRealGlMap: function () {
         return this.options.vectorLayer._glMap;
     },
-// GDA
     listLanguages: function () {
         const langs = Object.keys(L.Control.OHMTimeSlider.Translations);
         langs.sort();
@@ -823,7 +846,12 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     autoplay_submit_title: "Apply settings",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
+    dateformat: 'dmy',
 };
+L.Control.OHMTimeSlider.Translations['en-US'] = Object.assign({}, L.Control.OHMTimeSlider.Translations['en'], {
+    dateformat: 'mdy',
+});
+L.Control.OHMTimeSlider.Translations['en-CA'] = L.Control.OHMTimeSlider.Translations['en-US'];
 
 L.Control.OHMTimeSlider.Translations['es'] = {
     expandcollapse_title: "Minimizar o restaurar la ventana",
@@ -858,4 +886,5 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     autoplay_submit_title: "Aplicar la configuración",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
+    dateformat: 'dmy',
 };
