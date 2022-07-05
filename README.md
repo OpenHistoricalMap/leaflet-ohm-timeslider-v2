@@ -25,6 +25,12 @@ For a demonstration, see **index.html** and https://openhistoricalmap.github.io/
 
 `language` -- Display labels and tooltips in the given language. See `listLanguages()` for a list of options.
 
+`onReady: function ()` -- A callback function which will be called when the OHMTimeSlider is done initializing, layers have been set up with their new date filters, and the date ranges and selection have been set. Within the callback function, `this` will refer to the OHMTimeSlider.
+
+`onDateChange: function (isodate)` -- A callback function which will be called when the date selection changes. The newly-selected date (ISO string) will be passed as a param. Within the callback function, `this` will refer to the OHMTimeSlider.
+
+`onRangeChange: function ([date1, date2])` -- A callback function which will be called when the date range changes. The newly-available range (2-item list of ISO strings) will be passed as a param. Within the callback function, `this` will refer to the OHMTimeSlider.
+
 
 # Methods
 

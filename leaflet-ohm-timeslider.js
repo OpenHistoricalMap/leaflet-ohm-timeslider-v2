@@ -10,6 +10,9 @@ L.Control.OHMTimeSlider = L.Control.extend({
         language: undefined, // language translations from OHMTimeSlider.Translations; specify in constructor, or else will auto-detect
         sliderColorBefore: '#003AFA', // color of the time-slider, left side before the currntly-selected date
         sliderColorAfter: '#668CFF', // color of the time-slider, right side after the currntly-selected date
+        onReady: function () {}, // called when control is all initialized and has started filtering the vectorLayer
+        onDateChange: function () {}, // called when date is changed
+        onRangeChange: function () {}, // called when range is changed
     },
 
     initialize: function (options={}) {
@@ -278,6 +281,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         setTimeout(() => {
             this._addDateFiltersTovectorLayers();
             this.refreshUiAndFiltering();
+            this.options.onReady.call(this);
         }, 0.1 * 1000);
 
         // done
@@ -330,6 +334,9 @@ L.Control.OHMTimeSlider = L.Control.extend({
         if (redraw) {
             this.refreshUiAndFiltering();
         }
+
+        // call the onDateChange callback
+        this.options.onDateChange.call(this, this.getDate());
     },
     getRange: function (asdecimal=false) {
         const therange = this.state.range.slice();
@@ -371,6 +378,9 @@ L.Control.OHMTimeSlider = L.Control.extend({
         if (redraw) {
             this.refreshUiAndFiltering();
         }
+
+        // call the onRangeChange callback
+        this.options.onRangeChange.call(this, this.getRange());
     },
     setDateFromSlider: function (redraw=true) {
         const newdatestring = decimaldate.dec2iso(this.controls.slider.value);

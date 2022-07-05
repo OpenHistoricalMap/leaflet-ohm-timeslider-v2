@@ -95,6 +95,15 @@
             date: '1860-06-15',
             stepInterval: 1,
             stepAmount: '10year',
+            onDateChange: function (date) {
+                console.debug(['timeslider.js onDateChange', date, this]);
+            },
+            onRangeChange: function (range) {
+                console.debug(['timeslider.js onRangeChange', range, this]);
+            },
+            onReady: function () {
+                console.debug(['timeslider.js onReady', this]);
+            },
         };
         const selectedlanguage = (new URLSearchParams(document.location.search)).get('lang');
         if (selectedlanguage) {
