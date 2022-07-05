@@ -24,9 +24,9 @@
     color: black;
     height: 25px;
     padding: 0 5px;
-}
-.leaflet-ohm-timeslider input[type="number"] {
-    height: 23px;
+    font-size: 12px;
+    line-height: normal !important;
+    box-sizing: border-box;
 }
 .leaflet-ohm-timeslider button {
     cursor: pointer;
@@ -144,10 +144,10 @@
     padding: 2px 0;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs input[type="number"].leaflet-ohm-timeslider-rangeinputs-day {
-    width: 2.5em;
+    width: 40px;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs input[type="number"].leaflet-ohm-timeslider-rangeinputs-year {
-    width: 4em;
+    width: 60px;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs button {
 }

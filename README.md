@@ -1,8 +1,8 @@
 # OpenHistoricalMap TimeSlider v2
 
-**February 2022, very early prototyping of a new Leaflet-based timeslider control, with an eye to new design and features. Not yet ready for public comment.**
+This is the time slider used by OpenHistoricalMap as of late 2022.
 
-This is the time slider used by OpenHistoricalMap as of late 2022. Unlike the original controls at https://github.com/OpenHistoricalMap/mbgl-timeslider/ and https://github.com/OpenHistoricalMap/mbgltimeslider-leaflet-control this one is written as a proper Leaflet control from the ground up.
+Unlike the original controls at https://github.com/OpenHistoricalMap/mbgl-timeslider/ and https://github.com/OpenHistoricalMap/mbgltimeslider-leaflet-control this one is written as a proper Leaflet control from the ground up.
 
 For a demonstration, see **index.html** and https://openhistoricalmap.github.io/leaflet-ohm-timeslider-v2/
 
