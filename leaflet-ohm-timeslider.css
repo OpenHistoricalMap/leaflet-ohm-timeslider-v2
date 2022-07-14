@@ -144,10 +144,10 @@
     padding: 2px 0;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs input[type="number"].leaflet-ohm-timeslider-rangeinputs-day {
-    width: 40px;
+    width: 50px;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs input[type="number"].leaflet-ohm-timeslider-rangeinputs-year {
-    width: 60px;
+    width: 66px;
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs button {
 }
