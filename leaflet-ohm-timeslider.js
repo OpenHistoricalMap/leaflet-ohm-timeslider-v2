@@ -38,7 +38,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         const lang1 = navigator.language;
         const lang2 = navigator.language.substr(0, 2).toLowerCase();
         this._translations = L.Control.OHMTimeSlider.Translations[lang0] || L.Control.OHMTimeSlider.Translations[lang1] || L.Control.OHMTimeSlider.Translations[lang2];
-        if (! this._translations) throw `OHMTimeSlider: unknown language, options were '${[lang0, lang1, lang2].join(',')}'`;
+        if (! this._translations) {
+            this._translations = L.Control.OHMTimeSlider.Translations['en-US'];
+            console.error(`OHMTimeSlider: unknown language, using en-US; options were '${[lang0, lang1, lang2].join(',')}'`);
+        }
     },
 
     onAdd: function (map) {
@@ -866,23 +869,23 @@ L.Control.OHMTimeSlider.Translations['en-CA'] = L.Control.OHMTimeSlider.Translat
 L.Control.OHMTimeSlider.Translations['es'] = {
     expandcollapse_title: "Minimizar o restaurar la ventana",
     slider_description: "Personaliza la fecha que deseas explorar",
-    daterange_min_month_title: "Selecciona en que mes debe comenzar la barra cronol贸gica",
-    daterange_min_day_title: "Selecciona en que d铆a debe comenzar la barra cronol贸gica",
-    daterange_min_year_title: "Selecciona en que a帽o debe comenzar la barra cronol贸gica",
-    daterange_max_month_title: "Selecciona en que mes debe terminar la barra cronol贸gica",
-    daterange_max_day_title: "Selecciona en que d铆a debe terminar la barra cronol贸gica",
-    daterange_max_year_title: "Selecciona en que a帽o debe terminar la barra cronol贸gica",
+    daterange_min_month_title: "Selecciona en que mes debe comenzar la barra cronol梘ica",
+    daterange_min_day_title: "Selecciona en que d抋 debe comenzar la barra cronol梘ica",
+    daterange_min_year_title: "Selecciona en que a杘 debe comenzar la barra cronol梘ica",
+    daterange_max_month_title: "Selecciona en que mes debe terminar la barra cronol梘ica",
+    daterange_max_day_title: "Selecciona en que d抋 debe terminar la barra cronol梘ica",
+    daterange_max_year_title: "Selecciona en que a杘 debe terminar la barra cronol梘ica",
     daterange_submit_text: "Aplicar",
-    daterange_submit_title: "Aplicar la configuraci贸n",
+    daterange_submit_title: "Aplicar la configuraci梟",
     range_title: "Intervalo",
     stepamount_title: "Intervalos de desplazamiento",
     stepamount_selector_title: "Personaliza a que paso debe desplazarse el tiempo en la barra cronologica",
-    stepamount_1day: "1 d铆a",
+    stepamount_1day: "1 d抋",
     stepamount_1month: "1 mes",
-    stepamount_1year: "1 a帽o",
-    stepamount_10year: "10 a帽os",
-    stepamount_100year: "100 a帽os",
-    stepinterval_title: "Velocidad de reproducci贸n",
+    stepamount_1year: "1 a杘",
+    stepamount_10year: "10 a杘s",
+    stepamount_100year: "100 a杘s",
+    stepinterval_title: "Velocidad de reproducci梟",
     stepinterval_selector_title: "Seleccionar la escala de tiempo",
     stepinterval_5sec: "5 Segundos",
     stepinterval_2sec: "2 Segundos",
@@ -893,7 +896,7 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     backwardbutton_title: "Paso anterior",
     resetbutton_title: "Ir al inicio del alcance",
     autoplay_submit_text: "Aplicar",
-    autoplay_submit_title: "Aplicar la configuraci贸n",
+    autoplay_submit_title: "Aplicar la configuraci梟",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
     dateformat: 'dmy',

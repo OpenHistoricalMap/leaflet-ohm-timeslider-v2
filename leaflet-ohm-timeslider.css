@@ -122,6 +122,7 @@
     .leaflet-ohm-timeslider.leaflet-ohm-timeslider-collapsed .leaflet-ohm-timeslider-datereadout {
         padding: 0px 10px;
         margin: 3px 3px 3px 0;
+        min-height:40px;
     }
 }
 
@@ -181,7 +182,7 @@
         display: none;
     }
     .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs select {
-        width: calc(100% - 110px);
+        width: calc(100% - 123px);
     }
     .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs div.leaflet-ohm-timeslider-rangeinputs-submit {
         text-align: right;
