@@ -60,10 +60,11 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.state.range = this.options.range;
 
         // looks good
-        // create the container and UI
+        // create the main container and the Change Date widget
         const container = L.DomUtil.create('div', 'leaflet-ohm-timeslider');
         L.DomEvent.disableClickPropagation(container);
         L.DomEvent.disableScrollPropagation(container);
+        this.container = container;
 
         container.innerHTML = `
         <div class="leaflet-ohm-timeslider-expandcollapse" data-timeslider="expandcollapse" role="button" tabindex="0" title="${this._translations.expandcollapse_title}"><span></span></div>
@@ -116,6 +117,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         </div>
         <div class="leaflet-ohm-timeslider-datereadout">
             <span data-timeslider="datereadout"></span>
+            <button type="button" data-timeslider="datepickeropen" aria-label="${this._translations.datepicker_submit_text}"></button>
         </div>
         <div class="leaflet-ohm-timeslider-slider-wrap">
             <div>
@@ -166,9 +168,30 @@ L.Control.OHMTimeSlider = L.Control.extend({
         </div>
         `;
 
+        const datepickermodal = L.DomUtil.create('div', 'leaflet-ohm-timeslider-modal leaflet-ohm-timeslider-datepicker');
+        L.DomEvent.disableClickPropagation(datepickermodal);
+        L.DomEvent.disableScrollPropagation(datepickermodal);
+        this._datepickermodal = datepickermodal;
+
+        datepickermodal.innerHTML = `
+        <div class="leaflet-ohm-timeslider-modal-background"></div>
+        <div class="leaflet-ohm-timeslider-modal-panel">
+            <div class="leaflet-ohm-timeslider-modal-content">
+                <div class="leaflet-ohm-timeslider-modal-head">
+                    <p>${this._translations.datepicker_title}</p>
+                    <span class="icon close" aria-label="${this._translations.close}" data-timeslider="datepickerclose"></span>
+                </div>
+                <div class="leaflet-ohm-timeslider-modal-body">
+                    <p>${this._translations.datepicker_text}</p>
+                    <input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" />
+                    <button data-timeslider="datepickersubmit" aria-label="${this._translations.daterange_submit_title}">${this._translations.datepicker_submit_text}</button>
+                </div>
+            </div>
+        </div>
+        `;
+
         // attach events: change, press enter, slide, play and pause, ...
         this.controls = {};
-        this.container = container;
         this.controls.slider = container.querySelector('[data-timeslider="slider"]');
         this.controls.rangeminmonth = container.querySelector('select[data-timeslider="rangeminmonth"]');
         this.controls.rangeminday = container.querySelector('input[data-timeslider="rangeminday"]');
@@ -189,6 +212,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.rangeendreadout = container.querySelector('[data-timeslider="rangeendreadout"]');
         this.controls.datereadout = container.querySelector('[data-timeslider="datereadout"]');
         this.controls.expandcollapse = container.querySelector('[data-timeslider="expandcollapse"]');
+        this.controls.datepickeropen = container.querySelector('button[data-timeslider="datepickeropen"]');
+        this.controls.datepickerclose = datepickermodal.querySelector('span[data-timeslider="datepickerclose"]');
+        this.controls.datepickerdatebox = datepickermodal.querySelector('input[data-timeslider="datepicker"]');
+        this.controls.datepickersubmit = datepickermodal.querySelector('button[data-timeslider="datepickersubmit"]');
 
         L.DomEvent.on(this.controls.rangesubmit, 'click', () => {
             this.setRangeFromSelectors();
@@ -270,6 +297,22 @@ L.Control.OHMTimeSlider = L.Control.extend({
         });
         L.DomEvent.on(this.controls.expandcollapse, 'keydown', (event) => {
             if (event.key == 'Enter' || event.key == 'Space') event.target.click();
+        });
+        L.DomEvent.on(this.controls.datepickeropen, 'click', () => {
+            this.datepickerOpen();
+        });
+        L.DomEvent.on(this.controls.datepickerclose, 'click', () => {
+            this.datepickerClose();
+        });
+        L.DomEvent.on(this.controls.datepickersubmit, 'click', () => {
+            this.datepickerSubmit();
+        });
+        L.DomEvent.on(this.controls.datepickersubmit, 'keydown', (event) => {
+            if (event.key == 'Escape') this.controls.datepickerclose.click();
+        });
+        L.DomEvent.on(this.controls.datepickerdatebox, 'keydown', (event) => {
+            if (event.key == 'Enter') this.controls.datepickersubmit.click();
+            if (event.key == 'Escape') this.controls.datepickerclose.click();
         });
 
         // set up autoplay state
@@ -685,6 +728,69 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
 
     //
+    // date picker modal
+    //
+    datepickerOpen: function () {
+        this._map._container.appendChild(this._datepickermodal);
+
+        // fill the existing date into the box, but in m/d/y or d/m/y format depending on locale
+        const yyyymmdd = this.splitYmdParts(this.getDate());
+        let mdy;
+        switch (this._translations.dateformat) {
+            case 'mdy':
+                mdy = `${yyyymmdd[1]}/${yyyymmdd[2]}/${yyyymmdd[0]}`;
+                break;
+            case 'dmy':
+                mdy = `${yyyymmdd[2]}/${yyyymmdd[1]}/${yyyymmdd[0]}`;
+                break;
+            default:
+                console.error(`Timeslider datepickerOpen(): unknown date format ${this._translations.dateformat}`);
+                mdy = "";
+                break;
+        }
+        this.controls.datepickerdatebox.value = mdy;
+
+        // then focus it for easy access
+        this.controls.datepickerdatebox.focus();
+    },
+    datepickerClose: function () {
+        this._map._container.removeChild(this._datepickermodal);
+
+        // focus the picker-open button, since that's probably how we got to the modal to close it
+        this.controls.datepickeropen.focus();
+    },
+    datepickerSubmit: function () {
+        // if the date is already in ISO format (presumed if there are - dashes instead of / slashes)
+        // then skip massaging it into shape
+        const entered = this.controls.datepickerdatebox.value.trim();
+        let yyyymmdd;
+        if (this.isValidDate(entered)) {
+            yyyymmdd = entered;
+        } else if (this._translations.dateformat == 'mdy') {
+            const bits = entered.split('/');
+            bits[2] = this.zeroPadToLength(bits[2], 4);
+            bits[1] = this.zeroPadToLength(bits[1], 2);
+            bits[0] = this.zeroPadToLength(bits[0], 2);
+            yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
+        } else if (this._translations.dateformat == 'dmy') {
+            const bits = entered.split('/');
+            bits[2] = this.zeroPadToLength(bits[2], 4);
+            bits[1] = this.zeroPadToLength(bits[1], 2);
+            bits[0] = this.zeroPadToLength(bits[0], 2);
+            yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
+        } else {
+            console.error(`Timeslider datepickerSubmit(): unknown date format ${this._translations.dateformat}`);
+            return;
+        }
+
+        // set the date; this will implicitly set the slider as needed to include the date
+        this.setDate(yyyymmdd);
+
+        // close the datepicker
+        this.datepickerClose();
+    },
+
+    //
     // other utility functions
     //
     isValidDate: function (datestring) {
@@ -827,6 +933,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
 L.Control.OHMTimeSlider.Translations = {};
 
 L.Control.OHMTimeSlider.Translations['en'] = {
+    close: "Close this panel",
     expandcollapse_title: "Maximize or minimize this panel",
     slider_description: "Select the date to display on the map",
     daterange_min_month_title: "Slider range, select starting month",
@@ -857,6 +964,9 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     resetbutton_title: "Go to the start of the range",
     autoplay_submit_text: "Set",
     autoplay_submit_title: "Apply settings",
+    datepicker_submit_text: "Set",
+    datepicker_title: "Change Date",
+    datepicker_text: "Enter a new date to update the handle location and data displayed.",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
     dateformat: 'dmy',
@@ -867,6 +977,7 @@ L.Control.OHMTimeSlider.Translations['en-US'] = Object.assign({}, L.Control.OHMT
 L.Control.OHMTimeSlider.Translations['en-CA'] = L.Control.OHMTimeSlider.Translations['en-US'];
 
 L.Control.OHMTimeSlider.Translations['es'] = {
+    close: "Minimizar esta ventana",
     expandcollapse_title: "Minimizar o restaurar la ventana",
     slider_description: "Personaliza la fecha que deseas explorar",
     daterange_min_month_title: "Selecciona en que mes debe comenzar la barra cronológica",
@@ -897,6 +1008,9 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     resetbutton_title: "Ir al inicio del alcance",
     autoplay_submit_text: "Aplicar",
     autoplay_submit_title: "Aplicar la configuración",
+    datepicker_submit_text: "Aplicar",
+    datepicker_title: "Cambiar fecha",
+    datepicker_text: "Entra una nueva fecha para actualizar la ubicación del mango y los datos que se muestran.",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
     dateformat: 'dmy',
