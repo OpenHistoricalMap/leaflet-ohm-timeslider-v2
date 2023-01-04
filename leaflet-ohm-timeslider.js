@@ -185,7 +185,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <div class="leaflet-ohm-timeslider-modal-body">
                     <p>${this._translations.datepicker_text}</p>
                     <p><input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" /></p>
-                    <p>${this._translations.datepicker_format_text} ${this.formatDateShortPlaceHolder()}</p>
+                    <p>${this.datepickerFormatInstructions()}</p>
                     <hr />
                 </div>
                 <div class="leaflet-ohm-timeslider-modal-foot">
@@ -773,24 +773,33 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // if the date is already in ISO format (presumed if there are - dashes instead of / slashes)
         // then skip massaging it into shape
         const entered = this.controls.datepickerdatebox.value.trim();
-        let yyyymmdd;
+        let yyyymmdd = "";
         if (this.isValidDate(entered)) {
             yyyymmdd = entered;
         } else if (this._translations.dateformat == 'mdy') {
             const bits = entered.split('/');
-            bits[2] = this.zeroPadToLength(bits[2], 4);
-            bits[1] = this.zeroPadToLength(bits[1], 2);
-            bits[0] = this.zeroPadToLength(bits[0], 2);
-            yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
+            if (bits && bits.length == 3) {
+                bits[2] = this.zeroPadToLength(bits[2], 4);
+                bits[1] = this.zeroPadToLength(bits[1], 2);
+                bits[0] = this.zeroPadToLength(bits[0], 2);
+                yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
+            }
         } else if (this._translations.dateformat == 'dmy') {
             const bits = entered.split('/');
-            bits[2] = this.zeroPadToLength(bits[2], 4);
-            bits[1] = this.zeroPadToLength(bits[1], 2);
-            bits[0] = this.zeroPadToLength(bits[0], 2);
-            yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
+            if (bits && bits.length == 3) {
+                bits[2] = this.zeroPadToLength(bits[2], 4);
+                bits[1] = this.zeroPadToLength(bits[1], 2);
+                bits[0] = this.zeroPadToLength(bits[0], 2);
+                yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
+            }
         } else {
             console.error(`Timeslider datepickerSubmit(): unknown date format ${this._translations.dateformat}`);
-            return;
+            // now let it fail the isValidDate() check below
+        }
+
+        if (! this.isValidDate(yyyymmdd)) {
+            const errmsg = this.datepickerFormatInstructions();
+            return alert(errmsg);
         }
 
         // set the date; this will implicitly set the slider as needed to include the date
@@ -798,6 +807,9 @@ L.Control.OHMTimeSlider = L.Control.extend({
 
         // close the datepicker
         this.datepickerClose();
+    },
+    datepickerFormatInstructions: function () {
+        return `${this._translations.datepicker_format_text} ${this.formatDateShortPlaceHolder()}`;
     },
 
     //
