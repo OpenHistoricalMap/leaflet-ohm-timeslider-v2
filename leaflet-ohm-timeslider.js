@@ -749,8 +749,6 @@ L.Control.OHMTimeSlider = L.Control.extend({
     // date picker modal
     //
     datepickerOpen: function () {
-        this._map._container.appendChild(this._datepickermodal);
-
         // fill the existing date into the box, but in m/d/y or d/m/y format depending on locale
         const yyyymmdd = this.splitYmdParts(this.getDate());
         let mdy;
@@ -768,8 +766,14 @@ L.Control.OHMTimeSlider = L.Control.extend({
         }
         this.controls.datepickerdatebox.value = mdy;
 
-        // then focus it for easy access
-        this.controls.datepickerdatebox.focus();
+        // show the modal
+        this._map._container.appendChild(this._datepickermodal);
+
+        // focus the date box for easy access
+        // do this in a timeout, or else we get a bug: focused date box, enter-press, causes instant submit
+        setTimeout(() =>{
+            this.controls.datepickerdatebox.focus();
+        }, 0.1 * 1000)
     },
     datepickerClose: function () {
         this._map._container.removeChild(this._datepickermodal);
