@@ -17,11 +17,7 @@
 .leaflet-ohm-timeslider select,
 .leaflet-ohm-timeslider button,
 .leaflet-ohm-timeslider input[type="number"],
-.leaflet-ohm-timeslider input[type="text"],
-.leaflet-ohm-timeslider-modal select,
-.leaflet-ohm-timeslider-modal button,
-.leaflet-ohm-timeslider-modal input[type="number"],
-.leaflet-ohm-timeslider-modal input[type="text"] {
+.leaflet-ohm-timeslider input[type="text"] {
     background-color: transparent;
     border: 1px solid black;
     border-radius: 2px;
@@ -425,21 +421,72 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 1rem;
-    border-bottom: 1px solid #dee2e6;
+    padding: 0 16px;
 }
-.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-head span.close {
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-close {
     cursor: pointer;
+    font-size: 24px;
 }
-.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-head p {
-    font-size: 1.5rem;
-    font-weight: 500;
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-head h4 {
+    font-size: 15px;
     margin: 0;
+    font-weight: bold;
 }
 
 .leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body {
-    padding: 1em;
+    padding: 20px 16px 0 16px;
     font-size: 13px;
+}
+
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-foot {
+    padding: 16px 16px 20px 16px;
+    text-align: right;
+}
+
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p {
+    margin-bottom: 16px;
+}
+
+.leaflet-ohm-timeslider-modal hr {
+    background-color: 1px solid #F0EFEF;
+    margin: 0;
+}
+
+.leaflet-ohm-timeslider-modal button {
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #3A69FF;
+    border: 1px solid #3A69FF;
+    color: black;
+    padding: 0.25rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.leaflet-ohm-timeslider-modal button:hover,
+.leaflet-ohm-timeslider-modal button:focus,
+.leaflet-ohm-timeslider-modal button:active {
+    color: #000;
+    background-color: #85a2ff;
+    border-color: #7e9dff;
+    box-shadow: 0 0 0 0.25rem rgb(95 124 217 / 50%);
+}
+
+.leaflet-ohm-timeslider-modal button[data-timeslider="datepickersubmit"] {
+    color: white;
+}
+.leaflet-ohm-timeslider-modal button[data-timeslider="datepickercancel"] {
+    background-color: black;
+    border-color: black;
+    color: white;
 }
 
 /**
@@ -450,11 +497,5 @@
     max-width: 300px;
 }
 .leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-body input[type="text"] {
-    width: 200px;
-}
-.leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-body button {
-    width: 50px;
-    background-color: #3A69FF;
-    color: white;
-    border-color: #3A69FF;
+    width: 100%;
 }

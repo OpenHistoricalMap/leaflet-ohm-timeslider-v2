@@ -117,7 +117,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         </div>
         <div class="leaflet-ohm-timeslider-datereadout">
             <span data-timeslider="datereadout"></span>
-            <button type="button" data-timeslider="datepickeropen" aria-label="${this._translations.datepicker_submit_text}"></button>
+            <button type="button" data-timeslider="datepickeropen" aria-label="${this._translations.datepicker_title}"></button>
         </div>
         <div class="leaflet-ohm-timeslider-slider-wrap">
             <div>
@@ -178,13 +178,19 @@ L.Control.OHMTimeSlider = L.Control.extend({
         <div class="leaflet-ohm-timeslider-modal-panel">
             <div class="leaflet-ohm-timeslider-modal-content">
                 <div class="leaflet-ohm-timeslider-modal-head">
-                    <p>${this._translations.datepicker_title}</p>
-                    <span class="icon close" aria-label="${this._translations.close}" data-timeslider="datepickerclose"></span>
+                    <h4>${this._translations.datepicker_title}</h4>
+                    <span class="leaflet-ohm-timeslider-modal-close" aria-label="${this._translations.close}" data-timeslider="datepickerclose">&times;</span>
                 </div>
+                <hr />
                 <div class="leaflet-ohm-timeslider-modal-body">
                     <p>${this._translations.datepicker_text}</p>
-                    <input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" />
-                    <button data-timeslider="datepickersubmit" aria-label="${this._translations.daterange_submit_title}">${this._translations.datepicker_submit_text}</button>
+                    <p><input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" /></p>
+                    <p>${this._translations.datepicker_format_text} ${this.formatDateShortPlaceHolder()}</p>
+                    <hr />
+                </div>
+                <div class="leaflet-ohm-timeslider-modal-foot">
+                    <button data-timeslider="datepickersubmit">${this._translations.datepicker_submit_text}</button>
+                    <button data-timeslider="datepickercancel">${this._translations.datepicker_cancel_text}</button>
                 </div>
             </div>
         </div>
@@ -216,6 +222,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.datepickerclose = datepickermodal.querySelector('span[data-timeslider="datepickerclose"]');
         this.controls.datepickerdatebox = datepickermodal.querySelector('input[data-timeslider="datepicker"]');
         this.controls.datepickersubmit = datepickermodal.querySelector('button[data-timeslider="datepickersubmit"]');
+        this.controls.datepickercancel = datepickermodal.querySelector('button[data-timeslider="datepickercancel"]');
 
         L.DomEvent.on(this.controls.rangesubmit, 'click', () => {
             this.setRangeFromSelectors();
@@ -303,6 +310,9 @@ L.Control.OHMTimeSlider = L.Control.extend({
         });
         L.DomEvent.on(this.controls.datepickerclose, 'click', () => {
             this.datepickerClose();
+        });
+        L.DomEvent.on(this.controls.datepickercancel, 'click', () => {
+            this.controls.datepickerclose.click();
         });
         L.DomEvent.on(this.controls.datepickersubmit, 'click', () => {
             this.datepickerSubmit();
@@ -964,8 +974,10 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     resetbutton_title: "Go to the start of the range",
     autoplay_submit_text: "Set",
     autoplay_submit_title: "Apply settings",
-    datepicker_submit_text: "Set",
+    datepicker_submit_text: "Update Date",
+    datepicker_cancel_text: "Cancel",
     datepicker_title: "Change Date",
+    datepicker_format_text: "Enter the date as",
     datepicker_text: "Enter a new date to update the handle location and data displayed.",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
@@ -1008,8 +1020,10 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     resetbutton_title: "Ir al inicio del alcance",
     autoplay_submit_text: "Aplicar",
     autoplay_submit_title: "Aplicar la configuración",
-    datepicker_submit_text: "Aplicar",
+    datepicker_submit_text: "Aplicar fecha",
+    datepicker_cancel_text: "Cancelar",
     datepicker_title: "Cambiar fecha",
+    datepicker_format_text: "Entra la fecha como",
     datepicker_text: "Entra una nueva fecha para actualizar la ubicación del mango y los datos que se muestran.",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
