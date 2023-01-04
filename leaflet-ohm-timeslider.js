@@ -185,7 +185,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <div class="leaflet-ohm-timeslider-modal-body">
                     <p>${this._translations.datepicker_text}</p>
                     <p><input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" /></p>
-                    <p>${this.datepickerFormatInstructions()}</p>
+                    <p>${this._translations.datepicker_format_text}: ${this.formatDateShortPlaceHolder()}, yyyy-mm-dd</p>
                     <hr />
                 </div>
                 <div class="leaflet-ohm-timeslider-modal-foot">
@@ -320,9 +320,17 @@ L.Control.OHMTimeSlider = L.Control.extend({
         L.DomEvent.on(this.controls.datepickersubmit, 'keydown', (event) => {
             if (event.key == 'Escape') this.controls.datepickerclose.click();
         });
-        L.DomEvent.on(this.controls.datepickerdatebox, 'keydown', (event) => {
-            if (event.key == 'Enter') this.controls.datepickersubmit.click();
-            if (event.key == 'Escape') this.controls.datepickerclose.click();
+        L.DomEvent.on(this.controls.datepickerdatebox, 'keyup', (event) => {
+            if (event.key == 'Enter') return this.controls.datepickersubmit.click();
+            if (event.key == 'Escape') return this.controls.datepickerclose.click();
+
+            // check if date string is valid, enable/disable the submit button
+            const isvalid = this.datepickerGetIsoDate();
+            if (isvalid) {
+                this.controls.datepickersubmit.disabled = false;
+            } else {
+                this.controls.datepickersubmit.disabled = true;
+            }
         });
 
         // set up autoplay state
@@ -364,7 +372,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // validate, then set the date
         // there is no year 0; if we're trying to use it, skip to 1 or -1
         const ymd = this.splitYmdParts(newdatestring);
-        if (! this.isValidDate(newdatestring) || ! decimaldate.isvalidmonthday(ymd[0], this.zeroPadToLength(ymd[1], 2), this.zeroPadToLength(ymd[2], 2))) {
+        if (! this.isValidDate(newdatestring)) {
             console.error(`OHMTimeSlider: setDate() invalid date: ${newdatestring}`);
             return;
         }
@@ -409,7 +417,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         let ymdmin = this.splitYmdParts(newmindate);
         let ymdmax = this.splitYmdParts(newmaxdate);
 
-        if (! this.isValidDate(newmindate) || ! this.isValidDate(newmaxdate) || ! decimaldate.isvalidmonthday(ymdmin[0], this.zeroPadToLength(ymdmin[1], 2), this.zeroPadToLength(ymdmin[2], 2)) || ! decimaldate.isvalidmonthday(ymdmax[0], this.zeroPadToLength(ymdmax[1], 2), this.zeroPadToLength(ymdmax[2], 2))) {
+        if (! this.isValidDate(newmindate)) {
             console.error(`OHMTimeSlider: setRange() invalid range: ${newmindate} - ${newmaxdate}`);
             return;
         }
@@ -770,37 +778,8 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.datepickeropen.focus();
     },
     datepickerSubmit: function () {
-        // if the date is already in ISO format (presumed if there are - dashes instead of / slashes)
-        // then skip massaging it into shape
-        const entered = this.controls.datepickerdatebox.value.trim();
-        let yyyymmdd = "";
-        if (this.isValidDate(entered)) {
-            yyyymmdd = entered;
-        } else if (this._translations.dateformat == 'mdy') {
-            const bits = entered.split('/');
-            if (bits && bits.length == 3) {
-                bits[2] = this.zeroPadToLength(bits[2], 4);
-                bits[1] = this.zeroPadToLength(bits[1], 2);
-                bits[0] = this.zeroPadToLength(bits[0], 2);
-                yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
-            }
-        } else if (this._translations.dateformat == 'dmy') {
-            const bits = entered.split('/');
-            if (bits && bits.length == 3) {
-                bits[2] = this.zeroPadToLength(bits[2], 4);
-                bits[1] = this.zeroPadToLength(bits[1], 2);
-                bits[0] = this.zeroPadToLength(bits[0], 2);
-                yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
-            }
-        } else {
-            console.error(`Timeslider datepickerSubmit(): unknown date format ${this._translations.dateformat}`);
-            // now let it fail the isValidDate() check below
-        }
-
-        if (! this.isValidDate(yyyymmdd)) {
-            const errmsg = this.datepickerFormatInstructions();
-            return alert(errmsg);
-        }
+        const yyyymmdd = this.datepickerGetIsoDate();
+        if (! yyyymmdd) return;
 
         // set the date; this will implicitly set the slider as needed to include the date
         this.setDate(yyyymmdd);
@@ -808,15 +787,52 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // close the datepicker
         this.datepickerClose();
     },
-    datepickerFormatInstructions: function () {
-        return `${this._translations.datepicker_format_text} ${this.formatDateShortPlaceHolder()}`;
+    datepickerGetIsoDate: function () {
+        const entered = this.controls.datepickerdatebox.value.trim();
+        const yyyymmdd = this.localeDateToIsoDate(entered);
+        return yyyymmdd;
+
+    },
+    localeDateToIsoDate: function (localdate) {
+        // if the date is already in ISO format (presumed if there are - dashes instead of / slashes)
+        // then skip massaging it into shape
+        let yyyymmdd = "";
+        if (this.isValidDate(localdate)) {
+            yyyymmdd = localdate;
+        } else if (this._translations.dateformat == 'mdy') {
+            const bits = localdate.split('/');
+            if (bits && bits.length == 3) {
+                bits[2] = this.zeroPadToLength(bits[2], 4);
+                bits[1] = this.zeroPadToLength(bits[1], 2);
+                bits[0] = this.zeroPadToLength(bits[0], 2);
+                yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
+            }
+        } else if (this._translations.dateformat == 'dmy') {
+            const bits = localdate.split('/');
+            if (bits && bits.length == 3) {
+                bits[2] = this.zeroPadToLength(bits[2], 4);
+                bits[1] = this.zeroPadToLength(bits[1], 2);
+                bits[0] = this.zeroPadToLength(bits[0], 2);
+                yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
+            }
+        } else {
+            console.error(`Timeslider localeDateToIsoDate(): unknown date format ${this._translations.dateformat}`);
+            // now let it fail the isValidDate() check below
+        }
+
+        return this.isValidDate(yyyymmdd) ? yyyymmdd : null;
     },
 
     //
     // other utility functions
     //
     isValidDate: function (datestring) {
-        return datestring.match(/^\-?\d{1,4}-\d\d\-\d\d$/) ? true : false;
+        if (! datestring.match(/^\-?\d{1,4}-\d\d\-\d\d$/)) return false;
+
+        const ymd = this.splitYmdParts(datestring);
+        if (! decimaldate.isvalidmonthday(ymd[0], this.zeroPadToLength(ymd[1], 2), this.zeroPadToLength(ymd[2], 2))) return false;
+
+        return true;
     },
     zeroPadToLength: function (stringornumber, length) {
         const bits = (stringornumber + '').match(/^(\-?)(\d+)$/);
@@ -989,7 +1005,7 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     datepicker_submit_text: "Update Date",
     datepicker_cancel_text: "Cancel",
     datepicker_title: "Change Date",
-    datepicker_format_text: "Enter the date as",
+    datepicker_format_text: "Date formats",
     datepicker_text: "Enter a new date to update the handle location and data displayed.",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
@@ -1035,7 +1051,7 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     datepicker_submit_text: "Aplicar fecha",
     datepicker_cancel_text: "Cancelar",
     datepicker_title: "Cambiar fecha",
-    datepicker_format_text: "Entra la fecha como",
+    datepicker_format_text: "Formatos de fecha",
     datepicker_text: "Entra una nueva fecha para actualizar la ubicación del mango y los datos que se muestran.",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",

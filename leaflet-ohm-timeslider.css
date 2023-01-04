@@ -479,6 +479,10 @@
     border-color: #7e9dff;
     box-shadow: 0 0 0 0.25rem rgb(95 124 217 / 50%);
 }
+.leaflet-ohm-timeslider-modal button:disabled {
+    opacity: 0.5;
+    cursor: notallowed;
+}
 
 .leaflet-ohm-timeslider-modal button[data-timeslider="datepickersubmit"] {
     color: white;
@@ -498,4 +502,14 @@
 }
 .leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-body input[type="text"] {
     width: 100%;
+}
+
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p[data-timeslider="datepickerformatwarning"] {
+}
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p[data-timeslider="datepickerformatwarning"]:not(.leaflet-ohm-timeslider-modal-warning) span {
+    display: none;
+}
+.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p[data-timeslider="datepickerformatwarning"].leaflet-ohm-timeslider-modal-warning {
+    color: red;
+    font-weight: bold;
 }
