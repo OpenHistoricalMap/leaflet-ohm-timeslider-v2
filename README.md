@@ -83,3 +83,51 @@ uglifycss --output leaflet-ohm-timeslider.min.css leaflet-ohm-timeslider.css
 uglifyjs --keep-fargs --keep-fnames --output leaflet-ohm-timeslider.min.js leaflet-ohm-timeslider.js
 uglifyjs --keep-fargs --keep-fnames --output decimaldate.min.js decimaldate.js
 ```
+
+# Localization
+
+This code base is separate from the main ohm-website and has a functional but rudimentary localization setup, with translations in Javascript as here: https://github.com/OpenHistoricalMap/leaflet-ohm-timeslider-v2/blob/main/leaflet-ohm-timeslider.js#L977-L1016
+
+We welcome PRs with new languages added to this, or if you're not sure how to do that, you can also file an issue over at https://github.com/OpenHistoricalMap/issues/issues with suggested translations for the following values:
+
+```
+    close: "",
+    expandcollapse_title: "",
+    slider_description: "",
+    daterange_min_month_title: "",
+    daterange_min_day_title: "",
+    daterange_min_year_title: "",
+    daterange_max_month_title: "",
+    daterange_max_day_title: "",
+    daterange_max_year_title: "",
+    daterange_submit_text: "",
+    daterange_submit_title: "",
+    range_title: "",
+    stepamount_title: "",
+    stepamount_selector_title: "",
+    stepamount_1day: "",
+    stepamount_1month: "",
+    stepamount_1year: "",
+    stepamount_10year: "",
+    stepamount_100year: "",
+    stepinterval_title: "",
+    stepinterval_selector_title: "",
+    stepinterval_5sec: "",
+    stepinterval_2sec: "",
+    stepinterval_1sec: "",
+    playbutton_title: "",
+    pausebutton_title: "",
+    forwardbutton_title: "",
+    backwardbutton_title: "",
+    resetbutton_title: "",
+    autoplay_submit_text: "",
+    autoplay_submit_title: "",
+    datepicker_submit_text: "",
+    datepicker_cancel_text: "",
+    datepicker_title: "",
+    datepicker_format_text: "",
+    datepicker_text: "",
+    months: ['','',...],
+    bce: "",
+    dateformat: '',
+```
