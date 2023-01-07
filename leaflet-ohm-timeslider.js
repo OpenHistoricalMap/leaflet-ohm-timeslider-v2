@@ -979,7 +979,7 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     expandcollapse_title: "Maximize or minimize this panel",
     slider_description: "Select the date to display on the map",
     daterange_min_month_title: "Slider range, select starting month",
-    daterange_min_day_title: "Slider range, select starting month",
+    daterange_min_day_title: "Slider range, select starting day",
     daterange_min_year_title: "Slider range, select starting year",
     daterange_max_month_title: "Slider range, select ending month",
     daterange_max_day_title: "Slider range, select ending day",
