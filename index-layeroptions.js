@@ -1,5 +1,5 @@
-const START_ZOOM = 8.0;
-const START_CENTER = [ 47.6062, -122.3321 ];
+const START_ZOOM = 5.0;
+const START_CENTER = [ 39.828175, -98.5795 ];
 
 let MAP;
 let OHMLAYER;
@@ -75,8 +75,8 @@ function selectLayer (which) {
         const tsoptions = {
             vectorLayer: OHMLAYER,
             vectorSourceName: 'osm',
-            range: ['1800-01-01', '2020-12-31'],
-            date: '1950-06-15',
+            range: ['1800-01-01', '2022-01-01'],
+            date: '2022-01-01',
             stepInterval: 1,
             stepAmount: '10year',
             onDateChange: function (date) {
