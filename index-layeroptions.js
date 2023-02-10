@@ -4,9 +4,10 @@ const START_CENTER = [ 39.828175, -98.5795 ];
 let DEFAULT_RANGE = ['1800-01-01', '2022-01-01'];
 let DEFAULT_DATE = '2022-01-01';
 
-let MAP;
-let OHMLAYER;
-let TIMESLIDER;
+let MAP; // the L.Map
+let SELECTEDVIZ; // string, currently-selected map
+let OHMLAYER; // the L.MBGL layer
+let TIMESLIDER; // the TimeSlider
 
 document.addEventListener('DOMContentLoaded', function () {
     const urlparams = new URLSearchParams(document.location.hash.replace(/^#/, ''));
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     L.control.scale().addTo(MAP);
 
     // set up the radiobox behavior to pick a layer & add the timeslider to it
+    // check one of the boxes, either from URL param or default
     // and trigger it now
     const $checkboxes = document.querySelectorAll('input[type="radio"][name="layerchoice"]');
     [...$checkboxes].forEach(($checkbox) => {
@@ -45,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function () {
             selectLayer(which);
         });
     });
+
+    if (urlparams.get('layer')) {
+        const selected = urlparams.get('layer');
+        document.querySelector(`input[type="radio"][name="layerchoice"][value="${selected}"]`).checked = true;
+    } else {
+        document.querySelector('input[type="radio"][name="layerchoice"][value="fullcolor"]').checked = true;
+    }
+
     selectLayer( document.querySelector('input[type="radio"][name="layerchoice"]:checked').getAttribute('value') );
 
     // start updating the URL hash every few seconds
@@ -70,22 +80,23 @@ function selectLayer (which) {
 
     // create the new vector layer, reloading the style from scratch
     // then apply the 'slider to it
+    SELECTEDVIZ = which;
     switch (which) {
-        case 'LIGHTEST':
+        case 'lightest':
             OHMLAYER = new L.MapboxGL({
                 attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
                 style: MAPSTYLE_LIGHTEST,
                 accessToken: "no-token",
             });
             break;
-        case 'LIGHT':
+        case 'light':
             OHMLAYER = new L.MapboxGL({
                 attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
                 style: MAPSTYLE_LIGHT,
                 accessToken: "no-token",
             });
             break;
-        case 'FULLCOLOR':
+        case 'fullcolor':
             OHMLAYER = new L.MapboxGL({
                 attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
                 style: MAPSTYLE_FULLCOLOR,
@@ -127,7 +138,8 @@ function updateUrlHash () {
     params.x = MAP.getCenter().lng.toFixed(6);
     params.date = TIMESLIDER.getDate();
     params.range = TIMESLIDER.getRange().join(',');
+    params.layer = SELECTEDVIZ;
 
-    const urlhash = `x=${params.x}&y=${params.y}&z=${params.z}&date=${params.date}&range=${params.range}`;
+    const urlhash = `x=${params.x}&y=${params.y}&z=${params.z}&date=${params.date}&range=${params.range}&layer=${params.layer}`;
     document.location.hash = urlhash;
 }
