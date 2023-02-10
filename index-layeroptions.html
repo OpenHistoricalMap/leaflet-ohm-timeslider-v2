@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OpenHistoricalMap :: TimeSlider + Land Cover Options</title>
+
+    <!-- Leaflet and Mapbox GL JS API, the the adapter for using MB within L -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" rel="stylesheet" />
+
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css" rel="stylesheet" />
+
+    <script src="https://unpkg.com/mapbox-gl-leaflet@0.0.15/leaflet-mapbox-gl.js"></script>
+
+    <!-- the timeslider control and suporting DecimalDate library -->
+    <script src="decimaldate.js"></script>
+    <script src="leaflet-ohm-timeslider.js"></script>
+    <link href="leaflet-ohm-timeslider.css" rel="stylesheet" />
+
+    <!-- this-here demo's code -->
+    <script src="index-layeroptions-tegola-ohm-full.js"></script>
+    <script src="index-layeroptions-tegola-ohm-white25.js"></script>
+    <script src="index-layeroptions-tegola-ohm-white50.js"></script>
+
+    <script src="index-layeroptions.js"></script>
+    <link href="index-layeroptions.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="map"></div>
+
+    <div id="layerpicker">
+        <div style="margin-bottom: 0.5em;">Land Cover Options</div>
+        <label><input type="radio" name="layerchoice" value="LIGHTEST" /> Lightest</label>
+        <label><input type="radio" name="layerchoice" value="LIGHT" /> Light</label>
+        <label><input type="radio" name="layerchoice" value="FULLCOLOR" checked /> Full Color</label>
+    </div>
+</body>
+</html>
