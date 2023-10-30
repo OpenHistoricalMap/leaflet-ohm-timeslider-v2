@@ -253,6 +253,12 @@ L.Control.OHMTimeSlider = L.Control.extend({
             this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.slider, 'input', () => {
+            // hack for <0 and >= -1 so we never have a -0.xxx value; without this "0" (1 BCE) exists twice whilst sliding
+            // this does make a "funny step" in the range input between -0.999999 and -0.000001 but that beats seeing 1 BCE twice
+            if (this.controls.slider.value < 0 && this.controls.slider.value > -1) {
+                this.controls.slider.value = -1;
+            }
+
             this.setDateFromSlider();
         });
         L.DomEvent.on(this.controls.playbutton, 'click', () => {
@@ -377,16 +383,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
             return;
         }
 
-        if (ymd[0] == 0) {
-            const oldy = this.splitYmdParts(this.state.date)[0];
-            if (oldy > 0) {
-                this.state.date = this.timeDelta(newdatestring, 'year', -1);
-            } else if (oldy < 0) {
-                this.state.date = this.timeDelta(newdatestring, 'year', 1);
-            }
-        } else {
-            this.state.date = newdatestring;
-        }
+        this.state.date = newdatestring;
 
         // if the current date is outside of the new range, set the date to the start/end of this range
         // that would implicitly redraw the slider, so also handle the date being in range and trigger the redraw too
@@ -840,6 +837,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
     zeroPadToLength: function (stringornumber, length) {
         const bits = (stringornumber + '').match(/^(\-?)(\d+)$/);
+        if (! bits) return stringornumber;
         let minus = '';
 
         if (bits.length == 2) {
@@ -879,28 +877,37 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
     formatDateShort: function (yyyymmdd) {
         const ymd = this.splitYmdParts(yyyymmdd);
-        const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
+        const bce = ymd[0] < 1 ? (' ' + this._translations.bce) : '';
+
+        let y = Math.abs(ymd[0]);
+        if (bce) y += 1;  // ISO 8601 = 0 is 1 bce, -1 is 2 bce, and so on
+        const m = ymd[1];
+        const d = ymd[2];
 
         switch (this._translations.dateformat) {
             case 'mdy':
-                return `${ymd[1]}/${ymd[2]}/${Math.abs(ymd[0])}${bce}`;
+                return `${m}/${d}/${y}${bce}`;
                 break;
             default:  // default = dmy
-                return `${ymd[2]}/${ymd[1]}/${Math.abs(ymd[0])}${bce}`;
+                return `${d}/${m}/${y}${bce}`;
                 break;
         }
     },
     formatDateLong: function (yyyymmdd) {
         const ymd = this.splitYmdParts(yyyymmdd);
+        const bce = ymd[0] < 1 ? (' ' + this._translations.bce) : '';
+
+        let y = Math.abs(ymd[0]);
+        if (bce) y += 1;  // ISO 8601 = 0 is 1 bce, -1 is 2 bce, and so on
         const m = this._translations.months[ ymd[1] - 1 ];
-        const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
+        const d = ymd[2];
 
         switch (this._translations.dateformat) {
             case 'mdy':
-                return `${m} ${ymd[2]}, ${Math.abs(ymd[0])}${bce}`;
+                return `${m} ${d}, ${y}${bce}`;
                 break;
             default:  // default = dmy
-                return `${ymd[2]} ${m} ${Math.abs(ymd[0])}${bce}`;
+                return `${d} ${m} ${y}${bce}`;
                 break;
         }
     },
@@ -940,22 +947,6 @@ L.Control.OHMTimeSlider = L.Control.extend({
             case 'day':
                 newdate.setDate(newdate.getDate() + amount);
                 break;
-        }
-
-        // there is no year 0
-        // skip year 0 if we're crossing it or landing on it
-        const newyear = newdate.getFullYear();
-        if (newyear == 0 && amount > 0) {
-            newdate.setFullYear(1);
-        }
-        else if (newyear == 0 && amount < 0) {
-            newdate.setFullYear(-1);
-        }
-        else if (y < 0 && newyear > 0) {
-            newdate.setFullYear( newyear + 1 );
-        }
-        else if (y > 0 && newyear < 0) {
-            newdate.setFullYear( newyear - 1 );
         }
 
         // split out the yyyy-mm-dd part and hand it back
