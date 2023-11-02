@@ -29,6 +29,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
 
         // preliminary sanity checks
         if (! this.options.vectorLayer) throw `OHMTimeSlider: missing required vectorLayer`;
+
         if (! this.isValidDate(this.options.date) ) throw 'OHMTimeSlider: date must be YYYY-MM-DD format';
         if (! this.isValidDate(this.options.range[0]) ) throw 'OHMTimeSlider: range lower date must be YYYY-MM-DD format';
         if (! this.isValidDate(this.options.range[1]) ) throw 'OHMTimeSlider: range upper date must be YYYY-MM-DD format';
@@ -121,7 +122,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         </div>
         <div class="leaflet-ohm-timeslider-slider-wrap">
             <div>
-                ${this.formatDateShortPlaceHolder()}
+                ${this._translations.ymd_placeholder_short}
                 <br/>
                 <span data-timeslider="rangestartreadout"></span>
             </div>
@@ -129,7 +130,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <input type="range" min="" max="" step="${this.constants.onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" aria-label="${this._translations.slider_description}" />
             </div>
             <div>
-                ${this.formatDateShortPlaceHolder()}
+                ${this._translations.ymd_placeholder_short}
                 <br/>
                 <span data-timeslider="rangeendreadout"></span>
             </div>
@@ -184,8 +185,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <hr />
                 <div class="leaflet-ohm-timeslider-modal-body">
                     <p>${this._translations.datepicker_text}</p>
-                    <p><input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" /></p>
-                    <p>${this._translations.datepicker_format_text}: ${this.formatDateShortPlaceHolder()}, yyyy-mm-dd</p>
+                    <p><input data-timeslider="datepicker" type="text" value="" autocomplete="off" /></p>
                     <hr />
                 </div>
                 <div class="leaflet-ohm-timeslider-modal-foot">
@@ -199,9 +199,11 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // attach events: change, press enter, slide, play and pause, ...
         this.controls = {};
         this.controls.slider = container.querySelector('[data-timeslider="slider"]');
+        this.controls.rangeminui = container.querySelector('div.leaflet-ohm-timeslider-rangeinputs-mindate');
         this.controls.rangeminmonth = container.querySelector('select[data-timeslider="rangeminmonth"]');
         this.controls.rangeminday = container.querySelector('input[data-timeslider="rangeminday"]');
         this.controls.rangeminyear = container.querySelector('input[data-timeslider="rangeminyear"]');
+        this.controls.rangemaxui = container.querySelector('div.leaflet-ohm-timeslider-rangeinputs-maxdate');
         this.controls.rangemaxmonth = container.querySelector('select[data-timeslider="rangemaxmonth"]');
         this.controls.rangemaxday = container.querySelector('input[data-timeslider="rangemaxday"]');
         this.controls.rangemaxyear = container.querySelector('input[data-timeslider="rangemaxyear"]');
@@ -325,13 +327,33 @@ L.Control.OHMTimeSlider = L.Control.extend({
             if (event.key == 'Escape') return this.controls.datepickerclose.click();
 
             // check if date string is valid, enable/disable the submit button
-            const isvalid = this.datepickerGetIsoDate();
-            if (isvalid) {
+            const yyyymmdd = this.controls.datepickerdatebox.value.trim();
+            if (this.isValidDate(yyyymmdd)) {
                 this.controls.datepickersubmit.disabled = false;
             } else {
                 this.controls.datepickersubmit.disabled = true;
             }
         });
+
+        // shuffle the layout, swapping the range elements' month & day pickers, to fit their browser's date format M/D/Y or D/M/Y
+        // the layout already in place above is M/D/Y so no action needed if that's still the case
+        this.preferreddateformat = 'mdy';
+        {
+            const testdate = new Date(Date.UTC(2000, 11, 31, 12, 0, 0, 0));
+            testdate.setFullYear(2000);
+            const formatted = new Intl.DateTimeFormat(navigator.languages, {year: 'numeric', month: 'numeric', day: 'numeric'}).format(testdate);
+            const dateparts = formatted.split(/\D/);
+
+            if (dateparts.indexOf('31') == 1) this.preferreddateformat = 'mdy';
+            else if (dateparts.indexOf('31') == 0) this.preferreddateformat = 'dmy';
+        }
+        if (this.preferreddateformat == 'dmy') {
+            this.controls.rangeminui.insertBefore(this.controls.rangeminday, this.controls.rangeminmonth);
+            this.controls.rangeminui.insertBefore(document.createTextNode(' '), this.controls.rangeminmonth);
+
+            this.controls.rangemaxui.insertBefore(this.controls.rangemaxday, this.controls.rangemaxmonth);
+            this.controls.rangemaxui.insertBefore(document.createTextNode(' '), this.controls.rangemaxmonth);
+        }
 
         // set up autoplay state
         this.autoplay = {};
@@ -370,23 +392,12 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
     setDate: function (newdatestring, redraw=true) {
         // validate, then set the date
-        // there is no year 0; if we're trying to use it, skip to 1 or -1
         const ymd = this.splitYmdParts(newdatestring);
         if (! this.isValidDate(newdatestring)) {
             console.error(`OHMTimeSlider: setDate() invalid date: ${newdatestring}`);
             return;
         }
-
-        if (ymd[0] == 0) {
-            const oldy = this.splitYmdParts(this.state.date)[0];
-            if (oldy > 0) {
-                this.state.date = this.timeDelta(newdatestring, 'year', -1);
-            } else if (oldy < 0) {
-                this.state.date = this.timeDelta(newdatestring, 'year', 1);
-            }
-        } else {
-            this.state.date = newdatestring;
-        }
+        this.state.date = newdatestring;
 
         // if the current date is outside of the new range, set the date to the start/end of this range
         // that would implicitly redraw the slider, so also handle the date being in range and trigger the redraw too
@@ -470,8 +481,8 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
     adjustDateRangeInputsForSelectedMonthAndYear: function () {
         // cap the day picker to the number of days in that month, accounting for leap years
-        const days_min = decimaldate.daysinmonth(this.controls.rangeminyear.value, this.controls.rangeminmonth.value);
-        const days_max = decimaldate.daysinmonth(this.controls.rangemaxyear.value, this.controls.rangemaxmonth.value);
+        const days_min = decimaldate.daysinmonth(parseInt(this.controls.rangeminyear.value), parseInt(this.controls.rangeminmonth.value));
+        const days_max = decimaldate.daysinmonth(parseInt(this.controls.rangemaxyear.value), parseInt(this.controls.rangemaxmonth.value));
 
         this.controls.rangeminday.max = days_min;
         this.controls.rangemaxday.max = days_max;
@@ -749,22 +760,8 @@ L.Control.OHMTimeSlider = L.Control.extend({
     // date picker modal
     //
     datepickerOpen: function () {
-        // fill the existing date into the box, but in m/d/y or d/m/y format depending on locale
-        const yyyymmdd = this.splitYmdParts(this.getDate());
-        let mdy;
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                mdy = `${yyyymmdd[1]}/${yyyymmdd[2]}/${yyyymmdd[0]}`;
-                break;
-            case 'dmy':
-                mdy = `${yyyymmdd[2]}/${yyyymmdd[1]}/${yyyymmdd[0]}`;
-                break;
-            default:
-                console.error(`Timeslider datepickerOpen(): unknown date format ${this._translations.dateformat}`);
-                mdy = "";
-                break;
-        }
-        this.controls.datepickerdatebox.value = mdy;
+        // fill the existing date into the box
+        this.controls.datepickerdatebox.value = this.getDate();
 
         // show the modal
         this._map._container.appendChild(this._datepickermodal);
@@ -782,49 +779,14 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.datepickeropen.focus();
     },
     datepickerSubmit: function () {
-        const yyyymmdd = this.datepickerGetIsoDate();
-        if (! yyyymmdd) return;
+        const yyyymmdd = this.controls.datepickerdatebox.value.trim();
+        if (! this.isValidDate(yyyymmdd)) return;
 
         // set the date; this will implicitly set the slider as needed to include the date
         this.setDate(yyyymmdd);
 
         // close the datepicker
         this.datepickerClose();
-    },
-    datepickerGetIsoDate: function () {
-        const entered = this.controls.datepickerdatebox.value.trim();
-        const yyyymmdd = this.localeDateToIsoDate(entered);
-        return yyyymmdd;
-
-    },
-    localeDateToIsoDate: function (localdate) {
-        // if the date is already in ISO format (presumed if there are - dashes instead of / slashes)
-        // then skip massaging it into shape
-        let yyyymmdd = "";
-        if (this.isValidDate(localdate)) {
-            yyyymmdd = localdate;
-        } else if (this._translations.dateformat == 'mdy') {
-            const bits = localdate.split('/');
-            if (bits && bits.length == 3) {
-                bits[2] = this.zeroPadToLength(bits[2], 4);
-                bits[1] = this.zeroPadToLength(bits[1], 2);
-                bits[0] = this.zeroPadToLength(bits[0], 2);
-                yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
-            }
-        } else if (this._translations.dateformat == 'dmy') {
-            const bits = localdate.split('/');
-            if (bits && bits.length == 3) {
-                bits[2] = this.zeroPadToLength(bits[2], 4);
-                bits[1] = this.zeroPadToLength(bits[1], 2);
-                bits[0] = this.zeroPadToLength(bits[0], 2);
-                yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
-            }
-        } else {
-            console.error(`Timeslider localeDateToIsoDate(): unknown date format ${this._translations.dateformat}`);
-            // now let it fail the isValidDate() check below
-        }
-
-        return this.isValidDate(yyyymmdd) ? yyyymmdd : null;
     },
 
     //
@@ -834,7 +796,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         if (! datestring.match(/^\-?\d{1,4}-\d\d\-\d\d$/)) return false;
 
         const ymd = this.splitYmdParts(datestring);
-        if (! decimaldate.isvalidmonthday(ymd[0], this.zeroPadToLength(ymd[1], 2), this.zeroPadToLength(ymd[2], 2))) return false;
+        let y = parseInt(ymd[0]); if (y <= 0) y -= 1;
+        const m = parseInt(ymd[1]);
+        const d = parseInt(ymd[2]);
+        if (! decimaldate.isvalidmonthday(y, m, d)) return false;
 
         return true;
     },
@@ -867,42 +832,25 @@ L.Control.OHMTimeSlider = L.Control.extend({
         else if (deccurrent > decrange[1]) return 1;
         else return 0;
     },
-    formatDateShortPlaceHolder: function (yyyymmdd) {
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                return 'mm/dd/yyyy';
-                break;
-            default:  // default = dmy
-                return 'dd/mm/yyyy';
-                break;
-        }
-    },
     formatDateShort: function (yyyymmdd) {
-        const ymd = this.splitYmdParts(yyyymmdd);
-        const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
+        const [y, m, d] = this.splitYmdParts(yyyymmdd);
+        const thedate = new Date(Date.UTC(y, m - 1, d));
+        thedate.setUTCFullYear(y);  // <100 we have to re-assert the constructor's misinterpretation
 
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                return `${ymd[1]}/${ymd[2]}/${Math.abs(ymd[0])}${bce}`;
-                break;
-            default:  // default = dmy
-                return `${ymd[2]}/${ymd[1]}/${Math.abs(ymd[0])}${bce}`;
-                break;
-        }
+        const formatoptions = {timeZone: 'UTC', year: 'numeric', month: 'numeric', day: 'numeric'};
+        if (y <= 0) formatoptions.era = 'short';
+
+        return new Intl.DateTimeFormat(navigator.languages, formatoptions).format(thedate);
     },
     formatDateLong: function (yyyymmdd) {
-        const ymd = this.splitYmdParts(yyyymmdd);
-        const m = this._translations.months[ ymd[1] - 1 ];
-        const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
+        const [y, m, d] = this.splitYmdParts(yyyymmdd);
+        const thedate = new Date(Date.UTC(y, m - 1, d));
+        thedate.setUTCFullYear(y);  // <100 we have to re-assert the constructor's misinterpretation
 
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                return `${m} ${ymd[2]}, ${Math.abs(ymd[0])}${bce}`;
-                break;
-            default:  // default = dmy
-                return `${ymd[2]} ${m} ${Math.abs(ymd[0])}${bce}`;
-                break;
-        }
+        const formatoptions = {timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric'};
+        if (y <= 0) formatoptions.era = 'short';
+
+        return new Intl.DateTimeFormat(navigator.languages, formatoptions).format(thedate);
     },
     splitYmdParts: function (yyyymmdd) {
         // tease apart Y/M/D given possible - at the start
@@ -940,22 +888,6 @@ L.Control.OHMTimeSlider = L.Control.extend({
             case 'day':
                 newdate.setDate(newdate.getDate() + amount);
                 break;
-        }
-
-        // there is no year 0
-        // skip year 0 if we're crossing it or landing on it
-        const newyear = newdate.getFullYear();
-        if (newyear == 0 && amount > 0) {
-            newdate.setFullYear(1);
-        }
-        else if (newyear == 0 && amount < 0) {
-            newdate.setFullYear(-1);
-        }
-        else if (y < 0 && newyear > 0) {
-            newdate.setFullYear( newyear + 1 );
-        }
-        else if (y > 0 && newyear < 0) {
-            newdate.setFullYear( newyear - 1 );
         }
 
         // split out the yyyy-mm-dd part and hand it back
@@ -1013,10 +945,10 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     datepicker_text: "Enter a new date to update the handle location and data displayed.",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     bce: "BCE",
-    dateformat: 'dmy',
+    ymd_placeholder_short: "dd/mm/yyyy",
 };
 L.Control.OHMTimeSlider.Translations['en-US'] = Object.assign({}, L.Control.OHMTimeSlider.Translations['en'], {
-    dateformat: 'mdy',
+    ymd_placeholder_short: "mm/dd/yyyy",
 });
 L.Control.OHMTimeSlider.Translations['en-CA'] = L.Control.OHMTimeSlider.Translations['en-US'];
 
@@ -1059,7 +991,7 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     datepicker_text: "Entra una nueva fecha para actualizar la ubicación del mango y los datos que se muestran.",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     bce: "aec",
-    dateformat: 'dmy',
+    ymd_placeholder_short: "dd/mm/aaaa",
 };
 
 L.Control.OHMTimeSlider.Translations['fr'] = {
@@ -1101,7 +1033,7 @@ L.Control.OHMTimeSlider.Translations['fr'] = {
     datepicker_text: "Saisissez une nouvelle date pour mettre à jour la position du curseur et les données affichées.",
     months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobere', 'Novembre', 'Décembre'],
     bce: "AEC",
-    dateformat: 'dmy',
+    ymd_placeholder_short: "jj/mm/aaaa",
 };
 L.Control.OHMTimeSlider.Translations['fr-CA'] = L.Control.OHMTimeSlider.Translations['fr'];
 L.Control.OHMTimeSlider.Translations['fr-BE'] = L.Control.OHMTimeSlider.Translations['fr'];

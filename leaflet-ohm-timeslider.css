@@ -162,8 +162,10 @@
         display: flex;
     }
     .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs div.leaflet-ohm-timeslider-rangeinputs-title {
+        line-height: 2;
     }
     .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs div.leaflet-ohm-timeslider-rangeinputs-separator {
+        line-height: 2;
     }
     .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-rangeinputs div.leaflet-ohm-timeslider-rangeinputs-mindate {
         padding-left: 10px;
@@ -434,7 +436,7 @@
 }
 
 .leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body {
-    padding: 20px 16px 0 16px;
+    padding: 0 16px 0 16px;
     font-size: 13px;
 }
 
