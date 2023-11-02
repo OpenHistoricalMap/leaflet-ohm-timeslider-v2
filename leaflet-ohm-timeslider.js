@@ -64,7 +64,6 @@ L.Control.OHMTimeSlider = L.Control.extend({
         const maxabsyear = Math.max(Math.abs(this.constants.minYear), Math.abs(this.constants.maxYear));
 
         // the BCE/CE pickers, get their options text from Intl.DateTimeFormat so it matches the displays in formatDateShort() and formatDateLong()
-// GDA
         const text_ce = this.getTextForCE();
         const text_bce = this.getTextForBCE();
 
@@ -201,7 +200,28 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <hr />
                 <div class="leaflet-ohm-timeslider-modal-body">
                     <p>${this._translations.datepicker_text}</p>
-                    <p><input data-timeslider="datepicker" type="text" value="" autocomplete="off" /></p>
+                    <select data-timeslider="datepickermonth" aria-label="${this._translations.datepicker_month}">
+                        <option value="01">${this._translations.months[0]}</option>
+                        <option value="02">${this._translations.months[1]}</option>
+                        <option value="03">${this._translations.months[2]}</option>
+                        <option value="04">${this._translations.months[3]}</option>
+                        <option value="05">${this._translations.months[4]}</option>
+                        <option value="06">${this._translations.months[5]}</option>
+                        <option value="07">${this._translations.months[6]}</option>
+                        <option value="08">${this._translations.months[7]}</option>
+                        <option value="09">${this._translations.months[8]}</option>
+                        <option value="10">${this._translations.months[9]}</option>
+                        <option value="11">${this._translations.months[10]}</option>
+                        <option value="12">${this._translations.months[11]}</option>
+                    </select>
+                    <input type="number" data-timeslider="datepickerday" min="1" max="31" step="1"  class="leaflet-ohm-timeslider-datepicker-day" aria-label="${this._translations.datepicker_day}" />
+                    <input type="number" data-timeslider="datepickeryear" min="1" max="${maxabsyear}" step="1" class="leaflet-ohm-timeslider-datepicker-year" aria-label="${this._translations.datepicker_year}" />
+                    <select data-timeslider="datepickercebce" aria-label="${this._translations.datepicker_cebce}">
+                        <option value="+">${text_ce}</option>
+                        <option value="-">${text_bce}</option>
+                    </select>
+
+                    <p></p>
                     <hr />
                 </div>
                 <div class="leaflet-ohm-timeslider-modal-foot">
@@ -240,7 +260,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.expandcollapse = container.querySelector('[data-timeslider="expandcollapse"]');
         this.controls.datepickeropen = container.querySelector('button[data-timeslider="datepickeropen"]');
         this.controls.datepickerclose = datepickermodal.querySelector('span[data-timeslider="datepickerclose"]');
-        this.controls.datepickerdatebox = datepickermodal.querySelector('input[data-timeslider="datepicker"]');
+        this.controls.datepickermonth = datepickermodal.querySelector('select[data-timeslider="datepickermonth"]');
+        this.controls.datepickerday = datepickermodal.querySelector('input[data-timeslider="datepickerday"]');
+        this.controls.datepickeryear = datepickermodal.querySelector('input[data-timeslider="datepickeryear"]');
+        this.controls.datepickercebce = datepickermodal.querySelector('select[data-timeslider="datepickercebce"]');
         this.controls.datepickersubmit = datepickermodal.querySelector('button[data-timeslider="datepickersubmit"]');
         this.controls.datepickercancel = datepickermodal.querySelector('button[data-timeslider="datepickercancel"]');
 
@@ -360,17 +383,21 @@ L.Control.OHMTimeSlider = L.Control.extend({
         L.DomEvent.on(this.controls.datepickersubmit, 'keydown', (event) => {
             if (event.key == 'Escape') this.controls.datepickerclose.click();
         });
-        L.DomEvent.on(this.controls.datepickerdatebox, 'keyup', (event) => {
-            if (event.key == 'Enter') return this.controls.datepickersubmit.click();
-            if (event.key == 'Escape') return this.controls.datepickerclose.click();
+        L.DomEvent.on(this.controls.datepickermonth, 'input', () => {
+            this.adjustDatePickerInputsForSelectedMonthAndYear();
+        });
+        L.DomEvent.on(this.controls.datepickerday, 'change', () => {
+            if (parseInt(this.controls.datepickerday.value) < parseInt(this.controls.datepickerday.min)) this.controls.datepickerday.value = this.controls.datepickerday.min;
+            else if (parseInt(this.controls.datepickerday.value) > parseInt(this.controls.datepickerday.max)) this.controls.datepickerday.value = this.controls.datepickerday.max;
+        });
+        L.DomEvent.on(this.controls.datepickeryear, 'change', () => {
+            if (parseInt(this.controls.datepickeryear.value) < parseInt(this.controls.datepickeryear.min)) this.controls.datepickeryear.value = this.controls.datepickeryear.min;
+            else if (parseInt(this.controls.datepickeryear.value) > parseInt(this.controls.datepickeryear.max)) this.controls.datepickeryear.value = this.controls.datepickeryear.max;
 
-            // check if date string is valid, enable/disable the submit button
-            const yyyymmdd = this.controls.datepickerdatebox.value.trim();
-            if (this.isValidDate(yyyymmdd)) {
-                this.controls.datepickersubmit.disabled = false;
-            } else {
-                this.controls.datepickersubmit.disabled = true;
-            }
+            this.adjustDatePickerInputsForSelectedMonthAndYear();
+        });
+        L.DomEvent.on(this.controls.datepickercebce, 'change', () => {
+            this.adjustDatePickerInputsForSelectedMonthAndYear();
         });
 
         // shuffle the layout, swapping the range elements' month & day pickers, to fit their browser's date format M/D/Y or D/M/Y
@@ -829,33 +856,65 @@ L.Control.OHMTimeSlider = L.Control.extend({
     // date picker modal
     //
     datepickerOpen: function () {
-        // fill the existing date into the box
-        this.controls.datepickerdatebox.value = this.getDate();
-
         // show the modal
         this._map._container.appendChild(this._datepickermodal);
 
-        // focus the date box for easy access
-        // do this in a timeout, or else we get a bug: focused date box, enter-press, causes instant submit
-        setTimeout(() =>{
-            this.controls.datepickerdatebox.focus();
-        }, 0.1 * 1000)
+        // set the date picker UI show the new range: year, month, day, bce/ce
+        // for BCE dates, ISO 8601 is off by 1 from what we want to show: 1 BCE = 0000, 2 BCE = -0001, ... so -1 to the year for display purposes
+        // conversely datepickerSubmit() will +1 to get from input value (500 BCE) to ISO value (-499)
+        const datebits = this.splitYmdParts(this.getDate());
+        const mincebce = parseInt(datebits[0]) < 0 ? '-' : '+';
+
+        let minyshow = parseInt(datebits[0]);
+        if (minyshow < 0) minyshow -= 1;
+
+        if (this.controls.datepickeryear.value != datebits[0]) this.controls.datepickeryear.value = Math.abs(minyshow);
+        if (this.controls.datepickermonth.value != datebits[1]) this.controls.datepickermonth.value = this.zeroPadToLength(datebits[1], 2);
+        if (this.controls.datepickerday.value != datebits[2]) this.controls.datepickerday.value = parseInt(datebits[2]);
+        if (this.controls.datepickercebce.value != mincebce) this.controls.datepickercebce.value = mincebce;
+
+        // focus the month picker for easy access for keyboard users
+        this.controls.datepickermonth.focus();
     },
     datepickerClose: function () {
+        // hide the modal
         this._map._container.removeChild(this._datepickermodal);
 
         // focus the picker-open button, since that's probably how we got to the modal to close it
         this.controls.datepickeropen.focus();
     },
     datepickerSubmit: function () {
-        const yyyymmdd = this.controls.datepickerdatebox.value.trim();
-        if (! this.isValidDate(yyyymmdd)) return;
+        // check that the year isn't out of range; if so, cap it
+        let year = parseInt(this.controls.datepickeryear.value);
+        if (this.controls.datepickercebce.value == '-') year *= -1;
+        if (year < this.constants.yearear) year = this.constants.yearear;
+        if (year > this.constants.maxYear) year = this.constants.maxYear;
+
+        const month = this.zeroPadToLength(this.controls.datepickermonth.value, 2);
+
+        const day = this.zeroPadToLength(this.controls.datepickerday.value, 2);
+
+        // concatenate to make the ISO string, since we already have them as 2-digit month & day, and year can be any number of digits
+        // the internal ISO date, if BCE then subtract 1 from abs(year) because ISO 8601 is offset by 1: 0000 is 1 BCE (-1), -0001 is 2 BCE (-2), and so on...
+        // conversely datepickerOpen() will -1 to get from ISO value (-499) to input value (500 BCE)
+        const yyyymmdd = `${year > 0 ? year : year + 1}-${month}-${day}`;
+        if (! this.isValidDate(yyyymmdd)) return console.error(`OHMTimeSlider datepickerSubmit() invalid date: ${yyyymmdd}`);
 
         // set the date; this will implicitly set the slider as needed to include the date
         this.setDate(yyyymmdd);
 
         // close the datepicker
         this.datepickerClose();
+    },
+    adjustDatePickerInputsForSelectedMonthAndYear: function () {
+        // cap the day picker to the number of days in that month, accounting for leap years and the CE/BCE picker
+        // then trigger a change event, to change their value if it is now out of range
+        let year = parseInt(this.controls.datepickeryear.value);
+        if (this.controls.datepickercebce.value == '-') year *= -1;
+        const month = parseInt(this.controls.datepickermonth.value);
+
+        this.controls.datepickerday.max = decimaldate.daysinmonth(year, month);
+        this.controls.datepickerday.dispatchEvent(new Event('change'));
     },
 
     //
@@ -1027,6 +1086,10 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     resetbutton_title: "Go to the start of the range",
     autoplay_submit_text: "Set",
     autoplay_submit_title: "Apply settings",
+    datepicker_month: "Month",
+    datepicker_day: "Day",
+    datepicker_year: "Year",
+    datepicker_cebce: "BCE/BC or CE/AD",
     datepicker_submit_text: "Update Date",
     datepicker_cancel_text: "Cancel",
     datepicker_title: "Change Date",
@@ -1047,11 +1110,11 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     daterange_min_month_title: "Selecciona en que mes debe comenzar la barra cronológica",
     daterange_min_day_title: "Selecciona en que día debe comenzar la barra cronológica",
     daterange_min_year_title: "Selecciona en que año debe comenzar la barra cronológica",
-    daterange_min_cebce_title: "Selecciona el año final de la barra cronológica inicio como e. c. or a. e. c.",
+    daterange_min_cebce_title: "Selecciona el año final de la barra cronológica inicio como a. C. o d. C.",
     daterange_max_month_title: "Selecciona en que mes debe terminar la barra cronológica",
     daterange_max_day_title: "Selecciona en que día debe terminar la barra cronológica",
     daterange_max_year_title: "Selecciona en que año debe terminar la barra cronológica",
-    daterange_max_cebce_title: "Selecciona el año de inicio de la barra cronológica como e. c. or a. e. c.",
+    daterange_max_cebce_title: "Selecciona el año de inicio de la barra cronológica como a. C. o d. C.",
     daterange_submit_text: "Aplicar",
     daterange_submit_title: "Aplicar la configuración",
     range_title: "Intervalo",
@@ -1074,6 +1137,10 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     resetbutton_title: "Ir al inicio del alcance",
     autoplay_submit_text: "Aplicar",
     autoplay_submit_title: "Aplicar la configuración",
+    datepicker_month: "Mes",
+    datepicker_day: "Día",
+    datepicker_year: "Año",
+    datepicker_cebce: "a. C. o d. C.",
     datepicker_submit_text: "Aplicar fecha",
     datepicker_cancel_text: "Cancelar",
     datepicker_title: "Cambiar fecha",
@@ -1090,11 +1157,11 @@ L.Control.OHMTimeSlider.Translations['fr'] = {
     daterange_min_month_title: "Plage du curseur, sélectionner le mois de début",
     daterange_min_day_title: "Plage du curseur, sélectionner le jour de début",
     daterange_min_year_title: "Plage du curseur, sélectionner l'année de début",
-    daterange_min_cebce_title: "Plage du curseur, sélectionner l'année comme EC ou AEC",
+    daterange_min_cebce_title: "Plage du curseur, sélectionner l'année comme ap. J.-C. ou av. J.-C.",
     daterange_max_month_title: "Plage du curseur, sélectionner le mois de fin",
     daterange_max_day_title: "Plage du curseur, sélectionner le jour de fin",
     daterange_max_year_title: "Plage du curseur, sélectionner l'année de fin",
-    daterange_max_cebce_title: "Plage du curseur, sélectionner l'année comme EC ou AEC",
+    daterange_max_cebce_title: "Plage du curseur, sélectionner l'année comme ap. J.-C. ou av. J.-C.",
     daterange_submit_text: "Définir",
     daterange_submit_title: "Appliquer les paramètres",
     range_title: "Plage",
@@ -1117,6 +1184,10 @@ L.Control.OHMTimeSlider.Translations['fr'] = {
     resetbutton_title: "Aller au début de la plage",
     autoplay_submit_text: "Définir",
     autoplay_submit_title: "Appliquer les paramètres",
+    datepicker_month: "Mois",
+    datepicker_day: "Jour",
+    datepicker_year: "Année",
+    datepicker_cebce: "ap. J.-C. ou av. J.-C.",
     datepicker_submit_text: "Appliquer la date",
     datepicker_cancel_text: "Annuler",
     datepicker_title: "Mettre à Jour Date",

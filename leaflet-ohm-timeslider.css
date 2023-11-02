@@ -500,18 +500,13 @@
  */
 
 .leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-panel {
-    max-width: 300px;
 }
-.leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-body input[type="text"] {
-    width: 100%;
+.leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-panel select {
+    padding: 2px 0;
 }
-
-.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p[data-timeslider="datepickerformatwarning"] {
+.leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-panel input[type="number"].leaflet-ohm-timeslider-datepicker-day {
+    width: 50px;
 }
-.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p[data-timeslider="datepickerformatwarning"]:not(.leaflet-ohm-timeslider-modal-warning) span {
-    display: none;
-}
-.leaflet-ohm-timeslider-modal .leaflet-ohm-timeslider-modal-content .leaflet-ohm-timeslider-modal-body p[data-timeslider="datepickerformatwarning"].leaflet-ohm-timeslider-modal-warning {
-    color: red;
-    font-weight: bold;
+.leaflet-ohm-timeslider-modal.leaflet-ohm-timeslider-datepicker .leaflet-ohm-timeslider-modal-panel input[type="number"].leaflet-ohm-timeslider-datepicker-year {
+    width: 66px;
 }
