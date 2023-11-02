@@ -258,7 +258,7 @@
 }
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-slider-wrap > div:first-child,
 .leaflet-ohm-timeslider div.leaflet-ohm-timeslider-slider-wrap > div:last-child {
-    width: 100px;
+    width: 125px;
     flex: 0 0 100px;
 
     font-size: 13px;
