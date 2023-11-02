@@ -4,7 +4,7 @@
 
 const decimaldate = {};
 
-decimaldate.DECIMALPLACES = 5;
+decimaldate.DECIMALPLACES = 6;
 
 decimaldate.RE_YEARMONTHDAY = /^(\-?\+?)(\d+)\-(\d\d)\-(\d\d)$/;
 
