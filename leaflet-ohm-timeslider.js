@@ -24,7 +24,13 @@ L.Control.OHMTimeSlider = L.Control.extend({
         }
 
         if (! this.options.date) {
-            this.options.date = this.options.range[0];
+            // Get today's date
+            let today = new Date();
+            // Subtract 100 years
+            today.setFullYear(today.getFullYear() - 100);
+            // Format the date as yyyy-mm-dd
+            let formattedDate = today.toISOString().split('T')[0];
+            this.options.date = formattedDate;
         }
 
         // preliminary sanity checks
