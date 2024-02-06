@@ -20,7 +20,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
 
         if (! this.options.range) {
             const current_year = (new Date()).getFullYear();
-            this.options.range = [`${current_year - 100}-01-01`, `${current_year}-12-31`];
+            this.options.range = [`${current_year - 200}-01-01`, `${current_year}-12-31`];
         }
 
         if (! this.options.date) {
