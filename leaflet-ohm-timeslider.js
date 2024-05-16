@@ -35,6 +35,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
 
         // preliminary sanity checks
         if (! this.options.vectorLayer) throw `OHMTimeSlider: missing required vectorLayer`;
+
         if (! this.isValidDate(this.options.date) ) throw 'OHMTimeSlider: date must be YYYY-MM-DD format';
         if (! this.isValidDate(this.options.range[0]) ) throw 'OHMTimeSlider: range lower date must be YYYY-MM-DD format';
         if (! this.isValidDate(this.options.range[1]) ) throw 'OHMTimeSlider: range upper date must be YYYY-MM-DD format';
@@ -65,6 +66,13 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.state.date = this.options.date;
         this.state.range = this.options.range;
 
+        // the max year to allow in the range picker inputs
+        const maxabsyear = Math.max(Math.abs(this.constants.minYear), Math.abs(this.constants.maxYear));
+
+        // the BCE/CE pickers, get their options text from Intl.DateTimeFormat so it matches the displays in formatDateShort() and formatDateLong()
+        const text_ce = this.getTextForCE();
+        const text_bce = this.getTextForBCE();
+
         // looks good
         // create the main container and the Change Date widget
         const container = L.DomUtil.create('div', 'leaflet-ohm-timeslider');
@@ -94,7 +102,11 @@ L.Control.OHMTimeSlider = L.Control.extend({
                     <option value="12">${this._translations.months[11]}</option>
                 </select>
                 <input type="number" data-timeslider="rangeminday" min="1" max="31" step="1"  class="leaflet-ohm-timeslider-rangeinputs-day" aria-label="${this._translations.daterange_min_day_title}" />
-                <input type="number" data-timeslider="rangeminyear" min="${this.constants.minYear}" max="${this.constants.maxYear}" step="1" class="leaflet-ohm-timeslider-rangeinputs-year" aria-label="${this._translations.daterange_min_year_title}" />
+                <input type="number" data-timeslider="rangeminyear" min="1" max="${maxabsyear}" step="1" class="leaflet-ohm-timeslider-rangeinputs-year" aria-label="${this._translations.daterange_min_year_title}" />
+                <select data-timeslider="rangemincebce" aria-label="${this._translations.daterange_min_cebce_title}">
+                    <option value="+">${text_ce}</option>
+                    <option value="-">${text_bce}</option>
+                </select>
             </div>
             <div class="leaflet-ohm-timeslider-rangeinputs-separator">
                 -
@@ -115,7 +127,11 @@ L.Control.OHMTimeSlider = L.Control.extend({
                     <option value="12">${this._translations.months[11]}</option>
                 </select>
                 <input type="number" data-timeslider="rangemaxday" min="1" max="31" step="1" class="leaflet-ohm-timeslider-rangeinputs-day" aria-label="${this._translations.daterange_max_day_title}" />
-                <input type="number" data-timeslider="rangemaxyear" min="${this.constants.minYear}" max="${this.constants.maxYear}" step="1" class="leaflet-ohm-timeslider-rangeinputs-year" aria-label="${this._translations.daterange_max_year_title}" />
+                <input type="number" data-timeslider="rangemaxyear" min="1" max="${maxabsyear}" step="1" class="leaflet-ohm-timeslider-rangeinputs-year" aria-label="${this._translations.daterange_max_year_title}" />
+                <select data-timeslider="rangemaxcebce" aria-label="${this._translations.daterange_max_cebce_title}">
+                    <option value="+">${text_ce}</option>
+                    <option value="-">${text_bce}</option>
+                </select>
             </div>
             <div class="leaflet-ohm-timeslider-rangeinputs-submit">
                 <button data-timeslider="rangesubmit" aria-label="${this._translations.daterange_submit_title}">${this._translations.daterange_submit_text}</button>
@@ -127,7 +143,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         </div>
         <div class="leaflet-ohm-timeslider-slider-wrap">
             <div>
-                ${this.formatDateShortPlaceHolder()}
+                ${this._translations.ymd_placeholder_short}
                 <br/>
                 <span data-timeslider="rangestartreadout"></span>
             </div>
@@ -135,7 +151,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <input type="range" min="" max="" step="${this.constants.onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" aria-label="${this._translations.slider_description}" />
             </div>
             <div>
-                ${this.formatDateShortPlaceHolder()}
+                ${this._translations.ymd_placeholder_short}
                 <br/>
                 <span data-timeslider="rangeendreadout"></span>
             </div>
@@ -190,8 +206,28 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 <hr />
                 <div class="leaflet-ohm-timeslider-modal-body">
                     <p>${this._translations.datepicker_text}</p>
-                    <p><input data-timeslider="datepicker" type="text" placeholder="${this.formatDateShortPlaceHolder()}" value="" autocomplete="off" /></p>
-                    <p>${this._translations.datepicker_format_text}: ${this.formatDateShortPlaceHolder()}, yyyy-mm-dd</p>
+                    <select data-timeslider="datepickermonth" aria-label="${this._translations.datepicker_month}">
+                        <option value="01">${this._translations.months[0]}</option>
+                        <option value="02">${this._translations.months[1]}</option>
+                        <option value="03">${this._translations.months[2]}</option>
+                        <option value="04">${this._translations.months[3]}</option>
+                        <option value="05">${this._translations.months[4]}</option>
+                        <option value="06">${this._translations.months[5]}</option>
+                        <option value="07">${this._translations.months[6]}</option>
+                        <option value="08">${this._translations.months[7]}</option>
+                        <option value="09">${this._translations.months[8]}</option>
+                        <option value="10">${this._translations.months[9]}</option>
+                        <option value="11">${this._translations.months[10]}</option>
+                        <option value="12">${this._translations.months[11]}</option>
+                    </select>
+                    <input type="number" data-timeslider="datepickerday" min="1" max="31" step="1"  class="leaflet-ohm-timeslider-datepicker-day" aria-label="${this._translations.datepicker_day}" />
+                    <input type="number" data-timeslider="datepickeryear" min="1" max="${maxabsyear}" step="1" class="leaflet-ohm-timeslider-datepicker-year" aria-label="${this._translations.datepicker_year}" />
+                    <select data-timeslider="datepickercebce" aria-label="${this._translations.datepicker_cebce}">
+                        <option value="+">${text_ce}</option>
+                        <option value="-">${text_bce}</option>
+                    </select>
+
+                    <p></p>
                     <hr />
                 </div>
                 <div class="leaflet-ohm-timeslider-modal-foot">
@@ -205,12 +241,16 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // attach events: change, press enter, slide, play and pause, ...
         this.controls = {};
         this.controls.slider = container.querySelector('[data-timeslider="slider"]');
+        this.controls.rangeminui = container.querySelector('div.leaflet-ohm-timeslider-rangeinputs-mindate');
         this.controls.rangeminmonth = container.querySelector('select[data-timeslider="rangeminmonth"]');
         this.controls.rangeminday = container.querySelector('input[data-timeslider="rangeminday"]');
         this.controls.rangeminyear = container.querySelector('input[data-timeslider="rangeminyear"]');
+        this.controls.rangemincebce = container.querySelector('select[data-timeslider="rangemincebce"]');
+        this.controls.rangemaxui = container.querySelector('div.leaflet-ohm-timeslider-rangeinputs-maxdate');
         this.controls.rangemaxmonth = container.querySelector('select[data-timeslider="rangemaxmonth"]');
         this.controls.rangemaxday = container.querySelector('input[data-timeslider="rangemaxday"]');
         this.controls.rangemaxyear = container.querySelector('input[data-timeslider="rangemaxyear"]');
+        this.controls.rangemaxcebce = container.querySelector('select[data-timeslider="rangemaxcebce"]');
         this.controls.rangesubmit = container.querySelector('button[data-timeslider="rangesubmit"]');
         this.controls.playbutton = container.querySelector('[data-timeslider="play"]');
         this.controls.pausebutton = container.querySelector('[data-timeslider="pause"]');
@@ -226,7 +266,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.expandcollapse = container.querySelector('[data-timeslider="expandcollapse"]');
         this.controls.datepickeropen = container.querySelector('button[data-timeslider="datepickeropen"]');
         this.controls.datepickerclose = datepickermodal.querySelector('span[data-timeslider="datepickerclose"]');
-        this.controls.datepickerdatebox = datepickermodal.querySelector('input[data-timeslider="datepicker"]');
+        this.controls.datepickermonth = datepickermodal.querySelector('select[data-timeslider="datepickermonth"]');
+        this.controls.datepickerday = datepickermodal.querySelector('input[data-timeslider="datepickerday"]');
+        this.controls.datepickeryear = datepickermodal.querySelector('input[data-timeslider="datepickeryear"]');
+        this.controls.datepickercebce = datepickermodal.querySelector('select[data-timeslider="datepickercebce"]');
         this.controls.datepickersubmit = datepickermodal.querySelector('button[data-timeslider="datepickersubmit"]');
         this.controls.datepickercancel = datepickermodal.querySelector('button[data-timeslider="datepickercancel"]');
 
@@ -236,26 +279,46 @@ L.Control.OHMTimeSlider = L.Control.extend({
         L.DomEvent.on(this.controls.rangesubmit, 'keydown', (event) => {
             if (event.key == 'Enter' || event.key == 'Space') event.target.click();
         });
+        L.DomEvent.on(this.controls.rangeminyear, 'change', () => {
+            if (parseInt(this.controls.rangeminyear.value) < parseInt(this.controls.rangeminyear.min)) this.controls.rangeminyear.value = this.controls.rangeminyear.min;
+            else if (parseInt(this.controls.rangeminyear.value) > parseInt(this.controls.rangeminyear.max)) this.controls.rangeminyear.value = this.controls.rangeminyear.max;
+
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
+            this.setDateRangeFormAsOutOfSync(true);
+        });
         L.DomEvent.on(this.controls.rangeminmonth, 'input', () => {
             this.adjustDateRangeInputsForSelectedMonthAndYear();
             this.setDateRangeFormAsOutOfSync(true);
         });
-        L.DomEvent.on(this.controls.rangeminyear, 'input', () => {
+        L.DomEvent.on(this.controls.rangeminday, 'change', () => {
+            if (parseInt(this.controls.rangeminday.value) < parseInt(this.controls.rangeminday.min)) this.controls.rangeminday.value = this.controls.rangeminday.min;
+            else if (parseInt(this.controls.rangeminday.value) > parseInt(this.controls.rangeminday.max)) this.controls.rangeminday.value = this.controls.rangeminday.max;
+
+            this.setDateRangeFormAsOutOfSync(true);
+        });
+        L.DomEvent.on(this.controls.rangemincebce, 'change', () => {
             this.adjustDateRangeInputsForSelectedMonthAndYear();
             this.setDateRangeFormAsOutOfSync(true);
         });
-        L.DomEvent.on(this.controls.rangeminday, 'input', () => {
+        L.DomEvent.on(this.controls.rangemaxyear, 'change', () => {
+            if (parseInt(this.controls.rangemaxyear.value) < parseInt(this.controls.rangemaxyear.min)) this.controls.rangemaxyear.value = this.controls.rangemaxyear.min;
+            else if (parseInt(this.controls.rangemaxyear.value) > parseInt(this.controls.rangemaxyear.max)) this.controls.rangemaxyear.value = this.controls.rangemaxyear.max;
+
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
             this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.rangemaxmonth, 'input', () => {
             this.adjustDateRangeInputsForSelectedMonthAndYear();
             this.setDateRangeFormAsOutOfSync(true);
         });
-        L.DomEvent.on(this.controls.rangemaxyear, 'input', () => {
-            this.adjustDateRangeInputsForSelectedMonthAndYear();
+        L.DomEvent.on(this.controls.rangemaxday, 'change', () => {
+            if (parseInt(this.controls.rangemaxday.value) < parseInt(this.controls.rangemaxday.min)) this.controls.rangemaxday.value = this.controls.rangemaxday.min;
+            else if (parseInt(this.controls.rangemaxday.value) > parseInt(this.controls.rangemaxday.max)) this.controls.rangemaxday.value = this.controls.rangemaxday.max;
+
             this.setDateRangeFormAsOutOfSync(true);
         });
-        L.DomEvent.on(this.controls.rangemaxday, 'input', () => {
+        L.DomEvent.on(this.controls.rangemaxcebce, 'change', () => {
+            this.adjustDateRangeInputsForSelectedMonthAndYear();
             this.setDateRangeFormAsOutOfSync(true);
         });
         L.DomEvent.on(this.controls.slider, 'input', () => {
@@ -326,18 +389,42 @@ L.Control.OHMTimeSlider = L.Control.extend({
         L.DomEvent.on(this.controls.datepickersubmit, 'keydown', (event) => {
             if (event.key == 'Escape') this.controls.datepickerclose.click();
         });
-        L.DomEvent.on(this.controls.datepickerdatebox, 'keyup', (event) => {
-            if (event.key == 'Enter') return this.controls.datepickersubmit.click();
-            if (event.key == 'Escape') return this.controls.datepickerclose.click();
-
-            // check if date string is valid, enable/disable the submit button
-            const isvalid = this.datepickerGetIsoDate();
-            if (isvalid) {
-                this.controls.datepickersubmit.disabled = false;
-            } else {
-                this.controls.datepickersubmit.disabled = true;
-            }
+        L.DomEvent.on(this.controls.datepickermonth, 'input', () => {
+            this.adjustDatePickerInputsForSelectedMonthAndYear();
         });
+        L.DomEvent.on(this.controls.datepickerday, 'change', () => {
+            if (parseInt(this.controls.datepickerday.value) < parseInt(this.controls.datepickerday.min)) this.controls.datepickerday.value = this.controls.datepickerday.min;
+            else if (parseInt(this.controls.datepickerday.value) > parseInt(this.controls.datepickerday.max)) this.controls.datepickerday.value = this.controls.datepickerday.max;
+        });
+        L.DomEvent.on(this.controls.datepickeryear, 'change', () => {
+            if (parseInt(this.controls.datepickeryear.value) < parseInt(this.controls.datepickeryear.min)) this.controls.datepickeryear.value = this.controls.datepickeryear.min;
+            else if (parseInt(this.controls.datepickeryear.value) > parseInt(this.controls.datepickeryear.max)) this.controls.datepickeryear.value = this.controls.datepickeryear.max;
+
+            this.adjustDatePickerInputsForSelectedMonthAndYear();
+        });
+        L.DomEvent.on(this.controls.datepickercebce, 'change', () => {
+            this.adjustDatePickerInputsForSelectedMonthAndYear();
+        });
+
+        // shuffle the layout, swapping the range elements' month & day pickers, to fit their browser's date format M/D/Y or D/M/Y
+        // the layout already in place above is M/D/Y so no action needed if that's still the case
+        this.preferreddateformat = 'mdy';
+        {
+            const testdate = new Date(Date.UTC(2000, 11, 31, 12, 0, 0, 0));
+            testdate.setFullYear(2000);
+            const formatted = new Intl.DateTimeFormat(navigator.languages, {year: 'numeric', month: 'numeric', day: 'numeric'}).format(testdate);
+            const dateparts = formatted.split(/\D/);
+
+            if (dateparts.indexOf('31') == 1) this.preferreddateformat = 'mdy';
+            else if (dateparts.indexOf('31') == 0) this.preferreddateformat = 'dmy';
+        }
+        if (this.preferreddateformat == 'dmy') {
+            this.controls.rangeminui.insertBefore(this.controls.rangeminday, this.controls.rangeminmonth);
+            this.controls.rangeminui.insertBefore(document.createTextNode(' '), this.controls.rangeminmonth);
+
+            this.controls.rangemaxui.insertBefore(this.controls.rangemaxday, this.controls.rangemaxmonth);
+            this.controls.rangemaxui.insertBefore(document.createTextNode(' '), this.controls.rangemaxmonth);
+        }
 
         // set up autoplay state
         this.autoplay = {};
@@ -376,23 +463,12 @@ L.Control.OHMTimeSlider = L.Control.extend({
     },
     setDate: function (newdatestring, redraw=true) {
         // validate, then set the date
-        // there is no year 0; if we're trying to use it, skip to 1 or -1
         const ymd = this.splitYmdParts(newdatestring);
         if (! this.isValidDate(newdatestring)) {
             console.error(`OHMTimeSlider: setDate() invalid date: ${newdatestring}`);
             return;
         }
-
-        if (ymd[0] == 0) {
-            const oldy = this.splitYmdParts(this.state.date)[0];
-            if (oldy > 0) {
-                this.state.date = this.timeDelta(newdatestring, 'year', -1);
-            } else if (oldy < 0) {
-                this.state.date = this.timeDelta(newdatestring, 'year', 1);
-            }
-        } else {
-            this.state.date = newdatestring;
-        }
+        this.state.date = newdatestring;
 
         // if the current date is outside of the new range, set the date to the start/end of this range
         // that would implicitly redraw the slider, so also handle the date being in range and trigger the redraw too
@@ -457,33 +533,50 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.setDate(newdatestring, redraw);
     },
     setRangeFromSelectors: function () {
-        const y1 = this.controls.rangeminyear.value;
-        const m1 = this.controls.rangeminmonth.value;
-        const d1 = this.zeroPadToLength(this.controls.rangeminday.value, 2);
+        // check that the year isn't out of range; if so, cap it
+        let miny = parseInt(this.controls.rangeminyear.value);
+        if (this.controls.rangemincebce.value == '-') miny *= -1;
+        if (miny < this.constants.minYear) miny = this.constants.minYear;
+        if (miny > this.constants.maxYear) miny = this.constants.maxYear;
 
-        const y2 = this.controls.rangemaxyear.value;
-        const m2 = this.controls.rangemaxmonth.value;
-        const d2 = this.zeroPadToLength(this.controls.rangemaxday.value, 2);
+        let maxy = parseInt(this.controls.rangemaxyear.value);
+        if (this.controls.rangemaxcebce.value == '-') maxy *= -1;
+        if (maxy < this.constants.minYear) maxy = this.constants.minYear;
+        if (maxy > this.constants.maxYear) maxy = this.constants.maxYear;
 
-        if (! y1 || isNaN(y1) || y1 > this.constants.maxYear || y1 < this.constants.minYear) return console.error(`OHMTimeSlider setRangeFromSelectors() ignoring invalid year: ${y1}`);
-        if (! y2 || isNaN(y2) || y2 > this.constants.maxYear || y2 < this.constants.minYear) return console.error(`OHMTimeSlider setRangeFromSelectors() ignoring invalid year: ${y2}`);
+        const minm = this.zeroPadToLength(this.controls.rangeminmonth.value, 2);
+        const maxm = this.zeroPadToLength(this.controls.rangemaxmonth.value, 2);
 
-        const mindate = `${y1}-${m1}-${d1}`;
-        const maxdate = `${y2}-${m2}-${d2}`;
+        const mind = this.zeroPadToLength(this.controls.rangeminday.value, 2);
+        const maxd = this.zeroPadToLength(this.controls.rangemaxday.value, 2);
+
+        // concatenate to make the ISO string, since we already have them as 2-digit month & day, and year can be any number of digits
+        // the internal ISO date, if BCE then subtract 1 from abs(year) because ISO 8601 is offset by 1: 0000 is 1 BCE (-1), -0001 is 2 BCE (-2), and so on...
+        // conversely refreshUiAndFiltering() will -1 to get from ISO value (-499) to input value (500 BCE)
+        const mindate = `${miny > 0 ? miny : miny + 1}-${minm}-${mind}`;
+        const maxdate = `${maxy > 0 ? maxy : maxy + 1}-${maxm}-${maxd}`;
+
+        if (! this.isValidDate(mindate)) return console.error(`OHMTimeSlider setRangeFromSelectors() invalid date: ${mindate}`);
+        if (! this.isValidDate(maxdate)) return console.error(`OHMTimeSlider setRangeFromSelectors() invalid date: ${maxdate}`);
+
         this.setRange([ mindate, maxdate ]);
-
         this.setDateRangeFormAsOutOfSync(false);
     },
     adjustDateRangeInputsForSelectedMonthAndYear: function () {
-        // cap the day picker to the number of days in that month, accounting for leap years
-        const days_min = decimaldate.daysinmonth(this.controls.rangeminyear.value, this.controls.rangeminmonth.value);
-        const days_max = decimaldate.daysinmonth(this.controls.rangemaxyear.value, this.controls.rangemaxmonth.value);
+        // cap the day picker to the number of days in that month, accounting for leap years and the CE/BCE picker
+        // then trigger a change event, to change their value if it is now out of range
+        let miny = parseInt(this.controls.rangeminyear.value);
+        if (this.controls.rangemincebce.value == '-') miny *= -1;
+        const minm = parseInt(this.controls.rangeminmonth.value);
 
-        this.controls.rangeminday.max = days_min;
-        this.controls.rangemaxday.max = days_max;
+        let maxy = parseInt(this.controls.rangemaxyear.value);
+        if (this.controls.rangemaxcebce.value == '-') maxy *= -1;
+        const maxm = parseInt(this.controls.rangemaxmonth.value);
 
-        if (parseInt(this.controls.rangeminday.value) > days_min) this.controls.rangeminday.value = days_min;
-        if (parseInt(this.controls.rangemaxday.value) > days_max) this.controls.rangemaxday.value = days_max;
+        this.controls.rangeminday.max = decimaldate.daysinmonth(miny, minm);
+        this.controls.rangemaxday.max = decimaldate.daysinmonth(maxy, maxm);
+        this.controls.rangeminday.dispatchEvent(new Event('change'));
+        this.controls.rangemaxday.dispatchEvent(new Event('change'));
     },
     setDateRangeFormAsOutOfSync: function (outofsync) {
         // color the Set button to show that they need to click it
@@ -494,20 +587,34 @@ L.Control.OHMTimeSlider = L.Control.extend({
         }
     },
     refreshUiAndFiltering: function () {
-        // redraw the UI, setting the slider to the new date range & selected date
-        // then apply filtering
+        // redraw the UI
+        // set the range controls to the internal range
+        // set the slider to the new date range & selected date
+        // apply filtering
 
         // set the date selectors to show the new range: year, month, day for start & end of range
         const rangeminymd = this.splitYmdParts(this.state.range[0]);
         const rangemaxymd = this.splitYmdParts(this.state.range[1]);
 
-        if (this.controls.rangeminyear.value != rangeminymd[0]) this.controls.rangeminyear.value = rangeminymd[0];
-        if (this.controls.rangeminmonth.value != rangeminymd[1]) this.controls.rangeminmonth.value = this.zeroPadToLength(rangeminymd[1], 2);
-        if (this.controls.rangeminday.value != rangeminymd[2]) this.controls.rangeminday.value = rangeminymd[2];
+        const mincebce = parseInt(rangeminymd[0]) < 0 ? '-' : '+';
+        const maxcebce = parseInt(rangemaxymd[0]) < 0 ? '-' : '+';
 
-        if (this.controls.rangemaxyear.value != rangemaxymd[0]) this.controls.rangemaxyear.value = rangemaxymd[0];
+        // for BCE dates, ISO 8601 is off by 1 from what we want to show: 1 BCE = 0000, 2 BCE = -0001, ... so -1 to the year for display purposes
+        // conversely setRangeFromSelectors() will +1 to get from input value (500 BCE) to ISO value (-499)
+        let minyshow = parseInt(rangeminymd[0]);
+        let maxyshow = parseInt(rangemaxymd[0]);
+        if (minyshow < 0) minyshow -= 1;
+        if (maxyshow < 0) maxyshow -= 1;
+
+        if (this.controls.rangeminyear.value != rangeminymd[0]) this.controls.rangeminyear.value = Math.abs(minyshow);
+        if (this.controls.rangeminmonth.value != rangeminymd[1]) this.controls.rangeminmonth.value = this.zeroPadToLength(rangeminymd[1], 2);
+        if (this.controls.rangeminday.value != rangeminymd[2]) this.controls.rangeminday.value = parseInt(rangeminymd[2]);
+        if (this.controls.rangemincebce.value != mincebce) this.controls.rangemincebce.value = mincebce;
+
+        if (this.controls.rangemaxyear.value != rangemaxymd[0]) this.controls.rangemaxyear.value = Math.abs(maxyshow);
         if (this.controls.rangemaxmonth.value != rangemaxymd[1]) this.controls.rangemaxmonth.value = this.zeroPadToLength(rangemaxymd[1], 2);
-        if (this.controls.rangemaxday.value != rangemaxymd[2]) this.controls.rangemaxday.value = rangemaxymd[2];
+        if (this.controls.rangemaxday.value != rangemaxymd[2]) this.controls.rangemaxday.value = parseInt(rangemaxymd[2]);
+        if (this.controls.rangemaxcebce.value != maxcebce) this.controls.rangemaxcebce.value = maxcebce;
 
         // adjust the slider and position the handle, to the current range & date
         const decrange = this.getRange(true);
@@ -755,41 +862,49 @@ L.Control.OHMTimeSlider = L.Control.extend({
     // date picker modal
     //
     datepickerOpen: function () {
-        // fill the existing date into the box, but in m/d/y or d/m/y format depending on locale
-        const yyyymmdd = this.splitYmdParts(this.getDate());
-        let mdy;
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                mdy = `${yyyymmdd[1]}/${yyyymmdd[2]}/${yyyymmdd[0]}`;
-                break;
-            case 'dmy':
-                mdy = `${yyyymmdd[2]}/${yyyymmdd[1]}/${yyyymmdd[0]}`;
-                break;
-            default:
-                console.error(`Timeslider datepickerOpen(): unknown date format ${this._translations.dateformat}`);
-                mdy = "";
-                break;
-        }
-        this.controls.datepickerdatebox.value = mdy;
-
         // show the modal
         this._map._container.appendChild(this._datepickermodal);
 
-        // focus the date box for easy access
-        // do this in a timeout, or else we get a bug: focused date box, enter-press, causes instant submit
-        setTimeout(() =>{
-            this.controls.datepickerdatebox.focus();
-        }, 0.1 * 1000)
+        // set the date picker UI show the new range: year, month, day, bce/ce
+        // for BCE dates, ISO 8601 is off by 1 from what we want to show: 1 BCE = 0000, 2 BCE = -0001, ... so -1 to the year for display purposes
+        // conversely datepickerSubmit() will +1 to get from input value (500 BCE) to ISO value (-499)
+        const datebits = this.splitYmdParts(this.getDate());
+        const mincebce = parseInt(datebits[0]) < 0 ? '-' : '+';
+
+        let minyshow = parseInt(datebits[0]);
+        if (minyshow < 0) minyshow -= 1;
+
+        if (this.controls.datepickeryear.value != datebits[0]) this.controls.datepickeryear.value = Math.abs(minyshow);
+        if (this.controls.datepickermonth.value != datebits[1]) this.controls.datepickermonth.value = this.zeroPadToLength(datebits[1], 2);
+        if (this.controls.datepickerday.value != datebits[2]) this.controls.datepickerday.value = parseInt(datebits[2]);
+        if (this.controls.datepickercebce.value != mincebce) this.controls.datepickercebce.value = mincebce;
+
+        // focus the month picker for easy access for keyboard users
+        this.controls.datepickermonth.focus();
     },
     datepickerClose: function () {
+        // hide the modal
         this._map._container.removeChild(this._datepickermodal);
 
         // focus the picker-open button, since that's probably how we got to the modal to close it
         this.controls.datepickeropen.focus();
     },
     datepickerSubmit: function () {
-        const yyyymmdd = this.datepickerGetIsoDate();
-        if (! yyyymmdd) return;
+        // check that the year isn't out of range; if so, cap it
+        let year = parseInt(this.controls.datepickeryear.value);
+        if (this.controls.datepickercebce.value == '-') year *= -1;
+        if (year < this.constants.yearear) year = this.constants.yearear;
+        if (year > this.constants.maxYear) year = this.constants.maxYear;
+
+        const month = this.zeroPadToLength(this.controls.datepickermonth.value, 2);
+
+        const day = this.zeroPadToLength(this.controls.datepickerday.value, 2);
+
+        // concatenate to make the ISO string, since we already have them as 2-digit month & day, and year can be any number of digits
+        // the internal ISO date, if BCE then subtract 1 from abs(year) because ISO 8601 is offset by 1: 0000 is 1 BCE (-1), -0001 is 2 BCE (-2), and so on...
+        // conversely datepickerOpen() will -1 to get from ISO value (-499) to input value (500 BCE)
+        const yyyymmdd = `${year > 0 ? year : year + 1}-${month}-${day}`;
+        if (! this.isValidDate(yyyymmdd)) return console.error(`OHMTimeSlider datepickerSubmit() invalid date: ${yyyymmdd}`);
 
         // set the date; this will implicitly set the slider as needed to include the date
         this.setDate(yyyymmdd);
@@ -797,40 +912,15 @@ L.Control.OHMTimeSlider = L.Control.extend({
         // close the datepicker
         this.datepickerClose();
     },
-    datepickerGetIsoDate: function () {
-        const entered = this.controls.datepickerdatebox.value.trim();
-        const yyyymmdd = this.localeDateToIsoDate(entered);
-        return yyyymmdd;
+    adjustDatePickerInputsForSelectedMonthAndYear: function () {
+        // cap the day picker to the number of days in that month, accounting for leap years and the CE/BCE picker
+        // then trigger a change event, to change their value if it is now out of range
+        let year = parseInt(this.controls.datepickeryear.value);
+        if (this.controls.datepickercebce.value == '-') year *= -1;
+        const month = parseInt(this.controls.datepickermonth.value);
 
-    },
-    localeDateToIsoDate: function (localdate) {
-        // if the date is already in ISO format (presumed if there are - dashes instead of / slashes)
-        // then skip massaging it into shape
-        let yyyymmdd = "";
-        if (this.isValidDate(localdate)) {
-            yyyymmdd = localdate;
-        } else if (this._translations.dateformat == 'mdy') {
-            const bits = localdate.split('/');
-            if (bits && bits.length == 3) {
-                bits[2] = this.zeroPadToLength(bits[2], 4);
-                bits[1] = this.zeroPadToLength(bits[1], 2);
-                bits[0] = this.zeroPadToLength(bits[0], 2);
-                yyyymmdd = `${bits[2]}-${bits[0]}-${bits[1]}`;
-            }
-        } else if (this._translations.dateformat == 'dmy') {
-            const bits = localdate.split('/');
-            if (bits && bits.length == 3) {
-                bits[2] = this.zeroPadToLength(bits[2], 4);
-                bits[1] = this.zeroPadToLength(bits[1], 2);
-                bits[0] = this.zeroPadToLength(bits[0], 2);
-                yyyymmdd = `${bits[2]}-${bits[1]}-${bits[0]}`;
-            }
-        } else {
-            console.error(`Timeslider localeDateToIsoDate(): unknown date format ${this._translations.dateformat}`);
-            // now let it fail the isValidDate() check below
-        }
-
-        return this.isValidDate(yyyymmdd) ? yyyymmdd : null;
+        this.controls.datepickerday.max = decimaldate.daysinmonth(year, month);
+        this.controls.datepickerday.dispatchEvent(new Event('change'));
     },
 
     //
@@ -840,7 +930,10 @@ L.Control.OHMTimeSlider = L.Control.extend({
         if (! datestring.match(/^\-?\d{1,4}-\d\d\-\d\d$/)) return false;
 
         const ymd = this.splitYmdParts(datestring);
-        if (! decimaldate.isvalidmonthday(ymd[0], this.zeroPadToLength(ymd[1], 2), this.zeroPadToLength(ymd[2], 2))) return false;
+        let y = parseInt(ymd[0]); if (y <= 0) y -= 1;
+        const m = parseInt(ymd[1]);
+        const d = parseInt(ymd[2]);
+        if (! decimaldate.isvalidmonthday(y, m, d)) return false;
 
         return true;
     },
@@ -873,42 +966,43 @@ L.Control.OHMTimeSlider = L.Control.extend({
         else if (deccurrent > decrange[1]) return 1;
         else return 0;
     },
-    formatDateShortPlaceHolder: function (yyyymmdd) {
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                return 'mm/dd/yyyy';
-                break;
-            default:  // default = dmy
-                return 'dd/mm/yyyy';
-                break;
-        }
-    },
     formatDateShort: function (yyyymmdd) {
-        const ymd = this.splitYmdParts(yyyymmdd);
-        const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
+        const [y, m, d] = this.splitYmdParts(yyyymmdd);
+        const thedate = new Date(Date.UTC(y, m - 1, d, 12, 0, 0, 0));
+        thedate.setUTCFullYear(y);
 
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                return `${ymd[1]}/${ymd[2]}/${Math.abs(ymd[0])}${bce}`;
-                break;
-            default:  // default = dmy
-                return `${ymd[2]}/${ymd[1]}/${Math.abs(ymd[0])}${bce}`;
-                break;
-        }
+        const formatoptions = {timeZone: 'UTC', year: 'numeric', month: 'numeric', day: 'numeric'};
+        if (y <= 0) formatoptions.era = 'short';
+
+        return new Intl.DateTimeFormat(navigator.languages, formatoptions).format(thedate);
     },
     formatDateLong: function (yyyymmdd) {
-        const ymd = this.splitYmdParts(yyyymmdd);
-        const m = this._translations.months[ ymd[1] - 1 ];
-        const bce = ymd[0] < 0 ? ' ' + this._translations.bce : '';
+        const [y, m, d] = this.splitYmdParts(yyyymmdd);
+        const thedate = new Date(Date.UTC(y, m - 1, d, 12, 0, 0, 0));
+        thedate.setUTCFullYear(y);
 
-        switch (this._translations.dateformat) {
-            case 'mdy':
-                return `${m} ${ymd[2]}, ${Math.abs(ymd[0])}${bce}`;
-                break;
-            default:  // default = dmy
-                return `${ymd[2]} ${m} ${Math.abs(ymd[0])}${bce}`;
-                break;
-        }
+        const formatoptions = {timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric'};
+        if (y <= 0) formatoptions.era = 'short';
+
+        return new Intl.DateTimeFormat(navigator.languages, formatoptions).format(thedate);
+    },
+    getTextForBCE: function () {
+        // use Intl.DateTimeFormat to generate BC/AD/BCE/CE text, so it matches to formatDateShort() et al which also use Intl.DateTimeFormat
+        const testdate = new Date(Date.UTC(2020, 5, 15, 0, 0, 0, 0));
+        testdate.setFullYear(-2000);
+
+        const datebits = new Intl.DateTimeFormat(navigator.languages, {era: 'short'}).formatToParts(testdate);
+        const era = datebits.filter(f => f.type == 'era')[0].value;
+        return era;
+    },
+    getTextForCE: function () {
+        // use Intl.DateTimeFormat to generate BC/AD/BCE/CE text, so it matches to formatDateShort() et al which also use Intl.DateTimeFormat
+        const testdate = new Date(Date.UTC(2020, 5, 15, 0, 0, 0, 0));
+        testdate.setFullYear(+2000);
+
+        const datebits = new Intl.DateTimeFormat(navigator.languages, {era: 'short'}).formatToParts(testdate);
+        const era = datebits.filter(f => f.type == 'era')[0].value;
+        return era;
     },
     splitYmdParts: function (yyyymmdd) {
         // tease apart Y/M/D given possible - at the start
@@ -948,22 +1042,6 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 break;
         }
 
-        // there is no year 0
-        // skip year 0 if we're crossing it or landing on it
-        const newyear = newdate.getFullYear();
-        if (newyear == 0 && amount > 0) {
-            newdate.setFullYear(1);
-        }
-        else if (newyear == 0 && amount < 0) {
-            newdate.setFullYear(-1);
-        }
-        else if (y < 0 && newyear > 0) {
-            newdate.setFullYear( newyear + 1 );
-        }
-        else if (y > 0 && newyear < 0) {
-            newdate.setFullYear( newyear - 1 );
-        }
-
         // split out the yyyy-mm-dd part and hand it back
         return newdate.toISOString().split('T')[0];
     },
@@ -987,9 +1065,11 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     daterange_min_month_title: "Slider range, select starting month",
     daterange_min_day_title: "Slider range, select starting day",
     daterange_min_year_title: "Slider range, select starting year",
+    daterange_min_cebce_title: "Slider range, select starting year as CE or BCE",
     daterange_max_month_title: "Slider range, select ending month",
     daterange_max_day_title: "Slider range, select ending day",
     daterange_max_year_title: "Slider range, select ending year",
+    daterange_max_cebce_title: "Slider range, select ending year as CE or BCE",
     daterange_submit_text: "Set",
     daterange_submit_title: "Apply settings",
     range_title: "Range",
@@ -1012,17 +1092,20 @@ L.Control.OHMTimeSlider.Translations['en'] = {
     resetbutton_title: "Go to the start of the range",
     autoplay_submit_text: "Set",
     autoplay_submit_title: "Apply settings",
+    datepicker_month: "Month",
+    datepicker_day: "Day",
+    datepicker_year: "Year",
+    datepicker_cebce: "BCE/BC or CE/AD",
     datepicker_submit_text: "Update Date",
     datepicker_cancel_text: "Cancel",
     datepicker_title: "Change Date",
     datepicker_format_text: "Date formats",
     datepicker_text: "Enter a new date to update the handle location and data displayed.",
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    bce: "BCE",
-    dateformat: 'dmy',
+    ymd_placeholder_short: "dd/mm/yyyy",
 };
 L.Control.OHMTimeSlider.Translations['en-US'] = Object.assign({}, L.Control.OHMTimeSlider.Translations['en'], {
-    dateformat: 'mdy',
+    ymd_placeholder_short: "mm/dd/yyyy",
 });
 L.Control.OHMTimeSlider.Translations['en-CA'] = L.Control.OHMTimeSlider.Translations['en-US'];
 
@@ -1033,9 +1116,11 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     daterange_min_month_title: "Selecciona en que mes debe comenzar la barra cronológica",
     daterange_min_day_title: "Selecciona en que día debe comenzar la barra cronológica",
     daterange_min_year_title: "Selecciona en que año debe comenzar la barra cronológica",
+    daterange_min_cebce_title: "Selecciona el año final de la barra cronológica inicio como a. C. o d. C.",
     daterange_max_month_title: "Selecciona en que mes debe terminar la barra cronológica",
     daterange_max_day_title: "Selecciona en que día debe terminar la barra cronológica",
     daterange_max_year_title: "Selecciona en que año debe terminar la barra cronológica",
+    daterange_max_cebce_title: "Selecciona el año de inicio de la barra cronológica como a. C. o d. C.",
     daterange_submit_text: "Aplicar",
     daterange_submit_title: "Aplicar la configuración",
     range_title: "Intervalo",
@@ -1058,14 +1143,17 @@ L.Control.OHMTimeSlider.Translations['es'] = {
     resetbutton_title: "Ir al inicio del alcance",
     autoplay_submit_text: "Aplicar",
     autoplay_submit_title: "Aplicar la configuración",
+    datepicker_month: "Mes",
+    datepicker_day: "Día",
+    datepicker_year: "Año",
+    datepicker_cebce: "a. C. o d. C.",
     datepicker_submit_text: "Aplicar fecha",
     datepicker_cancel_text: "Cancelar",
     datepicker_title: "Cambiar fecha",
     datepicker_format_text: "Formatos de fecha",
     datepicker_text: "Entra una nueva fecha para actualizar la ubicación del mango y los datos que se muestran.",
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    bce: "aec",
-    dateformat: 'dmy',
+    ymd_placeholder_short: "dd/mm/aaaa",
 };
 
 L.Control.OHMTimeSlider.Translations['fr'] = {
@@ -1075,9 +1163,11 @@ L.Control.OHMTimeSlider.Translations['fr'] = {
     daterange_min_month_title: "Plage du curseur, sélectionner le mois de début",
     daterange_min_day_title: "Plage du curseur, sélectionner le jour de début",
     daterange_min_year_title: "Plage du curseur, sélectionner l'année de début",
+    daterange_min_cebce_title: "Plage du curseur, sélectionner l'année comme ap. J.-C. ou av. J.-C.",
     daterange_max_month_title: "Plage du curseur, sélectionner le mois de fin",
     daterange_max_day_title: "Plage du curseur, sélectionner le jour de fin",
     daterange_max_year_title: "Plage du curseur, sélectionner l'année de fin",
+    daterange_max_cebce_title: "Plage du curseur, sélectionner l'année comme ap. J.-C. ou av. J.-C.",
     daterange_submit_text: "Définir",
     daterange_submit_title: "Appliquer les paramètres",
     range_title: "Plage",
@@ -1100,14 +1190,17 @@ L.Control.OHMTimeSlider.Translations['fr'] = {
     resetbutton_title: "Aller au début de la plage",
     autoplay_submit_text: "Définir",
     autoplay_submit_title: "Appliquer les paramètres",
-    datepicker_submit_text: "Update Date",
-    datepicker_cancel_text: "Cancel",
+    datepicker_month: "Mois",
+    datepicker_day: "Jour",
+    datepicker_year: "Année",
+    datepicker_cebce: "ap. J.-C. ou av. J.-C.",
+    datepicker_submit_text: "Appliquer la date",
+    datepicker_cancel_text: "Annuler",
     datepicker_title: "Mettre à Jour Date",
     datepicker_format_text: "Formats de date",
     datepicker_text: "Saisissez une nouvelle date pour mettre à jour la position du curseur et les données affichées.",
     months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobere', 'Novembre', 'Décembre'],
-    bce: "AEC",
-    dateformat: 'dmy',
+    ymd_placeholder_short: "jj/mm/aaaa",
 };
 L.Control.OHMTimeSlider.Translations['fr-CA'] = L.Control.OHMTimeSlider.Translations['fr'];
 L.Control.OHMTimeSlider.Translations['fr-BE'] = L.Control.OHMTimeSlider.Translations['fr'];
