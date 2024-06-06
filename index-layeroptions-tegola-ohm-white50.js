@@ -21,7 +21,7 @@ const MAPSTYLE_LIGHTEST = {
       "tileSize": 256
     }
   },
-  "sprite": "https://openhistoricalmap.github.io/map-styles/ohm_timeslider_tegola/ohm_spritezero_spritesheet",
+  "sprite": "https://openhistoricalmap.github.io/map-styles/main/main_spritesheet",
   "glyphs": "https://openhistoricalmap.github.io/map-styles/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
