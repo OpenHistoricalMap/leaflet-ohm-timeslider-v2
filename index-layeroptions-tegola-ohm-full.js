@@ -21,8 +21,8 @@ const MAPSTYLE_FULLCOLOR = {
       "tileSize": 256
     }
   },
-  "sprite": "https://openhistoricalmap.github.io/map-styles/main/main_spritesheet",
-  "glyphs": "https://openhistoricalmap.github.io/map-styles/fonts/{fontstack}/{range}.pbf",
+  "sprite": "https://www.openhistoricalmap.org/map-styles/main/main_spritesheet",
+  "glyphs": "https://www.openhistoricalmap.org/map-styles/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",
