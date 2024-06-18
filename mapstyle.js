@@ -10,7 +10,7 @@ const OHM_MAP_STYLE = {
       ],
     }
   },
-  "sprite": "https://openhistoricalmap.github.io/map-styles/main/main_spritesheet",
+  "sprite": "https://www.openhistoricalmap.org/map-styles/main/main_spritesheet",
   "glyphs": "https://go-spatial.github.io/carto-assets/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
