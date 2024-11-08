@@ -64,7 +64,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 0,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "earth"]],
+      "filter": ["==", ["get", "type"], "earth"],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(248, 247, 242, 1)"}
     },
@@ -95,7 +95,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "military"]],
+      "filter": ["==", ["get", "type"], "military"],
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": "rgba(178, 194, 157, 1)",
@@ -110,7 +110,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 4,
       "maxzoom": 10,
-      "filter": ["all", ["==", "type", "military"]],
+      "filter": ["==", ["get", "type"], "military"],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(230, 224, 212, 1)"}
     },
@@ -121,7 +121,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "military"]],
+      "filter": ["==", ["get", "type"], "military"],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(244, 244, 235, 1)"}
     },
@@ -130,7 +130,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "other_areas",
-      "filter": ["all", ["==", "class", "military"]],
+      "filter": ["==", ["get", "class"], "military"],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(244, 244, 235, 1)"}
     },
@@ -141,7 +141,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_areas",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "apron"]],
+      "filter": ["==", ["get", "type"], "apron"],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(221, 221, 221, 1)"}
     },
@@ -153,8 +153,11 @@ const OHM_MAP_STYLE = {
       "minzoom": 0,
       "maxzoom": 24,
       "filter": [
-        "all",
-        ["in", "type", "forest", "wood", "nature_reserve", "park"]
+        "match",
+        ["get", "type"],
+        ["forest", "nature_reserve", "park", "wood"],
+        true,
+        false
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -321,7 +324,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "park"]],
+      "filter": ["==", ["get", "type"], "park"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.75, 16, 1.25],
@@ -394,7 +397,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 9,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "glacier"]],
+      "filter": ["==", ["get", "type"], "glacier"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(180, 211, 218, 1)",
@@ -496,6 +499,20 @@ const OHM_MAP_STYLE = {
       }
     },
     {
+      "id": "wetlands_z12",
+      "type": "fill",
+      "source": "osm",
+      "source-layer": "landuse_areas",
+      "minzoom": 9,
+      "maxzoom": 24,
+      "filter": ["==", ["get", "type"], "wetland"],
+      "layout": {"visibility": "visible"},
+      "paint": {
+        "fill-color": "rgba(255, 255, 255, 1)",
+        "fill-pattern": "wetland-18"
+      }
+    },
+    {
       "id": "parking_lots",
       "type": "fill",
       "source": "osm",
@@ -506,27 +523,13 @@ const OHM_MAP_STYLE = {
       }
     },
     {
-      "id": "wetlands_z12",
-      "type": "fill",
-      "source": "osm",
-      "source-layer": "landuse_areas",
-      "minzoom": 12,
-      "maxzoom": 24,
-      "filter": ["all", ["==", "type", "wetland"]],
-      "layout": {"visibility": "visible"},
-      "paint": {
-        "fill-color": "rgba(255, 255, 255, 1)",
-        "fill-pattern": "wetland-18"
-      }
-    },
-    {
       "id": "landuse_naturereserveoutline",
       "type": "line",
       "source": "osm",
       "source-layer": "landuse_areas",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "nature_reserve"]],
+      "filter": ["==", ["get", "type"], "nature_reserve"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 20, 3],
@@ -541,7 +544,13 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "scree", "peak", "rock", "bare_rock"]],
+      "filter": [
+        "match",
+        ["get", "type"],
+        ["bare_rock", "peak", "rock", "scree"],
+        true,
+        false
+      ],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(255, 255, 255, 1)", "fill-pattern": "rock"}
     },
@@ -550,7 +559,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "place_areas",
-      "filter": ["all", ["==", "type", "plot"]],
+      "filter": ["==", ["get", "type"], "plot"],
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": "rgba(238, 236, 230, 0)",
@@ -562,7 +571,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "place_areas",
-      "filter": ["all", ["==", "type", "square"]],
+      "filter": ["==", ["get", "type"], "square"],
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": "rgba(238, 236, 230, 1)",
@@ -576,8 +585,8 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_areas",
       "filter": [
         "all",
-        ["in", "type", "pedestrian", "footway"],
-        ["==", "area", "yes"]
+        ["match", ["get", "type"], ["footway", "pedestrian"], true, false],
+        ["==", ["get", "area"], "yes"]
       ],
       "paint": {
         "fill-color": "rgba(234,234,234, 1)",
@@ -589,7 +598,13 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "amenity_areas",
-      "filter": ["all", ["in", "type", "school", "university"]],
+      "filter": [
+        "match",
+        ["get", "type"],
+        ["school", "university"],
+        true,
+        false
+      ],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(226, 214, 205, 1)"}
     },
@@ -598,7 +613,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "water_areas",
-      "minzoom": 9,
+      "minzoom": 8,
       "maxzoom": 24,
       "layout": {"visibility": "visible"},
       "paint": {
@@ -638,7 +653,7 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "transport_lines",
-      "filter": ["all", ["==", "type", "ferry"]],
+      "filter": ["==", ["get", "type"], "ferry"],
       "paint": {
         "line-color": "rgba(115, 191, 191, 1)",
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 20, 3],
@@ -662,7 +677,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "place_areas",
-      "filter": ["all", ["==", "type", "islet"]],
+      "filter": ["==", ["get", "type"], "islet"],
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": "rgba(248, 247, 242, 1)",
@@ -676,7 +691,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "stream"], ["in", "name", ""]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "stream"],
+        ["match", ["get", "name"], [""], true, false]
+      ],
       "paint": {
         "line-color": "#7EDADA",
         "line-width": ["interpolate", ["linear"], ["zoom"], 14, 1, 15, 2, 20, 4]
@@ -689,7 +708,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "stream"], ["!in", "name", ""]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "stream"],
+        ["match", ["get", "name"], [""], false, true]
+      ],
       "paint": {
         "line-color": "#7EDADA",
         "line-width": [
@@ -714,7 +737,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "cliff"], ["!in", "surface", "water"]],
+      "filter": [
+        "all",
+        ["match", ["get", "type"], ["cliff"], true, false],
+        ["match", ["get", "surface"], ["water"], false, true]
+      ],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -733,7 +760,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "cliff"], ["!in", "surface", "water"]],
+      "filter": [
+        "all",
+        ["match", ["get", "type"], ["cliff"], true, false],
+        ["match", ["get", "surface"], ["water"], false, true]
+      ],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -754,7 +785,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "cliff"], ["in", "surface", "water"]],
+      "filter": [
+        "all",
+        ["match", ["get", "type"], ["cliff"], true, false],
+        ["match", ["get", "surface"], ["water"], true, false]
+      ],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -775,7 +810,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "ditch", "drain"]],
+      "filter": ["match", ["get", "type"], ["ditch", "drain"], true, false],
       "paint": {
         "line-color": "rgba(144, 204, 203, 1)",
         "line-width": ["interpolate", ["linear"], ["zoom"], 15, 0.2, 20, 1.5]
@@ -788,7 +823,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "canal"]],
+      "filter": ["==", ["get", "type"], "canal"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(111, 145, 160, 1)",
@@ -814,7 +849,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 8,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "canal"]],
+      "filter": ["==", ["get", "type"], "canal"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(153, 201, 222, 1)",
@@ -840,7 +875,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 8,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "canal"], ["==", "bridge", "aqueduct"]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "canal"],
+        ["==", ["get", "bridge"], "aqueduct"]
+      ],
       "paint": {
         "line-color": "rgba(108, 178, 176, 1)",
         "line-width": [
@@ -866,7 +905,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 8,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "river"]],
+      "filter": ["==", ["get", "type"], "river"],
       "paint": {
         "line-color": [
           "interpolate",
@@ -899,7 +938,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_lines",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "breakwater", "quay"]],
+      "filter": ["match", ["get", "type"], ["breakwater", "quay"], true, false],
       "paint": {
         "line-color": "rgba(133, 133, 133, 1)",
         "line-width": ["interpolate", ["linear"], ["zoom"], 14, 1, 20, 4]
@@ -912,7 +951,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 13,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "dam"]],
+      "filter": ["==", ["get", "type"], "dam"],
       "paint": {
         "line-color": "rgba(133, 133, 133, 1)",
         "line-width": [
@@ -933,7 +972,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "other_areas",
-      "filter": ["all", ["==", "type", "pier"]],
+      "filter": ["==", ["get", "type"], "pier"],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(240, 233, 219, 1)"}
     },
@@ -943,7 +982,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "other_lines",
       "minzoom": 12,
-      "filter": ["all", ["==", "type", "pier"]],
+      "filter": ["==", ["get", "type"], "pier"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(230, 222, 205, 1)",
@@ -971,7 +1010,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_areas",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "class", "historic"], ["==", "type", "ruins"]],
+      "filter": [
+        "all",
+        ["==", ["get", "class"], "historic"],
+        ["==", ["get", "type"], "ruins"]
+      ],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(224, 224, 224, 1)"}
     },
@@ -980,7 +1023,7 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "other_areas",
-      "filter": ["all", ["==", "type", "ruins"]],
+      "filter": ["==", ["get", "type"], "ruins"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(195, 188, 188, 1)",
@@ -1002,11 +1045,29 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_areas",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "class", "historic"], ["==", "type", "fort"]],
+      "filter": [
+        "all",
+        ["==", ["get", "class"], "historic"],
+        ["==", ["get", "type"], "fort"]
+      ],
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": "rgba(220, 215, 215, 1)",
         "fill-outline-color": "rgba(195, 188, 188, 1)"
+      }
+    },
+    {
+      "id": "aero_heliport_area",
+      "type": "fill",
+      "source": "osm",
+      "source-layer": "transport_areas",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["==", ["get", "type"], "helipad"],
+      "layout": {"visibility": "visible"},
+      "paint": {
+        "fill-color": "rgba(240, 240, 240, 1)",
+        "fill-outline-color": "rgba(214, 212, 212, 1)"
       }
     },
     {
@@ -1016,7 +1077,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "taxiway"]],
+      "filter": ["==", ["get", "type"], "taxiway"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(220, 220, 220, 1)",
@@ -1040,7 +1101,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "runway"]],
+      "filter": ["==", ["get", "type"], "runway"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(220, 220, 220, 1)",
@@ -1052,7 +1113,11 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "other_areas",
-      "filter": ["all", ["==", "class", "man_made"], ["==", "type", "bridge"]],
+      "filter": [
+        "all",
+        ["==", ["get", "class"], "man_made"],
+        ["==", ["get", "type"], "bridge"]
+      ],
       "paint": {"fill-color": "rgba(255, 255, 255, 1)"}
     },
     {
@@ -1060,7 +1125,11 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "other_lines",
-      "filter": ["all", ["==", "class", "man_made"], ["==", "type", "bridge"]],
+      "filter": [
+        "all",
+        ["==", ["get", "class"], "man_made"],
+        ["==", ["get", "type"], "bridge"]
+      ],
       "paint": {"line-color": "rgba(255, 255, 255, 1)", "line-width": 3}
     },
     {
@@ -1071,8 +1140,8 @@ const OHM_MAP_STYLE = {
       "minzoom": 14,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["in", "construction", "subway"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["match", ["get", "construction"], ["subway"], true, false]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1097,9 +1166,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 9,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "tunnel", 1],
-        ["==", "construction", "tertiary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "tertiary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -1128,9 +1197,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "tunnel", 1],
-        ["==", "construction", "secondary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "secondary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -1160,9 +1229,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "tunnel", 1],
-        ["==", "construction", "primary"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "primary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -1192,15 +1261,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "tunnel", 1],
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "tunnel"], 1],
         [
-          "in",
-          "construction",
-          "motorway",
-          "motorway_link",
-          "trunk",
-          "trunk_link"
+          "match",
+          ["get", "construction"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
         ]
       ],
       "layout": {
@@ -1230,9 +1298,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 9,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "tunnel", 1],
-        ["==", "construction", "tertiary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "tertiary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -1260,9 +1328,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "tunnel", 1],
-        ["==", "construction", "secondary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "secondary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -1290,9 +1358,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "tunnel", 1],
-        ["==", "construction", "primary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "primary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -1321,15 +1389,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "tunnel", 1],
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "tunnel"], 1],
         [
-          "in",
-          "construction",
-          "motorway",
-          "motorway_link",
-          "trunk",
-          "trunk_link"
+          "match",
+          ["get", "construction"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
         ]
       ],
       "layout": {
@@ -1359,8 +1426,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "construction", "raceway"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "construction"], "raceway"]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1386,8 +1453,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "construction", "track"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "construction"], "track"]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1412,8 +1479,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "construction", "track"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "construction"], "track"]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1438,8 +1505,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "construction", "track"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "construction"], "track"]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1465,8 +1532,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["in", "construction", "living_street"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["match", ["get", "construction"], ["living_street"], true, false]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1491,8 +1558,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "construction", "pedestrian"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "construction"], "pedestrian"]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1517,8 +1584,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["in", "construction", "footway", "cycleway", "path"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        [
+          "match",
+          ["get", "construction"],
+          ["cycleway", "footway", "path"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "visibility": "visible",
@@ -1548,8 +1621,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "construction", "pier"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "construction"], "pier"]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1574,8 +1647,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["in", "construction", "steps"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["match", ["get", "construction"], ["steps"], true, false]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -1601,9 +1674,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 0],
-        ["in", "construction", "road"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 0],
+        ["match", ["get", "construction"], ["road"], true, false]
       ],
       "layout": {
         "visibility": "visible",
@@ -1632,9 +1705,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 0],
-        ["in", "construction", "residential", "service", "unclassified"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 0],
+        [
+          "match",
+          ["get", "construction"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "visibility": "visible",
@@ -1663,10 +1742,10 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "tertiary"],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "construction"],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "tertiary"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1694,10 +1773,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 10,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "secondary"],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "construction"],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "secondary"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1725,10 +1804,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 7,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "primary_link"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "primary_link"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1756,11 +1835,11 @@ const OHM_MAP_STYLE = {
       "minzoom": 10,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["!=", "ford", "yes"],
-        ["in", "construction", "primary"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "ford"], "yes"],
+        ["match", ["get", "construction"], ["primary"], true, false],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1789,10 +1868,16 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["in", "construction", "motorway_link", "trunk_link"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        [
+          "match",
+          ["get", "construction"],
+          ["motorway_link", "trunk_link"],
+          true,
+          false
+        ],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1821,10 +1906,10 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["in", "construction", "motorway", "trunk"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["match", ["get", "construction"], ["motorway", "trunk"], true, false],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1853,8 +1938,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["in", "construction", "road"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["match", ["get", "construction"], ["road"], true, false]
       ],
       "layout": {
         "visibility": "visible",
@@ -1884,8 +1969,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["in", "construction", "residential", "service", "unclassified"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        [
+          "match",
+          ["get", "construction"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "visibility": "visible",
@@ -1914,10 +2005,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "secondary_link"],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "construction"],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "secondary_link"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1954,10 +2045,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "primary_link"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "primary_link"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -1987,10 +2078,16 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["in", "construction", "motorway_link", "trunk_link"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        [
+          "match",
+          ["get", "construction"],
+          ["motorway_link", "trunk_link"],
+          true,
+          false
+        ],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2020,10 +2117,10 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "tertiary"],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "construction"],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "tertiary"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2060,10 +2157,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["==", "construction", "secondary"],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "construction"],
+        ["!=", ["get", "tunnel"], 1],
+        ["==", ["get", "construction"], "secondary"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2100,11 +2197,11 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["!=", "ford", "yes"],
-        ["==", "construction", "primary"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "ford"], "yes"],
+        ["==", ["get", "construction"], "primary"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2142,10 +2239,10 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["!=", "tunnel", 1],
-        ["in", "construction", "motorway", "trunk"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["match", ["get", "construction"], ["motorway", "trunk"], true, false],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2178,7 +2275,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 9,
-      "filter": ["all", ["==", "ford", "yes"]],
+      "filter": ["==", ["get", "ford"], "yes"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#ffffff",
@@ -2203,9 +2300,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 1],
-        ["in", "construction", "residential", "service", "unclassified"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 1],
+        [
+          "match",
+          ["get", "construction"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "visibility": "visible",
@@ -2233,9 +2336,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 9,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "bridge", 1],
-        ["==", "construction", "tertiary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "bridge"], 1],
+        ["==", ["get", "construction"], "tertiary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -2263,9 +2366,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "bridge", 1],
-        ["==", "construction", "secondary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "bridge"], 1],
+        ["==", ["get", "construction"], "secondary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -2294,9 +2397,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 1],
-        ["in", "construction", "primary", "primary_link"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 1],
+        [
+          "match",
+          ["get", "construction"],
+          ["primary", "primary_link"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "line-cap": "round",
@@ -2325,15 +2434,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 1],
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 1],
         [
-          "in",
-          "construction",
-          "motorway",
-          "motorway_link",
-          "trunk",
-          "trunk_link"
+          "match",
+          ["get", "construction"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
         ]
       ],
       "layout": {
@@ -2363,9 +2471,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 1],
-        ["in", "construction", "residential", "service", "unclassified"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 1],
+        [
+          "match",
+          ["get", "construction"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "visibility": "visible",
@@ -2395,9 +2509,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "bridge", 1],
-        ["==", "construction", "tertiary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "bridge"], 1],
+        ["==", ["get", "construction"], "tertiary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -2434,9 +2548,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "construction"],
-        ["==", "bridge", 1],
-        ["==", "construction", "secondary"]
+        ["==", ["get", "type"], "construction"],
+        ["==", ["get", "bridge"], 1],
+        ["==", ["get", "construction"], "secondary"]
       ],
       "layout": {
         "visibility": "visible",
@@ -2473,9 +2587,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 1],
-        ["in", "construction", "primary"]
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 1],
+        ["match", ["get", "construction"], ["primary"], true, false]
       ],
       "layout": {
         "visibility": "visible",
@@ -2513,15 +2627,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "construction"],
-        ["==", "bridge", 1],
+        ["match", ["get", "type"], ["construction"], true, false],
+        ["==", ["get", "bridge"], 1],
         [
-          "in",
-          "construction",
-          "motorway",
-          "motorway_link",
-          "trunk",
-          "trunk_link"
+          "match",
+          ["get", "construction"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
         ]
       ],
       "layout": {
@@ -2558,8 +2671,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "tram", "funicular", "monorail"],
-        ["!in", "service", "yard", "siding"]
+        [
+          "match",
+          ["get", "type"],
+          ["funicular", "monorail", "tram"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "visible", "line-cap": "square"},
       "paint": {
@@ -2586,7 +2705,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 14,
-      "filter": ["all", ["in", "type", "subway"]],
+      "filter": ["match", ["get", "type"], ["subway"], true, false],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(166, 170, 187, 1)",
@@ -2612,7 +2731,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 9,
-      "filter": ["all", ["==", "type", "tertiary"], ["==", "tunnel", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "tertiary"],
+        ["==", ["get", "tunnel"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -2638,7 +2761,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 8,
-      "filter": ["all", ["==", "type", "secondary"], ["==", "tunnel", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "secondary"],
+        ["==", ["get", "tunnel"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -2665,7 +2792,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 7,
       "maxzoom": 20,
-      "filter": ["all", ["in", "type", "primary"], ["==", "tunnel", 1]],
+      "filter": [
+        "all",
+        ["match", ["get", "type"], ["primary"], true, false],
+        ["==", ["get", "tunnel"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -2694,8 +2825,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "motorway", "motorway_link", "trunk", "trunk_link"],
-        ["==", "tunnel", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
+        ],
+        ["==", ["get", "tunnel"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2722,7 +2859,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 9,
-      "filter": ["all", ["==", "type", "tertiary"], ["==", "tunnel", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "tertiary"],
+        ["==", ["get", "tunnel"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -2747,7 +2888,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 8,
-      "filter": ["all", ["==", "type", "secondary"], ["==", "tunnel", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "secondary"],
+        ["==", ["get", "tunnel"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -2772,7 +2917,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 6,
-      "filter": ["all", ["==", "type", "primary"], ["==", "tunnel", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "primary"],
+        ["==", ["get", "tunnel"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -2800,8 +2949,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "motorway", "motorway_link", "trunk", "trunk_link"],
-        ["==", "tunnel", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
+        ],
+        ["==", ["get", "tunnel"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -2828,7 +2983,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["in", "type", "raceway"],
+      "filter": ["match", ["get", "type"], ["raceway"], true, false],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(255, 249, 241, 1)",
@@ -2851,7 +3006,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "track"]],
+      "filter": ["==", ["get", "type"], "track"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#b3b3b3",
@@ -2873,7 +3028,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "track"]],
+      "filter": ["==", ["get", "type"], "track"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(251, 247, 245, 1)",
@@ -2895,7 +3050,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "track"]],
+      "filter": ["==", ["get", "type"], "track"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#b3b3b3",
@@ -2918,7 +3073,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "living_street"]],
+      "filter": ["match", ["get", "type"], ["living_street"], true, false],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(255, 255, 255, 1)",
@@ -2940,7 +3095,13 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "footway", "cycleway", "path"]],
+      "filter": [
+        "match",
+        ["get", "type"],
+        ["cycleway", "footway", "path"],
+        true,
+        false
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -2967,7 +3128,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "pier"]],
+      "filter": ["==", ["get", "type"], "pier"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#ffffff",
@@ -2989,7 +3150,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "steps"]],
+      "filter": ["match", ["get", "type"], ["steps"], true, false],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#b3b3b3",
@@ -3014,8 +3175,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "residential", "service", "unclassified"],
-        ["!=", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3042,7 +3209,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "pedestrian"]],
+      "filter": ["match", ["get", "type"], ["pedestrian"], true, false],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#D2D2D5",
@@ -3066,9 +3233,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "tertiary_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "tertiary_link"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3101,9 +3268,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "tertiary"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "tertiary"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3135,13 +3302,13 @@ const OHM_MAP_STYLE = {
       "minzoom": 10,
       "filter": [
         "all",
-        ["==", "type", "secondary"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "secondary"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
-        "line-cap": "butt",
+        "line-cap": "round",
         "line-join": "round"
       },
       "paint": {
@@ -3167,9 +3334,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "secondary_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "secondary_link"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3199,9 +3366,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 7,
       "filter": [
         "all",
-        ["in", "type", "primary_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["primary_link"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3229,10 +3396,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["in", "type", "primary"],
-        ["!=", "tunnel", 1],
-        ["!=", "ford", "yes"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["primary"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "ford"], "yes"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3265,9 +3432,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "motorway_link", "trunk_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["motorway_link", "trunk_link"],
+          true,
+          false
+        ],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3296,9 +3469,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "motorway", "trunk"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["motorway", "trunk"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3327,8 +3500,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "proposed"],
-        ["!in", "class", "railway"]
+        ["match", ["get", "type"], ["proposed"], true, false],
+        ["match", ["get", "class"], ["railway"], false, true]
       ],
       "layout": {
         "visibility": "visible",
@@ -3357,8 +3530,11 @@ const OHM_MAP_STYLE = {
       "minzoom": 12,
       "maxzoom": 24,
       "filter": [
-        "all",
-        ["in", "type", "residential", "service", "unclassified"]
+        "match",
+        ["get", "type"],
+        ["residential", "service", "unclassified"],
+        true,
+        false
       ],
       "layout": {
         "visibility": "visible",
@@ -3385,7 +3561,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "pedestrian"]],
+      "filter": ["match", ["get", "type"], ["pedestrian"], true, false],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#ffffff",
@@ -3408,9 +3584,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "secondary_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "secondary_link"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3438,9 +3614,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["in", "type", "tertiary_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["tertiary_link"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3478,9 +3654,9 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["in", "type", "primary_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["primary_link"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3509,9 +3685,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "motorway_link", "trunk_link"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["motorway_link", "trunk_link"],
+          true,
+          false
+        ],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3550,9 +3732,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["==", "type", "tertiary"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "tertiary"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3590,13 +3772,13 @@ const OHM_MAP_STYLE = {
       "minzoom": 8,
       "filter": [
         "all",
-        ["==", "type", "secondary"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["==", ["get", "type"], "secondary"],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
-        "line-cap": "butt",
+        "line-cap": "round",
         "line-join": "round"
       },
       "paint": {
@@ -3620,10 +3802,10 @@ const OHM_MAP_STYLE = {
       "minzoom": 6,
       "filter": [
         "all",
-        ["in", "type", "primary"],
-        ["!=", "tunnel", 1],
-        ["!=", "ford", "yes"],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["primary"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "ford"], "yes"],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3662,9 +3844,9 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "motorway", "trunk"],
-        ["!=", "tunnel", 1],
-        ["!=", "bridge", 1]
+        ["match", ["get", "type"], ["motorway", "trunk"], true, false],
+        ["!=", ["get", "tunnel"], 1],
+        ["!=", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -3700,7 +3882,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 9,
-      "filter": ["all", ["==", "ford", "yes"]],
+      "filter": ["==", ["get", "ford"], "yes"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#ffffff",
@@ -3725,8 +3907,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "miniature", "narrow_gauge"],
-        ["!in", "service", "yard", "siding"]
+        ["match", ["get", "type"], ["miniature", "narrow_gauge"], true, false],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -3743,8 +3925,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "miniature", "narrow_gauge"],
-        ["!in", "service", "yard", "siding"]
+        ["match", ["get", "type"], ["miniature", "narrow_gauge"], true, false],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -3778,8 +3960,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "miniature", "narrow_gauge"],
-        ["!in", "service", "yard", "siding"]
+        ["match", ["get", "type"], ["miniature", "narrow_gauge"], true, false],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "none", "line-cap": "square"},
       "paint": {
@@ -3813,8 +3995,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "dismantled", "abandoned", "disused", "razed"],
-        ["!in", "service", "yard", "siding"]
+        [
+          "match",
+          ["get", "type"],
+          ["abandoned", "dismantled", "disused", "razed"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -3843,8 +4031,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "dismantled", "abandoned", "disused", "razed"],
-        ["!in", "service", "yard", "siding"]
+        [
+          "match",
+          ["get", "type"],
+          ["abandoned", "dismantled", "disused", "razed"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "visible"},
       "paint": {
@@ -3874,8 +4068,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "dismantled", "abandoned", "disused", "razed"],
-        ["!in", "service", "yard", "siding"]
+        [
+          "match",
+          ["get", "type"],
+          ["abandoned", "dismantled", "disused", "razed"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {"visibility": "none"},
       "paint": {
@@ -3917,9 +4117,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "rail", "light_rail", "preserved"],
-        ["!in", "service", "yard", "siding"],
-        ["==", "usage", "main"]
+        [
+          "match",
+          ["get", "type"],
+          ["light_rail", "preserved", "rail"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true],
+        ["==", ["get", "usage"], "main"]
       ],
       "layout": {
         "visibility": "visible",
@@ -3940,9 +4146,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "rail", "light_rail", "preserved"],
-        ["!in", "service", "yard", "siding"],
-        ["==", "usage", "main"]
+        [
+          "match",
+          ["get", "type"],
+          ["light_rail", "preserved", "rail"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true],
+        ["==", ["get", "usage"], "main"]
       ],
       "layout": {
         "visibility": "visible",
@@ -3988,7 +4200,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": ["all", ["in", "service", "yard", "siding"]],
+      "filter": ["match", ["get", "service"], ["siding", "yard"], true, false],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4006,7 +4218,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": ["all", ["in", "service", "yard", "siding"]],
+      "filter": ["match", ["get", "service"], ["siding", "yard"], true, false],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4043,9 +4255,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "rail", "light_rail", "preserved"],
-        ["!in", "service", "yard", "siding"],
-        ["!=", "usage", "main"]
+        [
+          "match",
+          ["get", "type"],
+          ["light_rail", "preserved", "rail"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true],
+        ["!=", ["get", "usage"], "main"]
       ],
       "layout": {
         "visibility": "visible",
@@ -4074,9 +4292,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "rail", "light_rail", "preserved"],
-        ["!in", "service", "yard", "siding"],
-        ["!=", "usage", "main"]
+        [
+          "match",
+          ["get", "type"],
+          ["light_rail", "preserved", "rail"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true],
+        ["!=", ["get", "usage"], "main"]
       ],
       "layout": {
         "visibility": "visible",
@@ -4116,9 +4340,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "rail", "light_rail", "preserved"],
-        ["!in", "service", "yard", "siding"],
-        ["==", "name", "usage=main"]
+        [
+          "match",
+          ["get", "type"],
+          ["light_rail", "preserved", "rail"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true],
+        ["==", ["get", "name"], "usage=main"]
       ],
       "layout": {"visibility": "none", "line-cap": "square"},
       "paint": {
@@ -4160,9 +4390,15 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "rail", "light_rail", "preserved"],
-        ["!in", "service", "yard", "siding"],
-        ["!=", "name", "usage=main"]
+        [
+          "match",
+          ["get", "type"],
+          ["light_rail", "preserved", "rail"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true],
+        ["!=", ["get", "name"], "usage=main"]
       ],
       "layout": {"visibility": "none", "line-cap": "square"},
       "paint": {
@@ -4204,8 +4440,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction", "proposed"],
-        ["in", "class", "railway"]
+        ["match", ["get", "type"], ["construction", "proposed"], true, false],
+        ["match", ["get", "class"], ["railway"], true, false]
       ],
       "layout": {
         "visibility": "visible",
@@ -4238,8 +4474,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction", "proposed"],
-        ["in", "class", "railway"]
+        ["match", ["get", "type"], ["construction", "proposed"], true, false],
+        ["match", ["get", "class"], ["railway"], true, false]
       ],
       "layout": {
         "visibility": "visible",
@@ -4273,8 +4509,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "construction", "proposed"],
-        ["in", "class", "railway"]
+        ["match", ["get", "type"], ["construction", "proposed"], true, false],
+        ["match", ["get", "class"], ["railway"], true, false]
       ],
       "layout": {"visibility": "none"},
       "paint": {
@@ -4316,8 +4552,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "residential", "service", "unclassified"],
-        ["==", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ],
+        ["==", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -4343,7 +4585,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 9,
-      "filter": ["all", ["==", "type", "tertiary"], ["==", "bridge", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "tertiary"],
+        ["==", ["get", "bridge"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "butt",
@@ -4368,7 +4614,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 10,
-      "filter": ["all", ["==", "type", "secondary"], ["==", "bridge", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "secondary"],
+        ["==", ["get", "bridge"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "butt",
@@ -4396,8 +4646,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "primary", "primary_link"],
-        ["==", "bridge", 1]
+        ["match", ["get", "type"], ["primary", "primary_link"], true, false],
+        ["==", ["get", "bridge"], 1]
       ],
       "layout": {
         "line-cap": "butt",
@@ -4426,8 +4676,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "motorway", "motorway_link", "trunk", "trunk_link"],
-        ["==", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
+        ],
+        ["==", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -4456,8 +4712,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "residential", "service", "unclassified"],
-        ["==", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["residential", "service", "unclassified"],
+          true,
+          false
+        ],
+        ["==", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -4484,7 +4746,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 6,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "tertiary"], ["==", "bridge", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "tertiary"],
+        ["==", ["get", "bridge"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "butt",
@@ -4517,7 +4783,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 8,
-      "filter": ["all", ["==", "type", "secondary"], ["==", "bridge", 1]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "secondary"],
+        ["==", ["get", "bridge"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -4550,7 +4820,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 6,
-      "filter": ["all", ["in", "type", "primary"], ["==", "bridge", 1]],
+      "filter": [
+        "all",
+        ["match", ["get", "type"], ["primary"], true, false],
+        ["==", ["get", "bridge"], 1]
+      ],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -4586,8 +4860,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["in", "type", "motorway", "motorway_link", "trunk", "trunk_link"],
-        ["==", "bridge", 1]
+        [
+          "match",
+          ["get", "type"],
+          ["motorway", "motorway_link", "trunk", "trunk_link"],
+          true,
+          false
+        ],
+        ["==", ["get", "bridge"], 1]
       ],
       "layout": {
         "visibility": "visible",
@@ -4622,8 +4902,14 @@ const OHM_MAP_STYLE = {
       "maxzoom": 24,
       "filter": [
         "all",
-        ["in", "type", "tram", "funicular", "monorail"],
-        ["!in", "service", "yard", "siding"]
+        [
+          "match",
+          ["get", "type"],
+          ["funicular", "monorail", "tram"],
+          true,
+          false
+        ],
+        ["match", ["get", "service"], ["siding", "yard"], false, true]
       ],
       "layout": {
         "visibility": "visible",
@@ -4652,7 +4938,7 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "other_lines",
-      "filter": ["all", ["==", "type", "bollard"]],
+      "filter": ["==", ["get", "type"], "bollard"],
       "paint": {
         "line-color": "rgba(217, 217, 217, 1)",
         "line-width": 3,
@@ -4699,7 +4985,11 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "other_lines",
-      "filter": ["all", ["==", "class", "power"], ["==", "type", "line"]],
+      "filter": [
+        "all",
+        ["==", ["get", "class"], "power"],
+        ["==", ["get", "type"], "line"]
+      ],
       "layout": {"visibility": "visible"},
       "paint": {"line-color": "rgba(164, 129, 136, 1)"}
     },
@@ -4710,16 +5000,16 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 10,
       "maxzoom": 20,
-      "filter": ["all", ["in", "admin_level", 7, 8]],
+      "filter": ["match", ["get", "admin_level"], [7, 8], true, false],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
         "line-join": "round"
       },
       "paint": {
-        "line-color": "rgba(177, 181, 176, 1)",
+        "line-color": "rgba(214, 218, 213, 1)",
         "line-dasharray": [3],
-        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.3, 12, 0.5]
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.75]
       }
     },
     {
@@ -4729,7 +5019,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": ["all", ["in", "admin_level", 5, 6]],
+      "filter": ["match", ["get", "admin_level"], [5, 6], true, false],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -4754,12 +5044,12 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "land_ohm_lines",
-      "minzoom": 3,
+      "minzoom": 5,
       "maxzoom": 20,
       "filter": [
         "all",
-        ["==", "admin_level", 4],
-        ["==", "type", "administrative"]
+        ["==", ["get", "admin_level"], 4],
+        ["==", ["get", "type"], "administrative"]
       ],
       "layout": {
         "visibility": "visible",
@@ -4784,12 +5074,12 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "land_ohm_lines",
-      "minzoom": 3,
+      "minzoom": 5,
       "maxzoom": 20,
       "filter": [
         "all",
-        ["==", "admin_level", 4],
-        ["==", "type", "administrative"]
+        ["==", ["get", "admin_level"], 4],
+        ["==", ["get", "type"], "administrative"]
       ],
       "layout": {
         "visibility": "visible",
@@ -4801,10 +5091,8 @@ const OHM_MAP_STYLE = {
           "interpolate",
           ["linear"],
           ["zoom"],
-          0,
-          "rgba(168, 193, 183, 1)",
           6,
-          "rgba(157, 164, 164, 1)"
+          "rgba(168, 193, 183, 1)"
         ],
         "line-width": [
           "interpolate",
@@ -4812,6 +5100,8 @@ const OHM_MAP_STYLE = {
           ["zoom"],
           2,
           0.4,
+          6,
+          0.75,
           12,
           2,
           15,
@@ -4824,17 +5114,17 @@ const OHM_MAP_STYLE = {
       "type": "line",
       "source": "osm",
       "source-layer": "land_ohm_lines",
-      "minzoom": 3,
+      "minzoom": 5,
       "maxzoom": 20,
-      "filter": ["all", ["==", "admin_level", 3]],
+      "filter": ["==", ["get", "admin_level"], 3],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
         "line-join": "round"
       },
       "paint": {
-        "line-color": "rgba(181, 195, 199, 1)",
-        "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.25, 7, 2]
+        "line-color": "rgba(168, 193, 183, 1)",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.75, 12, 2]
       }
     },
     {
@@ -4844,7 +5134,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 0,
       "maxzoom": 20,
-      "filter": ["all", ["in", "admin_level", 1, 2]],
+      "filter": ["match", ["get", "admin_level"], [1, 2], true, false],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4872,7 +5162,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 0,
       "maxzoom": 20,
-      "filter": ["all", ["in", "admin_level", 1, 2]],
+      "filter": ["match", ["get", "admin_level"], [1, 2], true, false],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4886,7 +5176,7 @@ const OHM_MAP_STYLE = {
           4,
           "rgba(126, 144, 127, 1)",
           6,
-          "rgba(155, 172, 156, 1)",
+          "rgba(147, 171, 148, 1)",
           8,
           "rgba(177, 182, 177, 1)",
           12,
@@ -4896,8 +5186,14 @@ const OHM_MAP_STYLE = {
           "interpolate",
           ["linear"],
           ["zoom"],
+          0,
+          0.25,
           2,
-          1.5,
+          0.75,
+          4,
+          1,
+          6,
+          2,
           12,
           2.5,
           15,
@@ -4922,7 +5218,7 @@ const OHM_MAP_STYLE = {
         "text-padding": 2,
         "text-rotation-alignment": "auto",
         "text-pitch-alignment": "auto",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": "rgba(82, 82, 82, 1)",
@@ -4936,7 +5232,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 11,
-      "filter": ["all", ["in", "type", "motorway", "trunk"]],
+      "filter": ["match", ["get", "type"], ["motorway", "trunk"], true, false],
       "layout": {
         "text-size": 10,
         "text-allow-overlap": false,
@@ -4947,7 +5243,7 @@ const OHM_MAP_STYLE = {
         "text-padding": 2,
         "text-rotation-alignment": "auto",
         "text-pitch-alignment": "auto",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": "rgba(82, 82, 82, 1)",
@@ -4962,9 +5258,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_areas_centroids",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", [">", "area", 100000]],
+      "filter": [">", ["get", "area"], 100000],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
         "text-padding": 2,
         "text-allow-overlap": false,
@@ -4983,9 +5279,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_areas_centroids",
       "minzoom": 12,
       "maxzoom": 15,
-      "filter": ["all", [">", "area", 1000000]],
+      "filter": [">", ["get", "area"], 1000000],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
         "text-padding": 2,
         "text-allow-overlap": false,
@@ -5005,9 +5301,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 0,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "ocean", "sea"]],
+      "filter": ["match", ["get", "type"], ["ocean", "sea"], true, false],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
         "text-padding": 2,
         "text-allow-overlap": false,
@@ -5037,9 +5333,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_areas_centroids",
       "minzoom": 8,
       "maxzoom": 12,
-      "filter": ["all", [">", "area", 10000000]],
+      "filter": [">", ["get", "area"], 10000000],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
         "text-padding": 2,
         "text-allow-overlap": false,
@@ -5066,7 +5362,7 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "water_lines",
-      "filter": ["all", ["in", "type", "cliff"]],
+      "filter": ["match", ["get", "type"], ["cliff"], true, false],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 11, 9, 13, 11],
         "symbol-spacing": 500,
@@ -5075,7 +5371,7 @@ const OHM_MAP_STYLE = {
         "text-rotation-alignment": "auto",
         "text-anchor": "bottom",
         "text-pitch-alignment": "auto",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-letter-spacing": 0
       },
       "paint": {
@@ -5089,7 +5385,7 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "water_lines",
-      "filter": ["all", ["in", "type", "dam"]],
+      "filter": ["match", ["get", "type"], ["dam"], true, false],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 11, 11, 13, 13],
         "symbol-spacing": 500,
@@ -5098,7 +5394,7 @@ const OHM_MAP_STYLE = {
         "text-rotation-alignment": "auto",
         "text-anchor": "bottom",
         "text-pitch-alignment": "auto",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-letter-spacing": 0
       },
       "paint": {
@@ -5114,7 +5410,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["all", ["!in", "type", "dam", "cliff"]],
+      "filter": ["match", ["get", "type"], ["cliff", "dam"], false, true],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 12, 11, 14, 13],
         "symbol-spacing": 500,
@@ -5124,7 +5420,7 @@ const OHM_MAP_STYLE = {
         "text-rotation-alignment": "auto",
         "text-anchor": "bottom",
         "text-pitch-alignment": "auto",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-letter-spacing": 0
       },
       "paint": {
@@ -5143,24 +5439,28 @@ const OHM_MAP_STYLE = {
       "filter": [
         "all",
         [
-          "in",
-          "type",
-          "park",
-          "sports_centre",
-          "stadium",
-          "grass",
-          "grassland",
-          "garden",
-          "village_green",
-          "recreation_ground",
-          "picnic_site",
-          "camp_site",
-          "playground"
+          "match",
+          ["get", "type"],
+          [
+            "camp_site",
+            "garden",
+            "grass",
+            "grassland",
+            "park",
+            "picnic_site",
+            "playground",
+            "recreation_ground",
+            "sports_centre",
+            "stadium",
+            "village_green"
+          ],
+          true,
+          false
         ],
-        [">", "area", 12000]
+        [">", ["get", "area"], 12000]
       ],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": ["interpolate", ["linear"], ["zoom"], 14, 11, 20, 14],
         "visibility": "visible",
         "icon-text-fit": "none",
@@ -5183,21 +5483,22 @@ const OHM_MAP_STYLE = {
       "minzoom": 14,
       "maxzoom": 24,
       "filter": [
-        "all",
+        "match",
+        ["get", "type"],
         [
-          "in",
-          "type",
-          "farmland",
-          "farm",
-          "orchard",
-          "farmyard",
-          "vineyard",
           "allotmets",
-          "garden"
-        ]
+          "farm",
+          "farmland",
+          "farmyard",
+          "garden",
+          "orchard",
+          "vineyard"
+        ],
+        true,
+        false
       ],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": 11,
         "text-font": ["OpenHistorical"]
       },
@@ -5214,9 +5515,15 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas_centroids",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["in", "type", "forest", "wood", "nature_reserve"]],
+      "filter": [
+        "match",
+        ["get", "type"],
+        ["forest", "nature_reserve", "wood"],
+        true,
+        false
+      ],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": 11,
         "text-font": ["OpenHistorical"]
       },
@@ -5234,11 +5541,14 @@ const OHM_MAP_STYLE = {
       "minzoom": 14,
       "maxzoom": 24,
       "filter": [
-        "all",
-        ["in", "type", "college", "school", "education", "university", ""]
+        "match",
+        ["get", "type"],
+        ["", "college", "education", "school", "university"],
+        true,
+        false
       ],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": 11,
         "text-font": ["OpenHistorical"]
       },
@@ -5255,9 +5565,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas_centroids",
       "minzoom": 10,
       "maxzoom": 22,
-      "filter": ["all", ["==", "type", "glacier"]],
+      "filter": ["==", ["get", "type"], "glacier"],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
         "text-padding": 2,
         "text-allow-overlap": false,
@@ -5280,6 +5590,33 @@ const OHM_MAP_STYLE = {
       }
     },
     {
+      "id": "placearea_label",
+      "type": "symbol",
+      "source": "osm",
+      "source-layer": "place_areas",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["==", ["get", "type"], "square"],
+      "layout": {
+        "icon-image": "{type}-18",
+        "visibility": "visible",
+        "text-field": ["get", "name"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 14, 8, 18, 10],
+        "text-anchor": "top",
+        "text-offset": [0, 0.75],
+        "text-font": ["OpenHistorical"],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 14, 0.75, 20, 1.4]
+      },
+      "paint": {
+        "icon-color": "#000000",
+        "text-color": "#505050",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 0.5,
+        "text-halo-blur": 1,
+        "text-opacity": ["interpolate", ["linear"], ["zoom"], 13.99, 0, 14, 1]
+      }
+    },
+    {
       "id": "points_of_interest_frombuildings",
       "type": "symbol",
       "source": "osm",
@@ -5289,7 +5626,7 @@ const OHM_MAP_STYLE = {
       "layout": {
         "icon-image": "{tourism}-18",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": ["interpolate", ["linear"], ["zoom"], 16, 10, 20, 12],
         "text-anchor": "center",
         "text-offset": [0, 0],
@@ -5305,21 +5642,20 @@ const OHM_MAP_STYLE = {
       }
     },
     {
-      "id": "points_of_interest_fromareasz14",
+      "id": "points_of_interest_fromareasz14-centroids",
       "type": "symbol",
       "source": "osm",
       "source-layer": "amenity_areas_centroids",
       "minzoom": 14,
       "maxzoom": 16,
       "filter": [
-        "all",
+        "match",
+        ["get", "type"],
         [
-          "in",
-          "type",
-          "fire_station",
           "bank",
           "border_control",
           "embassy",
+          "fire_station",
           "government",
           "hospital",
           "police",
@@ -5327,12 +5663,57 @@ const OHM_MAP_STYLE = {
           "taxi",
           "townhall",
           "university"
-        ]
+        ],
+        true,
+        false
       ],
       "layout": {
         "icon-image": "{type}-12",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
+        "text-size": 8,
+        "text-anchor": "top",
+        "text-offset": [0, 1],
+        "text-font": ["OpenHistorical"]
+      },
+      "paint": {
+        "text-color": "#505050",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 0.5,
+        "text-halo-blur": 1,
+        "text-opacity": 0
+      }
+    },
+    {
+      "id": "points_of_interest_fromareasz14",
+      "type": "symbol",
+      "source": "osm",
+      "source-layer": "amenity_areas",
+      "minzoom": 14,
+      "maxzoom": 16,
+      "filter": [
+        "match",
+        ["get", "type"],
+        [
+          "bank",
+          "border_control",
+          "embassy",
+          "fire_station",
+          "government",
+          "hospital",
+          "police",
+          "school",
+          "taxi",
+          "townhall",
+          "university"
+        ],
+        true,
+        false
+      ],
+      "layout": {
+        "icon-image": "{type}-12",
+        "visibility": "visible",
+        "text-field": ["get", "name"],
         "text-size": 8,
         "text-anchor": "top",
         "text-offset": [0, 1],
@@ -5357,7 +5738,7 @@ const OHM_MAP_STYLE = {
       "layout": {
         "icon-image": "{type}-18",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": [
           "interpolate",
           ["linear"],
@@ -5383,31 +5764,7 @@ const OHM_MAP_STYLE = {
       }
     },
     {
-      "id": "points_of_interest_amenity_14",
-      "type": "symbol",
-      "source": "osm",
-      "source-layer": "amenity_points_centroids",
-      "minzoom": 14,
-      "maxzoom": 16,
-      "filter": ["all"],
-      "layout": {
-        "icon-image": "{type}-18",
-        "visibility": "visible",
-        "text-field": "{name}",
-        "text-size": 8,
-        "text-anchor": "top",
-        "text-offset": [0, 1],
-        "text-font": ["OpenHistorical"]
-      },
-      "paint": {
-        "text-color": "rgba(80, 80, 80, 1)",
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 0.5,
-        "text-halo-blur": 1
-      }
-    },
-    {
-      "id": "points_of_interest_amenity",
+      "id": "points_of_interest_amenity-centroids",
       "type": "symbol",
       "source": "osm",
       "source-layer": "amenity_points_centroids",
@@ -5433,7 +5790,67 @@ const OHM_MAP_STYLE = {
         "text-offset": [0, 1],
         "icon-size": ["interpolate", ["linear"], ["zoom"], 15, 0.7, 20, 1.4],
         "text-anchor": "top",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
+      },
+      "paint": {
+        "text-color": "rgba(80, 80, 80, 1)",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 0.5,
+        "text-halo-blur": 1,
+        "text-opacity": ["interpolate", ["linear"], ["zoom"], 16.9, 0, 17, 1]
+      }
+    },
+    {
+      "id": "points_of_interest_amenity_14",
+      "type": "symbol",
+      "source": "osm",
+      "source-layer": "amenity_points_centroids",
+      "minzoom": 14,
+      "maxzoom": 16,
+      "filter": ["all"],
+      "layout": {
+        "icon-image": "{type}-18",
+        "visibility": "visible",
+        "text-field": ["get", "name"],
+        "text-size": 8,
+        "text-anchor": "top",
+        "text-offset": [0, 1],
+        "text-font": ["OpenHistorical"]
+      },
+      "paint": {
+        "text-color": "rgba(80, 80, 80, 1)",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 0.5,
+        "text-halo-blur": 1
+      }
+    },
+    {
+      "id": "points_of_interest_amenity",
+      "type": "symbol",
+      "source": "osm",
+      "source-layer": "amenity_points",
+      "minzoom": 15,
+      "maxzoom": 24,
+      "layout": {
+        "text-line-height": 1.2,
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          15.99,
+          0,
+          16,
+          10,
+          20,
+          12
+        ],
+        "icon-image": "{type}-18",
+        "text-font": ["OpenHistorical"],
+        "visibility": "visible",
+        "text-offset": [0, 1],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 15, 0.7, 20, 1.4],
+        "text-anchor": "top",
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": "rgba(80, 80, 80, 1)",
@@ -5450,7 +5867,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_points",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["!in", "type", "artwork"]],
+      "filter": ["match", ["get", "type"], ["artwork"], false, true],
       "layout": {
         "text-size": [
           "interpolate",
@@ -5473,7 +5890,7 @@ const OHM_MAP_STYLE = {
         "icon-optional": false,
         "icon-size": ["interpolate", ["linear"], ["zoom"], 15, 0.7, 20, 1.4],
         "text-anchor": "top",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-max-width": 10,
         "icon-ignore-placement": false
       },
@@ -5494,11 +5911,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_points",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "archaeological_site"]],
+      "filter": ["==", ["get", "type"], "archaeological_site"],
       "layout": {
         "icon-image": "{site_type}-18",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": [
           "interpolate",
           ["linear"],
@@ -5530,11 +5947,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_points",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "artwork"]],
+      "filter": ["==", ["get", "type"], "artwork"],
       "layout": {
         "icon-image": "{artwork_type}-18",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": [
           "interpolate",
           ["linear"],
@@ -5566,7 +5983,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_points",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["all", ["==", "type", "tower"]],
+      "filter": ["==", ["get", "type"], "tower"],
       "layout": {
         "icon-image": "power_tower-12",
         "visibility": "visible",
@@ -5580,7 +5997,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_areas",
       "minzoom": 10,
       "maxzoom": 14,
-      "filter": ["all", ["==", "type", "aerodrome"]],
+      "filter": ["==", ["get", "type"], "aerodrome"],
       "layout": {"icon-image": "airport-18", "text-font": ["OpenHistorical"]}
     },
     {
@@ -5594,7 +6011,7 @@ const OHM_MAP_STYLE = {
       "layout": {
         "icon-image": "{type}-18",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": ["interpolate", ["linear"], ["zoom"], 14, 8, 18, 10],
         "text-anchor": "top",
         "text-offset": [0, 0.75],
@@ -5617,8 +6034,14 @@ const OHM_MAP_STYLE = {
       "source-layer": "buildings",
       "filter": [
         "all",
-        ["==", "type", "place_of_worship"],
-        ["!in", "religion", "christian", "muslim", "jewish"]
+        ["==", ["get", "type"], "place_of_worship"],
+        [
+          "match",
+          ["get", "religion"],
+          ["christian", "jewish", "muslim"],
+          false,
+          true
+        ]
       ],
       "layout": {
         "icon-image": "place_of_worship-18",
@@ -5644,11 +6067,11 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "landuse_points",
       "minzoom": 14,
-      "filter": ["all", ["in", "type", "peak"]],
+      "filter": ["match", ["get", "type"], ["peak"], true, false],
       "layout": {
         "icon-image": "{type}-12",
         "text-font": ["OpenHistorical"],
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": 8,
         "text-anchor": "top",
         "text-offset": [0, 0.8]
@@ -5669,7 +6092,7 @@ const OHM_MAP_STYLE = {
       "layout": {
         "icon-image": "{type}-18",
         "text-font": ["OpenHistorical"],
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": [
           "interpolate",
           ["linear"],
@@ -5698,7 +6121,13 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "landuse_areas",
       "minzoom": 16,
-      "filter": ["all", ["!in", "type", "peak", "wetland", "garden"]],
+      "filter": [
+        "match",
+        ["get", "type"],
+        ["garden", "peak", "wetland"],
+        false,
+        true
+      ],
       "layout": {
         "icon-image": "{type}-18",
         "text-font": ["OpenHistorical"],
@@ -5710,7 +6139,7 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "buildings",
-      "filter": ["all", ["in", "name", "ACRA", "Acra"]],
+      "filter": ["match", ["get", "name"], ["ACRA", "Acra"], true, false],
       "layout": {
         "icon-image": "acra-18",
         "text-font": ["OpenHistorical"],
@@ -5723,37 +6152,38 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "buildings",
       "filter": [
-        "all",
+        "match",
+        ["get", "name"],
         [
-          "in",
-          "name",
-          "Oxfam Books & Music",
-          "Oxfam",
-          "Oxfam Boutique",
-          "Oxfam Shop",
-          "oxfam",
-          "Oxfam Bookshop",
-          "Oxfam Wereldwinkel",
-          "Oxfam Books",
-          "OXFAM",
-          "Oxfam GB",
-          "Oxfam Solidarité",
-          "OXFAM Water point",
-          "Oxfam Magasins du monde",
-          "Magasin du monde-Oxfam",
-          "OXFAM Latrines",
-          "Oxfam Charity Shop",
-          "Oxfam Ireland",
-          "Oxfam Buchshop",
-          "Intermon Oxfam",
           "Centro di accoglienza Oxfam Italia",
-          "Oxfam wereldwinkel",
+          "Intermon Oxfam",
+          "Magasin du monde-Oxfam",
+          "OXFAM",
+          "OXFAM Latrines",
+          "OXFAM Water Tank",
+          "OXFAM Water point",
+          "Oxfam",
           "Oxfam Book Shop",
+          "Oxfam Books",
+          "Oxfam Books & Music",
+          "Oxfam Bookshop",
+          "Oxfam Boutique",
+          "Oxfam Buchshop",
+          "Oxfam Charity Shop",
+          "Oxfam GB",
+          "Oxfam Ireland",
+          "Oxfam Magasins du monde",
           "Oxfam Music",
           "Oxfam Novib",
-          "OXFAM Water Tank",
-          "Oxfam books"
-        ]
+          "Oxfam Shop",
+          "Oxfam Solidarité",
+          "Oxfam Wereldwinkel",
+          "Oxfam books",
+          "Oxfam wereldwinkel",
+          "oxfam"
+        ],
+        true,
+        false
       ],
       "layout": {
         "icon-image": "oxfam-18",
@@ -5772,7 +6202,7 @@ const OHM_MAP_STYLE = {
       "layout": {
         "icon-image": "{shop}-18",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-size": 8,
         "text-anchor": "top",
         "text-offset": [0, 1],
@@ -5794,11 +6224,11 @@ const OHM_MAP_STYLE = {
       "maxzoom": 20,
       "filter": [
         "all",
-        ["==", "type", "administrative"],
-        ["==", "admin_level", 6]
+        ["==", ["get", "type"], "administrative"],
+        ["==", ["get", "admin_level"], 6]
       ],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
         "text-size": [
           "interpolate",
@@ -5830,9 +6260,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": ["all", ["in", "type", "county"]],
+      "filter": ["match", ["get", "type"], ["county"], true, false],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
         "text-size": [
           "interpolate",
@@ -5865,20 +6295,14 @@ const OHM_MAP_STYLE = {
       "minzoom": 11,
       "maxzoom": 20,
       "filter": [
-        "all",
-        [
-          "in",
-          "type",
-          "village",
-          "suburb",
-          "locality",
-          "hamlet",
-          "islet",
-          "neighborhood"
-        ]
+        "match",
+        ["get", "type"],
+        ["hamlet", "islet", "locality", "neighborhood", "suburb", "village"],
+        true,
+        false
       ],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
         "text-size": [
           "interpolate",
@@ -5907,9 +6331,40 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": ["all", ["in", "type", "town"]],
+      "filter": ["match", ["get", "type"], ["town"], true, false],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
+        "text-font": ["OpenHistorical"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          6,
+          7,
+          10,
+          12,
+          16,
+          14
+        ],
+        "visibility": "visible"
+      },
+      "paint": {
+        "text-color": "rgba(34, 34, 34, 1)",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-blur": 2,
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "city_labels_town_z8_centroids",
+      "type": "symbol",
+      "source": "osm",
+      "source-layer": "land_ohm_centroids",
+      "minzoom": 8,
+      "maxzoom": 20,
+      "filter": ["match", ["get", "admin_level"], [7, 8], true, false],
+      "layout": {
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
         "text-size": [
           "interpolate",
@@ -5938,9 +6393,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 11,
       "maxzoom": 20,
-      "filter": ["all", ["in", "type", "city"]],
+      "filter": ["match", ["get", "type"], ["city"], true, false],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
         "text-size": [
           "interpolate",
@@ -5969,7 +6424,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 6,
       "maxzoom": 11,
-      "filter": ["all", ["==", "type", "city"], ["==", "capital", "yes"]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "city"],
+        ["==", ["get", "capital"], "yes"]
+      ],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 6, 12, 10, 15],
         "icon-offset": [0, 0],
@@ -5979,7 +6438,7 @@ const OHM_MAP_STYLE = {
         "text-offset": [0, 0.25],
         "icon-size": 1,
         "text-anchor": "top",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": "rgba(34, 34, 34, 1)",
@@ -5995,7 +6454,11 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 6,
       "maxzoom": 11,
-      "filter": ["all", ["==", "type", "city"], ["!=", "capital", "yes"]],
+      "filter": [
+        "all",
+        ["==", ["get", "type"], "city"],
+        ["!=", ["get", "capital"], "yes"]
+      ],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 6, 12, 10, 15],
         "icon-offset": [0, 0],
@@ -6005,7 +6468,7 @@ const OHM_MAP_STYLE = {
         "text-offset": [0, 0.25],
         "icon-size": 1,
         "text-anchor": "top",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": "rgba(34, 34, 34, 1)",
@@ -6019,12 +6482,12 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "land_ohm_centroids",
-      "minzoom": 3,
+      "minzoom": 5,
       "maxzoom": 20,
       "filter": [
         "all",
-        ["==", "type", "administrative"],
-        ["==", "admin_level", 4]
+        ["==", ["get", "type"], "administrative"],
+        ["==", ["get", "admin_level"], 4]
       ],
       "layout": {
         "text-line-height": 1,
@@ -6035,22 +6498,18 @@ const OHM_MAP_STYLE = {
         "text-font": ["OpenHistorical"],
         "symbol-placement": "point",
         "visibility": "visible",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": [
           "interpolate",
           ["linear"],
           ["zoom"],
-          0,
-          "rgba(32, 45, 32, 1)",
-          4,
-          "rgba(87, 105, 87, 1)",
-          7,
-          "rgba(143, 149, 143, 1)"
+          6,
+          "rgba(110, 133, 123, 1)"
         ],
-        "text-halo-width": 1.5,
-        "text-halo-blur": 2,
+        "text-halo-width": 2,
+        "text-halo-blur": 1,
         "text-halo-color": [
           "interpolate",
           ["linear"],
@@ -6073,9 +6532,9 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "place_points",
-      "minzoom": 3,
+      "minzoom": 5,
       "maxzoom": 20,
-      "filter": ["all", ["in", "type", "state", "territory"]],
+      "filter": ["match", ["get", "type"], ["state", "territory"], true, false],
       "layout": {
         "text-line-height": 1,
         "text-size": ["interpolate", ["linear"], ["zoom"], 3, 9, 6, 15, 10, 18],
@@ -6085,22 +6544,18 @@ const OHM_MAP_STYLE = {
         "text-font": ["OpenHistorical"],
         "symbol-placement": "point",
         "visibility": "visible",
-        "text-field": "{name}"
+        "text-field": ["get", "name"]
       },
       "paint": {
         "text-color": [
           "interpolate",
           ["linear"],
           ["zoom"],
-          0,
-          "rgba(32, 45, 32, 1)",
-          4,
-          "rgba(87, 105, 87, 1)",
-          7,
-          "rgba(143, 149, 143, 1)"
+          6,
+          "rgba(110, 133, 123, 1)"
         ],
-        "text-halo-width": 1.5,
-        "text-halo-blur": 2,
+        "text-halo-width": 2,
+        "text-halo-blur": 1,
         "text-halo-color": [
           "interpolate",
           ["linear"],
@@ -6125,9 +6580,9 @@ const OHM_MAP_STYLE = {
       "source-layer": "populated_places",
       "minzoom": 10,
       "maxzoom": 20,
-      "filter": ["all", ["==", "featurecla", "Admin-1 capital"]],
+      "filter": ["==", ["get", "featurecla"], "Admin-1 capital"],
       "layout": {
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Bold"],
         "text-size": 10,
         "text-transform": "uppercase",
@@ -6148,8 +6603,8 @@ const OHM_MAP_STYLE = {
       "maxzoom": 12,
       "filter": [
         "all",
-        ["==", "type", "administrative"],
-        ["==", "admin_level", 2]
+        ["==", ["get", "type"], "administrative"],
+        ["==", ["get", "admin_level"], 2]
       ],
       "layout": {
         "text-line-height": 1,
@@ -6171,7 +6626,7 @@ const OHM_MAP_STYLE = {
         "symbol-placement": "point",
         "text-justify": "center",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-max-width": 7
       },
       "paint": {
@@ -6210,7 +6665,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 0,
       "maxzoom": 12,
-      "filter": ["all", ["==", "type", "country"]],
+      "filter": ["==", ["get", "type"], "country"],
       "layout": {
         "text-line-height": 1,
         "text-size": [
@@ -6231,7 +6686,7 @@ const OHM_MAP_STYLE = {
         "symbol-placement": "point",
         "text-justify": "center",
         "visibility": "visible",
-        "text-field": "{name}",
+        "text-field": ["get", "name"],
         "text-max-width": 7
       },
       "paint": {
