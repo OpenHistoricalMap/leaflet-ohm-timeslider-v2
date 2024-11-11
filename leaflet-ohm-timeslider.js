@@ -659,7 +659,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         //
         // warning: we are mutating someone else's map style in-place, and they may not be expecting that
         // if they go and apply their own filters later, it could get weird
-        const osmfilteringclause = [ 'any', ['>', '1', '0'] ];
+        const osmfilteringclause = ["==", "nodatefilter", ["literal", "nodatefilter"]];
         const vecmap = this.getRealGlMap();
         const layers = this._getFilteredvectorLayers();
 
@@ -673,12 +673,12 @@ L.Control.OHMTimeSlider = L.Control.extend({
                     "all",
                     osmfilteringclause,
                 ];
-                // console.debug([ `OHMTimeSlider: _setupDateFiltersForLayers() NoFilter ${layer.id}`, oldfilters, newfilters ]);
+                // console.debug([ `OHMTimeSlider: _addDateFiltersToVectorLayers() NoFilter ${layer.id}`, oldfilters, newfilters ]);
             }
             else if (oldfilters[0] === 'all') {  // all clause; we can just insert our clause into position as filters[1]
                 newfilters = oldfilters.slice();
                 newfilters.splice(1, 0, osmfilteringclause);
-                // console.debug([ `OHMTimeSlider: _setupDateFiltersForLayers() AllFilter ${layer.id}`, oldfilters, newfilters ]);
+                // console.debug([ `OHMTimeSlider: _addDateFiltersToVectorLayers() AllFilter ${layer.id}`, oldfilters, newfilters ]);
             }
             else if (oldfilters[0] === 'any') {  // any clause; wrap theirs into a giant clause, prepend ours with an all
                 newfilters = [
@@ -686,7 +686,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
                     osmfilteringclause,
                     [ oldfilters ],
                 ];
-                // console.debug([ `OHMTimeSlider: _setupDateFiltersForLayers() AnyFilter ${layer.id}`, oldfilters, newfilters ]);
+                // console.debug([ `OHMTimeSlider: _addDateFiltersToVectorLayers() AnyFilter ${layer.id}`, oldfilters, newfilters ]);
             }
             else if (Array.isArray(oldfilters)) {  // an array forming a single, simple-style filtering clause; rewrap as an "all"
                 newfilters = [
@@ -694,12 +694,12 @@ L.Control.OHMTimeSlider = L.Control.extend({
                     osmfilteringclause,
                     oldfilters
                 ];
-                // console.debug([ `OHMTimeSlider: _setupDateFiltersForLayers() ArrayFilter ${layer.id}`, oldfilters, newfilters ]);
+                // console.debug([ `OHMTimeSlider: _addDateFiltersToVectorLayers() ArrayFilter ${layer.id}`, oldfilters, newfilters ]);
             }
             else {
                 // some other condition I had not expected and need to figure out
                 console.error(oldfilters);
-                throw `OHMTimeSlider: _setupDateFiltersForLayers() got unexpected filtering condition on layer ${layer.id}`;
+                throw `OHMTimeSlider: _addDateFiltersToVectorLayers() got unexpected filtering condition on layer ${layer.id}`;
             }
 
             // apply the new filter, with the placeholder "eternal features" filter now prepended
@@ -707,7 +707,7 @@ L.Control.OHMTimeSlider = L.Control.extend({
         });
     },
     _removeDateFiltersFromvectorLayers: function () {
-        // in _setupDateFiltersForLayers() we rewrote the layers' filters to support date filtering, but we also kept a backup
+        // in _addDateFiltersToVectorLayers() we rewrote the layers' filters to support date filtering, but we also kept a backup
         // restore that backup now, so the layers are back where they started
         const vecmap = this.getRealGlMap();
         this._getFilteredvectorLayers().forEach((layer) => {
@@ -715,21 +715,30 @@ L.Control.OHMTimeSlider = L.Control.extend({
         });
     },
     _applyDateFilterToLayers: function () {
-        // back in _setupDateFiltersForLayers() we prepended a filtering clause as filters[1] which filters for "eternal" features lacking a OSM ID
+        // back in _addDateFiltersToVectorLayers() we prepended a filtering clause as filters[1] which filters for "eternal" features lacking a OSM ID
         // here in _applyDateFilterToLayers() we add a second part to that, for features with a start_date and end_date fitting our date
+        // the new date filtering expression is:
+        // numerical start date either absent (beginning/end of time) or else within range, and same for numerical end date
         const deccurrent = this.getDate(true);
         const datesubfilter = [
             'all',
-            // numerical start/end date either absent (beginning/end of time) or else within range
-            [ 'any', ['!has', 'start_decdate'], ['<=', 'start_decdate', deccurrent] ],
-            [ 'any', ['!has', 'end_decdate'], ['>=', 'end_decdate', deccurrent] ],
+            [
+                'any',
+                ['!', ['has', 'start_decdate']],
+                ['<=', ['to-number', ['get', 'start_decdate'], -Infinity], ['literal', deccurrent]]
+            ],
+            [
+                'any',
+                ['!', ['has', 'end_decdate']],
+                ['>=', ['to-number', ['get', 'end_decdate'], Infinity], ['literal', deccurrent]]
+            ],
         ];
 
         const vecmap = this.getRealGlMap();
         const layers = this._getFilteredvectorLayers();
         layers.forEach((layer) => {
             const newfilters = vecmap.getFilter(layer.id).slice();
-            newfilters[1][2] = datesubfilter.slice();
+            newfilters[1] = datesubfilter.slice();
             vecmap.setFilter(layer.id, newfilters);
         });
     },
