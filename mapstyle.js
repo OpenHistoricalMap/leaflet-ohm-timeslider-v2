@@ -152,10 +152,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 0,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["forest", "nature_reserve", "park", "wood"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["forest", "nature_reserve", "park", "wood"]]],
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
@@ -541,10 +538,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["bare_rock", "peak", "rock", "scree"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["bare_rock", "peak", "rock", "scree"]]],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(255, 255, 255, 1)", "fill-pattern": "rock"}
     },
@@ -592,10 +586,7 @@ const OHM_MAP_STYLE = {
       "type": "fill",
       "source": "osm",
       "source-layer": "amenity_areas",
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["school", "university"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["school", "university"]]],
       "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgba(226, 214, 205, 1)"}
     },
@@ -801,10 +792,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["ditch", "drain"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["ditch", "drain"]]],
       "paint": {
         "line-color": "rgba(144, 204, 203, 1)",
         "line-width": ["interpolate", ["linear"], ["zoom"], 15, 0.2, 20, 1.5]
@@ -899,10 +887,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 8,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "river"],
-      ],
+      "filter": ["==", ["get", "type"], "river"],
       "paint": {
         "line-color": [
           "interpolate",
@@ -935,10 +920,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_lines",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["breakwater", "quay"]]]
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["breakwater", "quay"]]],
       "paint": {
         "line-color": "rgba(133, 133, 133, 1)",
         "line-width": ["interpolate", ["linear"], ["zoom"], 14, 1, 20, 4]
@@ -2627,10 +2609,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 14,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "subway"],
-      ],
+      "filter": ["==", ["get", "type"], "subway"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(166, 170, 187, 1)",
@@ -2896,10 +2875,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "raceway"],
-      ],
+      "filter": ["==", ["get", "type"], "raceway"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(255, 249, 241, 1)",
@@ -2989,10 +2965,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "living_street"],
-      ],
+      "filter": ["==", ["get", "type"], "living_street"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "rgba(255, 255, 255, 1)",
@@ -3014,10 +2987,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["cycleway", "footway", "path"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["cycleway", "footway", "path"]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -3066,10 +3036,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "steps"],
-      ],
+      "filter": ["==", ["get", "type"], "steps"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#b3b3b3",
@@ -3122,10 +3089,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "pedestrian"],
-      ],
+      "filter": ["==", ["get", "type"], "pedestrian"],
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#D2D2D5",
@@ -3439,10 +3403,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["residential", "service", "unclassified"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["residential", "service", "unclassified"]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -3468,10 +3429,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "pedestrian"], 
-      ],
+      "filter": ["==", ["get", "type"], "pedestrian"], 
       "layout": {"visibility": "visible"},
       "paint": {
         "line-color": "#ffffff",
@@ -4074,10 +4032,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "service"], ["literal", ["siding", "yard"]]],
-      ],
+      "filter": ["in", ["get", "service"], ["literal", ["siding", "yard"]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4095,10 +4050,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "transport_lines",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "service"], ["literal", ["siding", "yard"]]],
-      ],
+      "filter": ["in", ["get", "service"], ["literal", ["siding", "yard"]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4826,10 +4778,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 10,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "admin_level"], ["literal", [7, 8]]]
-      ],
+      "filter": ["in", ["get", "admin_level"], ["literal", [7, 8]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -4848,10 +4797,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "admin_level"], ["literal", [5, 6]]],
-      ],
+      "filter": ["in", ["get", "admin_level"], ["literal", [5, 6]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "round",
@@ -4966,10 +4912,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 0,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "admin_level"], ["literal", [1, 2]]]
-      ],
+      "filter": ["in", ["get", "admin_level"], ["literal", [1, 2]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -4997,10 +4940,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_lines",
       "minzoom": 0,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "admin_level"], ["literal", [1, 2]]]
-      ],
+      "filter": ["in", ["get", "admin_level"], ["literal", [1, 2]]],
       "layout": {
         "visibility": "visible",
         "line-cap": "square",
@@ -5070,10 +5010,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "transport_lines",
       "minzoom": 11,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["motorway", "trunk"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["motorway", "trunk"]]],
       "layout": {
         "text-size": 10,
         "text-allow-overlap": false,
@@ -5099,10 +5036,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_areas_centroids",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        [">", ["get", "area"], 100000],
-      ],
+      "filter": [">", ["get", "area"], 100000],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
@@ -5123,10 +5057,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_areas_centroids",
       "minzoom": 12,
       "maxzoom": 15,
-      "filter": [
-        "all",
-        [">", ["get", "area"], 1000000],
-      ],
+      "filter": [">", ["get", "area"], 1000000],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
@@ -5148,10 +5079,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 0,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["ocean", "sea"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["ocean", "sea"]]],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
@@ -5183,10 +5111,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_areas_centroids",
       "minzoom": 8,
       "maxzoom": 12,
-      "filter": [
-        "all",
-        [">", ["get", "area"], 10000000],
-      ],
+      "filter": [">", ["get", "area"], 10000000],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
@@ -5215,10 +5140,7 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "water_lines",
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "cliff"],
-      ],
+      "filter": ["==", ["get", "type"], "cliff"],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 11, 9, 13, 11],
         "symbol-spacing": 500,
@@ -5241,10 +5163,7 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "water_lines",
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "dam"],
-      ],
+      "filter": ["==", ["get", "type"], "dam"],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 11, 11, 13, 13],
         "symbol-spacing": 500,
@@ -5269,10 +5188,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "water_lines",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["cliff", "dam"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["cliff", "dam"]]],
       "layout": {
         "text-size": ["interpolate", ["linear"], ["zoom"], 12, 11, 14, 13],
         "symbol-spacing": 500,
@@ -5339,9 +5255,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas_centroids",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", [
+      "filter": ["in", ["get", "type"], ["literal", [
             "allotmets",
             "farm",
             "farmland",
@@ -5349,8 +5263,7 @@ const OHM_MAP_STYLE = {
             "garden",
             "orchard",
             "vineyard"
-          ]]
-        ],
+          ]],
       ],
       "layout": {
         "text-field": ["get", "name"],
@@ -5370,10 +5283,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas_centroids",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["forest", "nature_reserve", "wood"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["forest", "nature_reserve", "wood"]]],
       "layout": {
         "text-field": ["get", "name"],
         "text-size": 11,
@@ -5392,10 +5302,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas_centroids",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["", "college", "education", "school", "university"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["", "college", "education", "school", "university"]]],
       "layout": {
         "text-field": ["get", "name"],
         "text-size": 11,
@@ -5414,10 +5321,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "landuse_areas_centroids",
       "minzoom": 10,
       "maxzoom": 22,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "glacier"],
-      ],
+      "filter": ["==", ["get", "type"], "glacier"],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical Italic"],
@@ -5448,10 +5352,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_areas",
       "minzoom": 14,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "square"],
-      ],
+      "filter": ["==", ["get", "type"], "square"],
       "layout": {
         "icon-image": "{type}-18",
         "visibility": "visible",
@@ -5503,9 +5404,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "amenity_areas_centroids",
       "minzoom": 14,
       "maxzoom": 16,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", [
+      "filter": ["in", ["get", "type"], ["literal", [
           "bank",
           "border_control",
           "embassy",
@@ -5517,7 +5416,7 @@ const OHM_MAP_STYLE = {
           "taxi",
           "townhall",
           "university"
-        ]]],
+        ]],
       ],
       "layout": {
         "icon-image": "{type}-12",
@@ -5543,9 +5442,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "amenity_areas",
       "minzoom": 14,
       "maxzoom": 16,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", [
+      "filter": ["in", ["get", "type"], ["literal", [
           "bank",
           "border_control",
           "embassy",
@@ -5557,7 +5454,7 @@ const OHM_MAP_STYLE = {
           "taxi",
           "townhall",
           "university"
-        ]]],
+        ]],
       ],
       "layout": {
         "icon-image": "{type}-12",
@@ -5716,10 +5613,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "other_points",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "artwork"],
-      ],
+      "filter": ["==", ["get", "type"], "artwork"],
       "layout": {
         "text-size": [
           "interpolate",
@@ -5913,10 +5807,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "landuse_points",
       "minzoom": 14,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "peak"],
-      ],
+      "filter": ["==", ["get", "type"], "peak"],
       "layout": {
         "icon-image": "{type}-12",
         "text-font": ["OpenHistorical"],
@@ -5970,10 +5861,7 @@ const OHM_MAP_STYLE = {
       "source": "osm",
       "source-layer": "landuse_areas",
       "minzoom": 16,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["garden", "peak", "wetland"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["garden", "peak", "wetland"]]],
       "layout": {
         "icon-image": "{type}-18",
         "text-font": ["OpenHistorical"],
@@ -5997,9 +5885,7 @@ const OHM_MAP_STYLE = {
       "type": "symbol",
       "source": "osm",
       "source-layer": "buildings",
-      "filter": [
-        "all",
-        ["in", ["get", "name"], ["literal", [
+      "filter": ["in", ["get", "name"], ["literal", [
           "Centro di accoglienza Oxfam Italia",
           "Intermon Oxfam",
           "Magasin du monde-Oxfam",
@@ -6026,7 +5912,7 @@ const OHM_MAP_STYLE = {
           "Oxfam books",
           "Oxfam wereldwinkel",
           "oxfam"
-        ]]],
+        ]],
       ],
       "layout": {
         "icon-image": "oxfam-18",
@@ -6041,7 +5927,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "buildings",
       "minzoom": 16,
       "maxzoom": 24,
-      "filter": ["all", ["has", "shop"]],
+      "filter": ["has", "shop"],
       "layout": {
         "icon-image": "{shop}-18",
         "visibility": "visible",
@@ -6103,10 +5989,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "county"],
-      ],
+      "filter": ["==", ["get", "type"], "county"],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
@@ -6140,10 +6023,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 11,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["hamlet", "islet", "locality", "neighborhood", "suburb", "village"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["hamlet", "islet", "locality", "neighborhood", "suburb", "village"]]],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
@@ -6174,10 +6054,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "town"],
-      ],
+      "filter": ["==", ["get", "type"], "town"],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
@@ -6208,10 +6085,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "land_ohm_centroids",
       "minzoom": 8,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "admin_level"], ["literal", [7, 8]]],
-      ],
+      "filter": ["in", ["get", "admin_level"], ["literal", [7, 8]]],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
@@ -6242,10 +6116,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 11,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["==", ["get", "type"], "city"],
-      ],
+      "filter": ["==", ["get", "type"], "city"],
       "layout": {
         "text-field": ["get", "name"],
         "text-font": ["OpenHistorical"],
@@ -6386,10 +6257,7 @@ const OHM_MAP_STYLE = {
       "source-layer": "place_points",
       "minzoom": 5,
       "maxzoom": 20,
-      "filter": [
-        "all",
-        ["in", ["get", "type"], ["literal", ["state", "territory"]]],
-      ],
+      "filter": ["in", ["get", "type"], ["literal", ["state", "territory"]]],
       "layout": {
         "text-line-height": 1,
         "text-size": ["interpolate", ["linear"], ["zoom"], 3, 9, 6, 15, 10, 18],
