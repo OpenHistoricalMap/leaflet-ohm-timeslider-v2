@@ -22,8 +22,9 @@ decimaldate.iso2dec = (isodate) => {
       ? -1 * parseInt(yearstring, 10)
       : parseInt(yearstring, 10);
   if (yearint <= 0) yearint -= 1; // ISO 8601 shift year<=0 by 1, 0=1BCE, -1=2BCE; we want proper negative integer
-  if (!decimaldate.isvalidmonthday(yearint, monthint, dayint))
+  if (!decimaldate.isvalidmonthday(yearint, monthint, dayint)) {
     throw new Error(`iso2dec() invalid date ${isodate}`);
+  }
 
   // number of days passed = decimal portion
   // if BCE <=0 then count backward from the end of the year, instead of forward from January
@@ -81,18 +82,21 @@ decimaldate.dec2iso = (decdate) => {
   const monthstring = monthint.toString().padStart(2, '0');
   const daystring = dayint.toString().padStart(2, '0');
   let yearstring;
-  if (yearint > 0)
-    yearstring = yearint.toString().padStart(4, '0'); // just the year as 4 digits
-  else if (yearint === -1)
+  if (yearint > 0) {
+    yearstring = yearint.toString().padStart(4, '0');
+  } // just the year as 4 digits
+  else if (yearint === -1) {
     yearstring = Math.abs(yearint + 1)
       .toString()
-      .padStart(4, '0'); // BCE offset by 1 but do not add a - sign
-  else
+      .padStart(4, '0');
+  } // BCE offset by 1 but do not add a - sign
+  else {
     yearstring =
       '-' +
       Math.abs(yearint + 1)
         .toString()
-        .padStart(4, '0'); // BCE offset by 1 and add  - sign
+        .padStart(4, '0');
+  } // BCE offset by 1 and add  - sign
 
   return `${yearstring}-${monthstring}-${daystring}`;
 };
@@ -156,8 +160,9 @@ decimaldate.daysinyear = (yearint) => {
 };
 
 decimaldate.isleapyear = (yearint) => {
-  if (yearint !== parseInt(yearint, 10) || yearint === 0)
+  if (yearint !== parseInt(yearint, 10) || yearint === 0) {
     throw new Error(`isleapyear() invalid year ${yearint}`);
+  }
 
   // don't forget BCE; there is no 0 so leap years are -1, -5, -9, ..., -2001, -2005, ...
   // just add 1 to the year to correct for this, for this purpose
