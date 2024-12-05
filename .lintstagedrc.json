@@ -1,10 +1,4 @@
 {
-  "*/**/*.{js,json}": [
-    "prettier --write --ignore-unknown",
-    "eslint --fix",
-    "eslint"
-  ],
-  "*/**/*.{css,md,html}": [
-    "prettier --write"
-  ]
+  "*.{js,json}": ["eslint --fix", "prettier --write --ignore-unknown"],
+  "*.{css,md,html}": ["prettier --write --ignore-unknown"]
 }
