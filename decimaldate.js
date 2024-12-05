@@ -18,7 +18,7 @@ decimaldate.iso2dec = (isodate) => {
   const monthint = parseInt(monthstring, 10);
   const dayint = parseInt(daystring, 10);
   let yearint =
-    plusminus === '-'
+    plusminus === "-"
       ? -1 * parseInt(yearstring, 10)
       : parseInt(yearstring, 10);
   if (yearint <= 0) yearint -= 1; // ISO 8601 shift year<=0 by 1, 0=1BCE, -1=2BCE; we want proper negative integer
@@ -79,23 +79,23 @@ decimaldate.dec2iso = (decdate) => {
   // make string output
   // months and day as 2 digits
   // ISO 8601 shift year<=0 by 1, 0=1BCE, -1=2BCE
-  const monthstring = monthint.toString().padStart(2, '0');
-  const daystring = dayint.toString().padStart(2, '0');
+  const monthstring = monthint.toString().padStart(2, "0");
+  const daystring = dayint.toString().padStart(2, "0");
   let yearstring;
   if (yearint > 0) {
-    yearstring = yearint.toString().padStart(4, '0');
+    yearstring = yearint.toString().padStart(4, "0");
   } // just the year as 4 digits
   else if (yearint === -1) {
     yearstring = Math.abs(yearint + 1)
       .toString()
-      .padStart(4, '0');
+      .padStart(4, "0");
   } // BCE offset by 1 but do not add a - sign
   else {
     yearstring =
-      '-' +
+      "-" +
       Math.abs(yearint + 1)
         .toString()
-        .padStart(4, '0');
+        .padStart(4, "0");
   } // BCE offset by 1 and add  - sign
 
   return `${yearstring}-${monthstring}-${daystring}`;
