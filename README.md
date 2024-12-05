@@ -6,7 +6,6 @@ Unlike the original controls at https://github.com/OpenHistoricalMap/mbgl-timesl
 
 For a demonstration, see **index.html** and https://openhistoricalmap.github.io/leaflet-ohm-timeslider-v2/
 
-
 # Constructor Options
 
 `position` -- The Leaflet position for the control. Defaults to `bottomright`. It is recommended to keep this, as the control has an arrow sticking off the top/left.
@@ -30,7 +29,6 @@ For a demonstration, see **index.html** and https://openhistoricalmap.github.io/
 `onDateChange: function (isodate)` -- A callback function which will be called when the date selection changes. The newly-selected date (ISO string) will be passed as a param. Within the callback function, `this` will refer to the OHMTimeSlider.
 
 `onRangeChange: function ([date1, date2])` -- A callback function which will be called when the date range changes. The newly-available range (2-item list of ISO strings) will be passed as a param. Within the callback function, `this` will refer to the OHMTimeSlider.
-
 
 # Methods
 
@@ -62,7 +60,6 @@ For a demonstration, see **index.html** and https://openhistoricalmap.github.io/
 
 `listLanguages()` -- Return a list of the supported language translations for use with the `language` option.
 
-
 # Development
 
 Fire up a Python CLI web server via `python -m SimpleHTTPServer 9646` or `python3 -m http.server 9646`
@@ -72,12 +69,14 @@ You can now point a browser at http://localhost:9646/ and see the demo.
 To create the minified JS/CSS files, use whatever tools you prefer such as UglifyJS and UglifyCSS.
 
 Installation:
+
 ```
 nvm use 16.9.0
 npm install uglify-js uglifycss -g
 ```
 
 Usage:
+
 ```
 uglifycss --output leaflet-ohm-timeslider.min.css leaflet-ohm-timeslider.css
 uglifyjs --keep-fargs --keep-fnames --output leaflet-ohm-timeslider.min.js leaflet-ohm-timeslider.js
