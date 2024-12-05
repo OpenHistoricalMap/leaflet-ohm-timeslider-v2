@@ -1,0 +1,25 @@
+{
+  "name": "leaflet-ohm-timeslider-v2",
+  "version": "1.0.0",
+  "description": "The timeslider used by OpenHistoricalMap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenHistoricalMap/leaflet-ohm-timeslider-v2.git"
+  },
+  "homepage": "https://github.com/OpenHistoricalMap/leaflet-ohm-timeslider-v2",
+  "bugs": "https://github.com/OpenHistoricalMap/issues/issues",
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.13.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "pinst": "^3.0.0",
+    "prettier": "3.4.2"
+  },
+  "scripts": {
+    "prepare": "husky"
+  }
+}
