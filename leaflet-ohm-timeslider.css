@@ -71,7 +71,7 @@
         width: 35px;
         height: 25px;
 
-        background-image: url(./images/chevron-right.svg);
+        background-image: url(./assets/chevron-right.svg);
         background-size: cover;
         transform: rotate(90deg);
     }
@@ -109,7 +109,7 @@
 
         margin-top: 4px;
 
-        background-image: url(./images/chevron-right.svg);
+        background-image: url(./assets/chevron-right.svg);
         background-size: cover;
     }
 
@@ -225,7 +225,7 @@
     cursor: pointer;
 
     background-color: #333333;
-    background-image: url(./images/sliderhandle.svg);
+    background-image: url(./assets/sliderhandle.svg);
     background-size: 12px 12px;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -237,7 +237,7 @@
     cursor: pointer;
 
     background-color: #333333;
-    background-image: url(./images/sliderhandle.svg);
+    background-image: url(./assets/sliderhandle.svg);
     background-size: 12px 12px;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -347,19 +347,19 @@
 }
 
 .leaflet-ohm-timeslider span[role="button"][data-timeslider="play"] {
-    background-image: url(./images/play.svg);
+    background-image: url(./assets/play.svg);
 }
 .leaflet-ohm-timeslider span[role="button"][data-timeslider="pause"] {
-    background-image: url(./images/pause.svg);
+    background-image: url(./assets/pause.svg);
 }
 .leaflet-ohm-timeslider span[role="button"][data-timeslider="prev"] {
-    background-image: url(./images/prev.svg);
+    background-image: url(./assets/prev.svg);
 }
 .leaflet-ohm-timeslider span[role="button"][data-timeslider="next"] {
-    background-image: url(./images/next.svg);
+    background-image: url(./assets/next.svg);
 }
 .leaflet-ohm-timeslider span[role="button"][data-timeslider="reset"] {
-    background-image: url(./images/reset.svg);
+    background-image: url(./assets/reset.svg);
 }
 
 

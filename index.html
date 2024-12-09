@@ -7,13 +7,13 @@
     <title>OpenHistoricalMap :: Leaflet MBGL TimeSlider Control Demo</title>
 
     <!-- Leaflet and Mapbox GL JS API, the the adapter for using MB within L -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" rel="stylesheet" />
 
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.min.css" rel="stylesheet" />
 
-    <script src="https://unpkg.com/mapbox-gl-leaflet@0.0.15/leaflet-mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.min.js"></script>
 
     <!-- the timeslider control and suporting DecimalDate library -->
     <!-- pick either the minified or full-length version -->
@@ -81,10 +81,9 @@
 
         L.control.scale().addTo(MAP);
 
-        OHMLAYER = new L.MapboxGL({
-            attribution: "<a href='http://wiki.openstreetmap.org/wiki/OHM'>OHM</a>",
+        OHMLAYER = new L.maplibreGL({
+            attribution: "<a href='https://www.openhistoricalmap.org/'>OHM</a>",
             style: OHM_MAP_STYLE,
-            accessToken: "no-token",
         });
         OHMLAYER.addTo(MAP);
 
