@@ -73,7 +73,10 @@
 
     let MAP, TIMESLIDER, OHMLAYER;
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Esperar a que se cargue el estilo del mapa
+        const mapStyle = await loadMapStyle();
+        
         MAP = L.map('map', {
             zoomSnap: 0.1,
         })
@@ -83,7 +86,7 @@
 
         OHMLAYER = new L.maplibreGL({
             attribution: "<a href='https://www.openhistoricalmap.org/'>OHM</a>",
-            style: OHM_MAP_STYLE,
+            style: mapStyle,
         });
         OHMLAYER.addTo(MAP);
 
