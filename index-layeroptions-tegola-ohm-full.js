@@ -8,7 +8,7 @@ const MAPSTYLE_FULLCOLOR = {
     "osm": {
       "type": "vector",
       "tiles": [
-        "https://vtiles.openhistoricalmap.org/maps/osm/{z}/{x}/{y}.pbf"
+        "https://vtiles.openhistoricalmap.org/maps/ohm/{z}/{x}/{y}.pbf"
       ]
     },
     "ohm_landcover_hillshade": {
