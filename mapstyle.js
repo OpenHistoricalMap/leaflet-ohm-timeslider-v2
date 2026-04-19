@@ -6,7 +6,7 @@ const OHM_MAP_STYLE = {
     "osm": {
       "type": "vector",
       "tiles": [
-        "https://vtiles.staging.openhistoricalmap.org/maps/osm/{z}/{x}/{y}.pbf"
+        "https://vtiles.staging.openhistoricalmap.org/maps/ohm/{z}/{x}/{y}.pbf"
       ]
     },
     "ohm_landcover_hillshade": {
