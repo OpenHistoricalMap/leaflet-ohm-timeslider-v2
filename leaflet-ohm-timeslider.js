@@ -146,6 +146,8 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 ${this._translations.ymd_placeholder_short}
                 <br/>
                 <span data-timeslider="rangestartreadout"></span>
+                <br/>
+                <button data-timeslider="longago" style="padding:2px 6px;font-size:10px;margin-top:3px;">Long ago</button>
             </div>
             <div>
                 <input type="range" min="" max="" step="${this.constants.onedaystep}" class="leaflet-ohm-timeslider-sliderbar" data-timeslider="slider" aria-label="${this._translations.slider_description}" />
@@ -154,6 +156,8 @@ L.Control.OHMTimeSlider = L.Control.extend({
                 ${this._translations.ymd_placeholder_short}
                 <br/>
                 <span data-timeslider="rangeendreadout"></span>
+                <br/>
+                <button data-timeslider="now" style="padding:2px 6px;font-size:10px;margin-top:3px;">Now</button>
             </div>
         </div>
         <div class="leaflet-ohm-timeslider-playcontrols-wrap">
@@ -272,7 +276,11 @@ L.Control.OHMTimeSlider = L.Control.extend({
         this.controls.datepickercebce = datepickermodal.querySelector('select[data-timeslider="datepickercebce"]');
         this.controls.datepickersubmit = datepickermodal.querySelector('button[data-timeslider="datepickersubmit"]');
         this.controls.datepickercancel = datepickermodal.querySelector('button[data-timeslider="datepickercancel"]');
+        this.controls.longago = container.querySelector('[data-timeslider="longago"]');
+        this.controls.now = container.querySelector('[data-timeslider="now"]');
 
+        L.DomEvent.on(this.controls.longago, 'click', () => this.setDate(this.getRange()[0]));
+        L.DomEvent.on(this.controls.now, 'click', () => this.setDate(new Date().toISOString().split('T')[0]));
         L.DomEvent.on(this.controls.rangesubmit, 'click', () => {
             this.setRangeFromSelectors();
         });
